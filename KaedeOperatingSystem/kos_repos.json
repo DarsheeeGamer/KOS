@@ -1,0 +1,11 @@
+{
+  "repositories": {
+    "main": {
+      "url": "https://kos-repo.example.com/main",
+      "priority": 100,
+      "enabled": true,
+      "last_update": "2025-03-18T11:26:10.522652"
+    }
+  },
+  "default_repo": "main"
+}

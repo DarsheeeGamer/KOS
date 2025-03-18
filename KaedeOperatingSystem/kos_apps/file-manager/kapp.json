@@ -1,0 +1,17 @@
+{
+    "name": "file-manager",
+    "version": "1.0.0",
+    "description": "Visual file system navigation and management tool",
+    "author": "system",
+    "entry_point": "app.py",
+    "dependencies": [
+        "rich"
+    ],
+    "permissions": [
+        "read_files",
+        "write_files",
+        "manage_files"
+    ],
+    "min_kos_version": "1.0.0",
+    "icon": "📁"
+}

@@ -1,0 +1,16 @@
+{
+    "name": "text-editor",
+    "version": "1.0.0",
+    "description": "Simple text editor with syntax highlighting",
+    "author": "system",
+    "entry_point": "app.py",
+    "dependencies": [
+        "rich"
+    ],
+    "permissions": [
+        "read_files",
+        "write_files"
+    ],
+    "min_kos_version": "1.0.0",
+    "icon": "icon.png"
+}

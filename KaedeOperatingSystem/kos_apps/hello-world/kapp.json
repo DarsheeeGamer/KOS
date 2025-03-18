@@ -1,0 +1,8 @@
+{
+    "name": "hello-world",
+    "version": "1.0.0",
+    "description": "Basic Hello World KOS app",
+    "author": "system",
+    "created_at": "2025-03-18T00:00:00Z",
+    "entry_point": "app.py"
+}

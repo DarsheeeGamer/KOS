@@ -1,0 +1,16 @@
+{
+    "name": "system-monitor",
+    "version": "1.0.0",
+    "description": "System resource and process monitoring tool for KOS",
+    "author": "system",
+    "entry_point": "app.py",
+    "dependencies": [
+        "rich"
+    ],
+    "permissions": [
+        "read_fs_stats",
+        "read_process_info"
+    ],
+    "min_kos_version": "1.0.0",
+    "icon": "📊"
+}

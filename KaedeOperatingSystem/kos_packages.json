@@ -1,0 +1,103 @@
+{
+  "installed": {
+    "example": {
+      "version": "1.0.0",
+      "installed_at": "2025-03-18T16:13:14.492402"
+    }
+  },
+  "registry": {
+    "hello-world": {
+      "name": "hello-world",
+      "version": "1.0.0",
+      "description": "Basic Hello World KOS app",
+      "author": "system",
+      "dependencies": [],
+      "installed": false,
+      "install_date": null,
+      "repository": "local",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "main.py"
+    },
+    "python": {
+      "name": "python",
+      "version": "3.11",
+      "description": "Python programming language interpreter",
+      "author": "system",
+      "dependencies": [],
+      "installed": false,
+      "install_date": null,
+      "repository": "system",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "python3"
+    },
+    "pip": {
+      "name": "pip",
+      "version": "23.0",
+      "description": "Python package installer",
+      "author": "system",
+      "dependencies": [
+        "python"
+      ],
+      "installed": false,
+      "install_date": null,
+      "repository": "system",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "pip3"
+    },
+    "git": {
+      "name": "git",
+      "version": "2.34",
+      "description": "Distributed version control system",
+      "author": "system",
+      "dependencies": [],
+      "installed": false,
+      "install_date": null,
+      "repository": "system",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "git"
+    },
+    "curl": {
+      "name": "curl",
+      "version": "7.88",
+      "description": "Command line tool for transferring data",
+      "author": "system",
+      "dependencies": [],
+      "installed": false,
+      "install_date": null,
+      "repository": "system",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "curl"
+    },
+    "wget": {
+      "name": "wget",
+      "version": "1.21",
+      "description": "Network utility to retrieve files from the Web",
+      "author": "system",
+      "dependencies": [],
+      "installed": false,
+      "install_date": null,
+      "repository": "system",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "wget"
+    },
+    "example": {
+      "name": "example",
+      "version": "1.0.0",
+      "description": "Example KOS application",
+      "author": "system",
+      "dependencies": [],
+      "installed": true,
+      "install_date": "2025-03-18T16:13:14.492402",
+      "repository": "local",
+      "size": 0,
+      "checksum": "",
+      "entry_point": "app.py"
+    }
+  }
+}
