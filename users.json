@@ -1,0 +1,54 @@
+{
+  "kaede": {
+    "password": "66164fd1c9a8234940536d902d18a712e7a9e74c6819b41fb014e33740f6e0dc",
+    "home": "/home/kaede",
+    "groups": [
+      "wheel",
+      "kaede",
+      "kudo",
+      "root"
+    ],
+    "shell": "/bin/ksh",
+    "uid": 0,
+    "gid": 0,
+    "env": {
+      "PATH": "/bin:/usr/bin",
+      "HOME": "/home/kaede",
+      "SHELL": "/bin/ksh",
+      "TERM": "xterm-256color",
+      "USER": "kaede",
+      "PWD": "/home/kaede"
+    }
+  },
+  "kento": {
+    "password": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "home": "/home/kento",
+    "groups": [
+      "kento"
+    ],
+    "shell": "/bin/ksh",
+    "uid": 1001,
+    "gid": 1001,
+    "env": {
+      "PATH": "/bin:/usr/bin",
+      "HOME": "/home/kento",
+      "SHELL": "/bin/ksh",
+      "TERM": "xterm-256color",
+      "USER": "kento",
+      "PWD": "/home/kento"
+    }
+  },
+  "kp": {
+    "password": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uid": 1002,
+    "gid": 1002,
+    "fullname": "Kp",
+    "home": "/home/kp",
+    "shell": "/bin/ksh",
+    "created_at": "2025-03-19T17:42:17.286951",
+    "groups": [
+      "users"
+    ],
+    "is_root": false
+  }
+}
