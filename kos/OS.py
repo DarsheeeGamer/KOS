@@ -17,33 +17,15 @@ import logging
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
-
-# Import required rich components
-try:
-    from rich.console import Console
-    from rich.table import Table
-    from rich.progress import Progress
-except ImportError:
-    print("Rich package not found. Installing required packages...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "rich"])
-    from rich.console import Console
-    from rich.table import Table
-    from rich.progress import Progress
-
+from rich.console import Console
+from rich.table import Table
+from rich.progress import Progress
 import re
 import subprocess
 import gzip
 import tarfile
 import zipfile
 import fnmatch
-
-# Import KOS components
-from kos.filesystem import FileSystem
-from kos.user_system import UserSystem
-from kos.package_manager import PackageManager
-from kos.shell import KaedeShell
-from kos.klayer import klayer_fs, klayer_package, klayer_process, klayer_manual, set_env_vars
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -72,34 +54,6 @@ class AuthenticationError(KOSError):
 class PackageError(KOSError):
     """Package management related errors"""
     pass
-
-def initialize_klayer(filesystem, package_manager, user_system, process_manager=None):
-    """Initialize kLayer with KOS core components"""
-    logger.info("Initializing kLayer...")
-
-    # Initialize filesystem interface
-    klayer_fs.set_filesystem(filesystem)
-    logger.debug("kLayer filesystem interface initialized")
-
-    # Initialize package management interface
-    klayer_package.set_package_manager(package_manager)
-    logger.debug("kLayer package management interface initialized")
-
-    # Initialize process management interface (if available)
-    if process_manager:
-        klayer_process.set_process_manager(process_manager)
-        logger.debug("kLayer process management interface initialized")
-
-    # Set environment variables
-    env_vars = {
-        "KOS_VERSION": VERSION,
-        "KOS_HOME": "/home",
-        "KOS_ROOT": "/root",
-        "KOS_PATH": "/bin:/usr/bin",
-        "KOS_SHELL": "/bin/ksh"
-    }
-    set_env_vars(env_vars)
-    logger.debug("kLayer environment variables initialized")
 
 # Authentication Manager
 class AuthenticationManager:
@@ -154,6 +108,7 @@ class AuthenticationManager:
     def verify_password(self, stored_hash: str, password: str) -> bool:
         """Verify password against stored hash"""
         return stored_hash == self.hash_password(password)
+
 
     def do_grep(self, arg):
         """Search for patterns in files"""
@@ -232,26 +187,19 @@ def main():
     """Initialize and start KOS"""
     try:
         logger.info("Initializing KOS components...")
-
-        # Initialize core components
         filesystem = FileSystem(disk_size_mb=100)
         logger.info("FileSystem initialized")
 
         package_manager = PackageManager()
         logger.info("Package Manager initialized")
 
-        user_system = UserSystem(filesystem=filesystem)
+        user_system = UserSystem()
         logger.info(f"User System initialized with current user: {user_system.current_user}")
 
         # Set filesystem's user system reference
         filesystem.user_system = user_system
         logger.info("Filesystem user system reference set")
 
-        # Initialize kLayer
-        initialize_klayer(filesystem, package_manager, user_system)
-        logger.info("kLayer initialized")
-
-        # Create and start shell
         shell = KaedeShell(filesystem, package_manager, user_system)
         logger.info("Shell initialized, starting command loop...")
         shell.cmdloop()

@@ -2,10 +2,29 @@
   "installed": {
     "calculator": {
       "version": "1.0.0",
-      "installed_at": null
+      "installed_at": "2025-03-20T11:43:07.115069"
     }
   },
   "registry": {
+    "calculator": {
+      "name": "calculator",
+      "version": "1.0.0",
+      "description": "Simple calculator application",
+      "author": "KOS",
+      "dependencies": [],
+      "install_date": "2025-03-20T11:43:07.115069",
+      "size": 0,
+      "checksum": "FAKE_CHECKSUM_DISABLED",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "main",
+      "entry_point": "calculator.py",
+      "cli_aliases": [
+        "calc"
+      ],
+      "cli_function": "cli_app"
+    },
     "python": {
       "name": "python",
       "version": "3.11",
@@ -55,7 +74,7 @@
       "license": "",
       "tags": [],
       "repository": "system",
-      "entry_point": "git",
+      "entry_point": "/bin/git",
       "cli_aliases": [],
       "cli_function": ""
     },
@@ -72,7 +91,7 @@
       "license": "",
       "tags": [],
       "repository": "system",
-      "entry_point": "curl",
+      "entry_point": "/bin/curl",
       "cli_aliases": [],
       "cli_function": ""
     },
@@ -99,7 +118,7 @@
       "description": "Example KOS application",
       "author": "system",
       "dependencies": [],
-      "install_date": "2025-03-19T20:06:58.729298",
+      "install_date": null,
       "size": 0,
       "checksum": "",
       "homepage": "",
@@ -107,23 +126,6 @@
       "tags": [],
       "repository": "local",
       "entry_point": "app.py",
-      "cli_aliases": [],
-      "cli_function": ""
-    },
-    "calculator": {
-      "name": "calculator",
-      "version": "1.0.0",
-      "description": "Simple calculator application",
-      "author": "KOS",
-      "dependencies": [],
-      "install_date": null,
-      "size": 0,
-      "checksum": "FAKE_CHECKSUM_DISABLED",
-      "homepage": "",
-      "license": "",
-      "tags": [],
-      "repository": "main",
-      "entry_point": "",
       "cli_aliases": [],
       "cli_function": ""
     }
