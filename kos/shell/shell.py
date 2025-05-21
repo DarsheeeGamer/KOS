@@ -654,6 +654,10 @@ class KaedeShell(cmd.Cmd):
             logger.error(f"Error in cd command: {e}")
             print(f"cd: {str(e)}")
 
+        except Exception as e:
+            logger.error(f"Error in cd command: {e}")
+            print(f"cd: {str(e)}")
+
     def do_pwd(self, arg):
         """Print working directory"""
         print(self.fs.current_path)
@@ -667,14 +671,10 @@ class KaedeShell(cmd.Cmd):
                 return
 
             path = args[0]
-            mode = 0o755  # Default mode
+            # Note: Mode is not used since the filesystem only supports mkdir with default permissions
+            # If we need to support mode, we'll need to enhance the BaseFileSystem.mkdir method
 
-            if "-m" in args:
-                mode_idx = args.index("-m") + 1
-                if mode_idx < len(args):
-                    mode = int(args[mode_idx], 8)
-
-            self.fs._create_directory(path, mode)
+            self.fs.mkdir(path)
             logger.info(f"Created directory: {path}")
 
         except Exception as e:

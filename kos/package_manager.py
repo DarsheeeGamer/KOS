@@ -4,13 +4,17 @@ import os
 import shutil
 import hashlib
 from datetime import datetime
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 import subprocess
 import requests  # Added requests library for HTTP requests
 from functools import lru_cache # IMPORT lru_cache decorator
+import logging
 
 from .repo_config import RepositoryConfig  # Assuming repo_config.py is in the same directory
 from .package.manager import Package, PackageDatabase, PackageDependency  # Assuming package directory is in the same directory
+from .package.pip_manager import PipManager, PipPackage  # Import the new PipManager
+
+logger = logging.getLogger('KOS.package_manager')
 
 
 class PackageNotFound(Exception):
@@ -38,6 +42,7 @@ class KpmManager:
         self.package_dir = "kos_apps"
         self.repo_config = RepositoryConfig()
         self.package_db = PackageDatabase()
+        self.pip_manager = PipManager()  # Initialize PipManager
 
         if not os.path.exists(self.package_dir):
             os.makedirs(self.package_dir)
@@ -164,108 +169,141 @@ class KpmManager:
     def install(self, package_name: str, version: str = "latest") -> bool:
         """Install package by downloading files from GitHub - DYNAMIC REPO URL - CORRECTED PATH"""
         try:
-            # Check if package is already installed
+            # First, check if package is a system package or already installed
             existing_pkg = self.package_db.get_package(package_name)
             if existing_pkg and existing_pkg.installed:
-                print(f"Package '{package_name}' is already installed (version {existing_pkg.version})")
-                return False
-            # Search through all repositories
-            for repo_name, repo in self.repo_config.repos["repositories"].items():
-                if not repo["enabled"]:
-                    print(f"DEBUG: Repository '{repo_name}' is disabled, skipping")
+                print(f"Package {package_name} is already installed")
+                return True
+
+            # Find package info in repo-specific location
+            package_data = None
+            found_url = None
+
+            for repo in self.repo_config.get_active_repositories():
+                repo_info = self.repo_config.get_repository(repo)
+                if not repo_info:
                     continue
 
-                print(f"DEBUG: Processing repository: {repo_name}, URL: {repo['url']}, Enabled: {repo['enabled']}")
+                package_url = repo_info.get('package_info_url', '')
+                package_url = package_url.replace('{package}', package_name)
+
                 try:
-                    index_url = f"{repo['url']}/repo/index.json"
-                    print(f"DEBUG: Fetching index.json from: {index_url}")
-                    response = requests.get(index_url)
-                    print(f"DEBUG: Response status code (index.json): {response.status_code}")
+                    response = requests.get(package_url, timeout=10)
                     if response.status_code == 200:
-                        repo_data = response.json()
-                        print(f"DEBUG: index.json content:\n{json.dumps(repo_data, indent=2)}")
-                        if package_name in repo_data.get("packages", {}):
-                            # Found the package, proceed with installation
-                            package_data = repo_data["packages"][package_name]
-                            print(f"DEBUG: Package '{package_name}' data from index.json:\n{json.dumps(package_data, indent=2)}")
-                            repo_path = os.path.join('repo', repo_name, package_name)
+                        package_data = response.json()
+                        found_url = package_url
+                        break
+                except Exception as e:
+                    logger.debug(f"Error fetching package info from {package_url}: {e}")
+                    pass  # Try next repo
 
-                            # Install to kos_apps directory
-                            install_path = os.path.join('kos_apps', package_name)
-                            os.makedirs(install_path, exist_ok=True)
+            if not package_data:
+                print(f"Package {package_name} not found in any repository")
+                return False
 
-                            # Download and save package files
-                            package_files = package_data.get('files', [])
-                            if not package_files:
-                                package_files = [package_name + ".py"]
+            # Process package data
+            if version != "latest" and package_data.get('version') != version:
+                print(f"Version {version} not found for package {package_name}")
+                return False
 
-                            for file_name in package_files:
-                                # --- DYNAMICALLY CONSTRUCT RAW GITHUB URL ---
-                                base_repo_url = repo['url']  # Get repository base URL
-                                raw_file_url = f"{base_repo_url}/repo/files/{package_name}/{file_name}"  # New URL pattern
-                                dst = os.path.join(install_path, file_name)
+            # Create Package object
+            pkg = Package.from_dict(package_data)
+            pkg.name = package_name  # Ensure name is set correctly
+            app_dir = os.path.join(self.package_dir, package_name)
 
-                                print(f"DEBUG: Downloading from URL: '{raw_file_url}' to '{dst}'")  # DEBUG PRINT - DOWNLOAD URL
+            # Create app directory if it doesn't exist
+            if not os.path.exists(app_dir):
+                os.makedirs(app_dir)
 
-                                try:
-                                    file_response = requests.get(raw_file_url, stream=True)  # Stream download for larger files
-                                    file_response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+            # Download package files
+            file_url = package_data.get('download_url', '')
+            if not file_url:
+                # Get repo from URL and construct GitHub download URL
+                repo_parts = found_url.split('/')
+                if len(repo_parts) >= 3:
+                    owner = repo_parts[-3]
+                    repo = repo_parts[-2]
+                    # Construct GitHub release URL
+                    file_url = f"https://github.com/{owner}/{repo}/releases/download/v{pkg.version}/{pkg.name}.zip"
+                else:
+                    print(f"Could not determine download URL for package {package_name}")
+                    return False
 
-                                    with open(dst, 'wb') as dest_file:  # Open destination in write binary mode
-                                        for chunk in file_response.iter_content(chunk_size=8192):  # Iterate over response content in chunks
-                                            dest_file.write(chunk)  # Write chunks to file
-                                    print(f"DEBUG: Downloaded and saved to '{dst}'")  # DEBUG PRINT - DOWNLOAD SUCCESS
+            # Download the package zip file
+            print(f"Downloading package {package_name} from {file_url}")
+            try:
+                response = requests.get(file_url, stream=True, timeout=20)
+                if response.status_code != 200:
+                    print(f"Failed to download package {package_name}: HTTP error {response.status_code}")
+                    return False
 
-                                except requests.exceptions.RequestException as download_error:
-                                    print(f"DEBUG: Error downloading '{raw_file_url}': {download_error}")  # DEBUG PRINT - DOWNLOAD ERROR
-                                    raise PackageInstallError(f"Error downloading package file: {file_name} from {raw_file_url}")
+                zip_path = os.path.join(self.package_dir, f"{package_name}.zip")
+                with open(zip_path, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
 
-                            # Create package object
-                            pkg = Package(
-                                name=package_name,
-                                version=package_data['version'],
-                                description=package_data['description'],
-                                author=package_data['author'],
-                                dependencies=[PackageDependency(dep) for dep in package_data.get('dependencies', [])],
-                                install_date=None,  # Removed install_date assignment
-                                size=0,  # Size not calculated due to checksum skip
-                                checksum="FAKE_CHECKSUM_DISABLED",  # Indicate checksum is disabled
-                                installed=True
-                            )
+                # Extract package
+                import zipfile
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(app_dir)
 
-                            # Resolve dependencies
-                            packages = self.package_db.resolve_dependencies(package_name)
+                # Remove zip file after extraction
+                os.remove(zip_path)
 
-                            # Install each package
-                            for p in packages:
-                                if not p.installed:
-                                    print(f"Installing {p.name}...")
+            except Exception as e:
+                print(f"Failed to download or extract package {package_name}: {str(e)}")
+                return False
 
-                                    # Install system dependencies if any
-                                    if p.dependencies:
-                                        for dep in p.dependencies:
-                                            if dep.name.startswith("python-"):
-                                                subprocess.run(['pip', 'install', dep.name[7:]])
-                                            else:
-                                                subprocess.run(['apt-get', 'install', '-y', dep.name])
+            # Check if package has a requirements.txt file
+            pip_requirements_installed = self._handle_pip_requirements(app_dir, package_name)
+            if not pip_requirements_installed:
+                print(f"Warning: Failed to install pip requirements for {package_name}")
+            
+            # Check if the package has KOS dependencies and install them
+            if pkg.dependencies:
+                print(f"Installing dependencies for {package_name}...")
+                for dep in pkg.dependencies:
+                    dep_name = dep.name
+                    
+                    # Check if it's a pip dependency
+                    if dep_name.startswith('pip:'):
+                        pip_pkg_spec = dep_name[4:]  # Remove 'pip:' prefix
+                        success, message = self.pip_manager.install_package(pip_pkg_spec, package_name)
+                        if not success and not dep.optional:
+                            print(f"Required pip dependency {pip_pkg_spec} failed to install: {message}")
+                            return False
+                        elif not success:
+                            print(f"Optional pip dependency {pip_pkg_spec} failed to install: {message}")
+                    else:
+                        # Regular KOS package dependency
+                        dep_version = dep.version if dep.version != "*" else "latest"
+                        if not self.install(dep_name, dep_version):
+                            if dep.optional:
+                                print(f"Optional dependency {dep_name} failed to install")
+                            else:
+                                print(f"Required dependency {dep_name} failed to install")
+                                return False
 
-                                    # Create package directory if it's not a system package
-                                    if p.repository != "system":
-                                        app_dir = self._get_app_path(p.name)
-                                        os.makedirs(app_dir, exist_ok=True)
+            # Update package info and mark as installed
+            pkg.installed = True
+            pkg.install_date = datetime.now()
 
-                                        # Make the entry point executable
-                                        entry_path = os.path.join(app_dir, p.entry_point)
-                                        if os.path.exists(entry_path):
-                                            os.chmod(entry_path, 0o755)
+            # Calculate package size
+            pkg.size = sum(os.path.getsize(os.path.join(dir_path, filename))
+                          for dir_path, _, filenames in os.walk(app_dir)
+                          for filename in filenames)
 
-                                    # Update package status
-                                    p.installed = True
-                                    # p.install_date = datetime.now().isoformat() # Removed install_date assignment
-                                    self.package_db.add_package(p)
+            # Update package database and save registry
+            self.package_db.add_package(pkg)
+            self._save_packages()
 
-                            self.package_db.add_package(pkg)
-                            self._save_packages()
+            print(f"Package {package_name} installed successfully")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error installing package {package_name}: {e}")
+            print(f"Error installing package {package_name}: {str(e)}")
+            return False
                             return True
                         else:
                             print(f"DEBUG: Package '{package_name}' not found in index.json from {repo_url}")
