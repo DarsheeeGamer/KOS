@@ -1,0 +1,34 @@
+2025-03-19 16:29:06,462 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:29:06,462 - KOS - INFO - FileSystem initialized
+2025-03-19 16:29:06,463 - KOS - INFO - User System initialized
+2025-03-19 16:29:06,463 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:29:06,463 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:29:06,464 - KOS - INFO - Package Manager initialized
+2025-03-19 16:29:06,464 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:29:06,465 - KOS - INFO - Process Manager initialized
+2025-03-19 16:29:06,577 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:29:06,578 - KOS - INFO - Shell initialized, starting command loop...
+
+╔══════════════════════════════════════════════════════════╗
+║                 Welcome to Kaede OS (KOS)                ║
+║                                                         ║
+║  System Information:                                    ║
+║  - CPU Usage: 46.8%                                  ║
+║  - Memory: 64.9% used                              ║
+║  - Disk: 46.3% used                                ║
+║                                                         ║
+║  Type 'help' for commands, 'intro' for system info     ║
+╚══════════════════════════════════════════════════════════╝
+
+[16:29 root@kos / (main)]# ls
+2025-03-19 16:39:22,953 - KOS - ERROR - Error getting node at /.: Path not found: /.
+2025-03-19 16:39:22,955 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:39:22,956 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+ls: Failed to list directory: . is not a directory
+[16:29 root@kos / (main)]# cd home
+[16:39 root@kos home (main)]# ls
+2025-03-19 16:39:25,536 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:39:25,537 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:39:25,537 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+ls: Failed to list directory: . is not a directory
+[16:39 root@kos home (main)]# 

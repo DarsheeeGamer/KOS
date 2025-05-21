@@ -1,0 +1,47 @@
+~/workspace$ python3 main.py
+2025-03-19 14:49:27,368 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:49:27,370 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:49:27,373 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:49:27,373 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:49:27,373 - KOS - INFO - FileSystem initialized
+2025-03-19 14:49:27,374 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:49:27,374 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Package Manager initialized
+2025-03-19 14:49:27,374 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Process Manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:49:27,374 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:49:27,375 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:49:27,375 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:49:27,485 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:49:27,485 - KOS - INFO - Shell initialized, starting command loop...
+
+╔══════════════════════════════════════════════════════════╗
+║                 Welcome to Kaede OS (KOS)                ║
+║                                                         ║
+║  System Information:                                    ║
+║  - CPU Usage: 39.2%                                  ║
+║  - Memory: 91.0% used                              ║
+║  - Disk: 42.2% used                                ║
+║                                                         ║
+║  Type 'help' for commands, 'intro' for system info     ║
+╚══════════════════════════════════════════════════════════╝
+
+[14:49 root@kos / (main)]# help
+
+Documented commands (type help <topic>):
+========================================
+EOF  clear  disk  exit  help  ps  top  users
+
+[14:49 root@kos / (main)]# 

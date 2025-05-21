@@ -1,0 +1,152 @@
+{
+  "installed": {
+    "calculator": {
+      "version": "1.0.0",
+      "installed_at": null
+    },
+    "qotd": {
+      "version": "1.0.0",
+      "installed_at": null
+    }
+  },
+  "registry": {
+    "python": {
+      "name": "python",
+      "version": "3.11",
+      "description": "Python programming language interpreter",
+      "author": "system",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "system",
+      "entry_point": "python3",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "pip": {
+      "name": "pip",
+      "version": "23.0",
+      "description": "Python package installer",
+      "author": "system",
+      "dependencies": [
+        "python *"
+      ],
+      "install_date": null,
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "system",
+      "entry_point": "pip3",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "git": {
+      "name": "git",
+      "version": "2.34",
+      "description": "Distributed version control system",
+      "author": "system",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "system",
+      "entry_point": "git",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "curl": {
+      "name": "curl",
+      "version": "7.88",
+      "description": "Command line tool for transferring data",
+      "author": "system",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "system",
+      "entry_point": "curl",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "wget": {
+      "name": "wget",
+      "version": "1.21",
+      "description": "Network utility to retrieve files from the Web",
+      "author": "system",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "system",
+      "entry_point": "wget",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "example": {
+      "name": "example",
+      "version": "1.0.0",
+      "description": "Example KOS application",
+      "author": "system",
+      "dependencies": [],
+      "install_date": "2025-05-21T23:11:55.132892",
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "local",
+      "entry_point": "app.py",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "calculator": {
+      "name": "calculator",
+      "version": "1.0.0",
+      "description": "Simple calculator application",
+      "author": "KOS",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "FAKE_CHECKSUM_DISABLED",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "main",
+      "entry_point": "",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "qotd": {
+      "name": "qotd",
+      "version": "1.0.0",
+      "description": "Quote of the Day - Get and manage daily inspirational quotes",
+      "author": "KOS",
+      "dependencies": [],
+      "install_date": null,
+      "size": 0,
+      "checksum": "FAKE_CHECKSUM_DISABLED",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "main",
+      "entry_point": "",
+      "cli_aliases": [],
+      "cli_function": ""
+    }
+  }
+}

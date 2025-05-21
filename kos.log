@@ -1,0 +1,1719 @@
+2025-03-19 10:48:45,558 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:48:45,559 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:48:45,559 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:48:45,562 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:48:45,563 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:48:45,565 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:48:45,566 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:48:45,567 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:48:45,567 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:48:45,568 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:48:45,568 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:48:45,568 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:48:45,568 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:48:45,569 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:48:45,569 - KOS - INFO - FileSystem initialized
+2025-03-19 10:48:45,570 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:48:45,570 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:48:45,570 - KOS - INFO - Package Manager initialized
+2025-03-19 10:48:45,571 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:48:45,571 - KOS - INFO - Process Manager initialized
+2025-03-19 10:48:45,572 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:48:45,572 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:48:45,572 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:48:45,572 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:48:45,688 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:48:45,688 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:50:34,042 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:50:34,042 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:50:35,074 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:50:35,074 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:50:35,074 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:50:35,074 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:50:35,075 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:50:35,075 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:50:35,078 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:50:35,079 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:50:35,079 - KOS - INFO - FileSystem initialized
+2025-03-19 10:50:35,079 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:50:35,079 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:50:35,079 - KOS - INFO - Package Manager initialized
+2025-03-19 10:50:35,079 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:50:35,079 - KOS - INFO - Process Manager initialized
+2025-03-19 10:50:35,079 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:50:35,079 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:50:35,080 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:50:35,080 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:50:35,197 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:50:35,198 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:52:14,598 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:52:14,599 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:52:15,329 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:52:15,330 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:52:15,331 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:52:15,331 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:52:15,331 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:52:15,332 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:52:15,332 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:52:15,333 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:52:15,333 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:52:15,333 - KOS - INFO - FileSystem initialized
+2025-03-19 10:52:15,333 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:52:15,333 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:52:15,336 - KOS - INFO - Package Manager initialized
+2025-03-19 10:52:15,336 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:52:15,336 - KOS - INFO - Process Manager initialized
+2025-03-19 10:52:15,337 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:52:15,337 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:52:15,337 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:52:15,337 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:52:15,450 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:52:15,450 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:52:36,286 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:52:36,286 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:52:36,767 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:52:36,768 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:52:36,769 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:52:36,769 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:52:36,769 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:52:36,769 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:52:36,769 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:52:36,769 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:52:36,770 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:52:36,770 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:52:36,770 - KOS - INFO - FileSystem initialized
+2025-03-19 10:52:36,770 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:52:36,770 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:52:36,771 - KOS - INFO - Package Manager initialized
+2025-03-19 10:52:36,771 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:52:36,771 - KOS - INFO - Process Manager initialized
+2025-03-19 10:52:36,771 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:52:36,771 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:52:36,771 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:52:36,771 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:52:36,882 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:52:36,882 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:56:57,065 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:56:57,065 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:56:57,776 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:56:57,776 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:56:57,777 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:56:57,777 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:56:57,777 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:56:57,777 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:56:57,778 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:56:57,778 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:56:57,780 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:56:57,780 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:56:57,780 - KOS - INFO - FileSystem initialized
+2025-03-19 10:56:57,780 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:56:57,780 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:56:57,780 - KOS - INFO - Package Manager initialized
+2025-03-19 10:56:57,780 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:56:57,780 - KOS - INFO - Process Manager initialized
+2025-03-19 10:56:57,781 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:56:57,781 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:56:57,781 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:56:57,785 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:56:57,897 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:56:57,897 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:57:08,669 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:57:08,669 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:57:09,180 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:57:09,181 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:57:09,181 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:57:09,181 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:57:09,183 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:57:09,183 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:57:09,184 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:57:09,184 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:57:09,185 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:57:09,185 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:57:09,186 - KOS - INFO - FileSystem initialized
+2025-03-19 10:57:09,186 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:57:09,186 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:57:09,186 - KOS - INFO - Package Manager initialized
+2025-03-19 10:57:09,186 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:57:09,186 - KOS - INFO - Process Manager initialized
+2025-03-19 10:57:09,187 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:57:09,187 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:57:09,187 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:57:09,187 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:57:09,300 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:57:09,300 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:57:10,151 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:57:10,152 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:57:10,694 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:57:10,694 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:57:10,695 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:57:10,695 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:57:10,695 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:57:10,695 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:57:10,695 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:57:10,696 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:57:10,696 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:57:10,696 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:57:10,696 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:57:10,696 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:57:10,696 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:57:10,697 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:57:10,697 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:57:10,697 - KOS - INFO - FileSystem initialized
+2025-03-19 10:57:10,697 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:57:10,697 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:57:10,697 - KOS - INFO - Package Manager initialized
+2025-03-19 10:57:10,697 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:57:10,697 - KOS - INFO - Process Manager initialized
+2025-03-19 10:57:10,698 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:57:10,698 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:57:10,698 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:57:10,698 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:57:10,810 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:57:10,810 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 10:58:44,611 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 10:58:44,611 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 10:58:45,223 - KOS - INFO - Initializing KOS components...
+2025-03-19 10:58:45,225 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 10:58:45,226 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 10:58:45,226 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 10:58:45,226 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 10:58:45,226 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 10:58:45,227 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 10:58:45,227 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 10:58:45,229 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 10:58:45,230 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 10:58:45,230 - KOS - INFO - FileSystem initialized
+2025-03-19 10:58:45,231 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 10:58:45,231 - KOS.package - INFO - Package manager initialized
+2025-03-19 10:58:45,232 - KOS - INFO - Package Manager initialized
+2025-03-19 10:58:45,232 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 10:58:45,232 - KOS - INFO - Process Manager initialized
+2025-03-19 10:58:45,232 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 10:58:45,232 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 10:58:45,232 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 10:58:45,232 - KOS - INFO - Filesystem user system reference set
+2025-03-19 10:58:45,344 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 10:58:45,346 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:47:45,572 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:47:45,575 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:47:45,575 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:47:45,575 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:47:45,575 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:47:45,575 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:47:45,576 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:47:45,577 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:47:45,579 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:47:45,579 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:47:45,579 - KOS - INFO - FileSystem initialized
+2025-03-19 14:47:45,579 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:47:45,580 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:47:45,580 - KOS - INFO - Package Manager initialized
+2025-03-19 14:47:45,580 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:47:45,580 - KOS - INFO - Process Manager initialized
+2025-03-19 14:47:45,580 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:47:45,580 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:47:45,580 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:47:45,580 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:47:45,693 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:47:45,693 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:48:17,483 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 14:48:17,483 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 14:49:27,368 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:49:27,368 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:49:27,369 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:49:27,370 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:49:27,373 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:49:27,373 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:49:27,373 - KOS - INFO - FileSystem initialized
+2025-03-19 14:49:27,374 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:49:27,374 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Package Manager initialized
+2025-03-19 14:49:27,374 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Process Manager initialized
+2025-03-19 14:49:27,374 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:49:27,374 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:49:27,375 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:49:27,375 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:49:27,485 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:49:27,485 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:51:22,645 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:51:22,647 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:51:22,648 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:51:22,649 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:51:22,650 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:51:22,650 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:51:22,650 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:51:22,651 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:51:22,651 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:51:22,653 - KOS - INFO - FileSystem initialized
+2025-03-19 14:51:22,654 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:51:22,654 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:51:22,654 - KOS - INFO - Package Manager initialized
+2025-03-19 14:51:22,654 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:51:22,654 - KOS - INFO - Process Manager initialized
+2025-03-19 14:51:22,654 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:51:22,654 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:51:22,654 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:51:22,654 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:51:22,771 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:51:22,773 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:51:42,375 - KOS.process - ERROR - Error refreshing process list: unhashable type: 'dict'
+2025-03-19 14:51:42,376 - KOS.shell - ERROR - Error in ps command: unhashable type: 'dict'
+2025-03-19 14:51:43,483 - KOS.process - ERROR - Error refreshing process list: unhashable type: 'dict'
+2025-03-19 14:51:43,484 - KOS.shell - ERROR - Error in ps command: unhashable type: 'dict'
+2025-03-19 14:51:47,804 - KOS.process - ERROR - Error refreshing process list: unhashable type: 'dict'
+2025-03-19 14:51:47,805 - KOS.shell - ERROR - Error in ps command: unhashable type: 'dict'
+2025-03-19 14:53:01,519 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 14:53:01,520 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 14:53:01,944 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:53:01,944 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:53:01,945 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:53:01,946 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:53:01,946 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:53:01,946 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:53:01,946 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:53:01,946 - KOS - INFO - FileSystem initialized
+2025-03-19 14:53:01,947 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:53:01,947 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:53:01,947 - KOS - INFO - Package Manager initialized
+2025-03-19 14:53:01,947 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:53:01,947 - KOS - INFO - Process Manager initialized
+2025-03-19 14:53:01,947 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:53:01,947 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:53:01,947 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:53:01,947 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:53:02,056 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:53:02,056 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:53:12,711 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 14:53:12,712 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 14:53:14,310 - KOS - INFO - Initializing KOS components...
+2025-03-19 14:53:14,310 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 14:53:14,310 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 14:53:14,310 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 14:53:14,311 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 14:53:14,312 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 14:53:14,312 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 14:53:14,312 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 14:53:14,312 - KOS.disk - INFO - Disk manager initialized with caching
+2025-03-19 14:53:14,313 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 14:53:14,313 - KOS - INFO - FileSystem initialized
+2025-03-19 14:53:14,313 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 14:53:14,313 - KOS.package - INFO - Package manager initialized
+2025-03-19 14:53:14,313 - KOS - INFO - Package Manager initialized
+2025-03-19 14:53:14,313 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 14:53:14,313 - KOS - INFO - Process Manager initialized
+2025-03-19 14:53:14,314 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 14:53:14,314 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 14:53:14,314 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 14:53:14,314 - KOS - INFO - Filesystem user system reference set
+2025-03-19 14:53:14,424 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 14:53:14,424 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 14:53:29,047 - KOS.filesystem - ERROR - Error listing directory home: No such file or directory: home/home
+2025-03-19 14:53:29,047 - KOS.shell - ERROR - Error in ls command: Failed to list directory: No such file or directory: home/home
+2025-03-19 15:02:56,978 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:02:56,982 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:04:42,354 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:04:42,354 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,354 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:42,354 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:42,354 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:42,355 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,356 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:42,357 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:42,357 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:04:42,357 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:04:42,357 - KOS - INFO - FileSystem initialized
+2025-03-19 15:04:42,358 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:04:42,358 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:04:42,358 - KOS - INFO - Package Manager initialized
+2025-03-19 15:04:42,358 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:04:42,358 - KOS - INFO - Process Manager initialized
+2025-03-19 15:04:42,358 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:04:42,358 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:04:42,358 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:04:42,358 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:04:42,467 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:04:42,467 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:04:52,951 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:04:52,951 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:04:53,535 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:04:53,538 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,542 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:53,542 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,543 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:53,551 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:53,551 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,554 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:53,554 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:53,554 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,554 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:53,555 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,556 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:53,556 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:53,556 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:53,556 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:53,557 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:53,557 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:04:53,557 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:04:53,557 - KOS - INFO - FileSystem initialized
+2025-03-19 15:04:53,558 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:04:53,558 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:04:53,558 - KOS - INFO - Package Manager initialized
+2025-03-19 15:04:53,559 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:04:53,559 - KOS - INFO - Process Manager initialized
+2025-03-19 15:04:53,559 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:04:53,560 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:04:53,560 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:04:53,560 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:04:53,677 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:04:53,678 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:04:56,986 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:04:56,987 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:04:59,017 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:59,017 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,018 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:59,019 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:59,020 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:04:59,020 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:04:59,020 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:04:59,020 - KOS - INFO - FileSystem initialized
+2025-03-19 15:04:59,021 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:04:59,021 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:04:59,021 - KOS - INFO - Package Manager initialized
+2025-03-19 15:04:59,021 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:04:59,021 - KOS - INFO - Process Manager initialized
+2025-03-19 15:04:59,021 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:04:59,021 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:04:59,021 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:04:59,021 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:04:59,133 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:04:59,133 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:05:09,082 - KOS.process - ERROR - Error refreshing process list: unhashable type: 'dict'
+2025-03-19 15:05:09,083 - KOS.shell - ERROR - Error in ps command: unhashable type: 'dict'
+2025-03-19 15:05:25,080 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:05:25,080 - KOS.filesystem - DEBUG - Listing directory: /
+2025-03-19 15:05:28,710 - KOS.filesystem - DEBUG - Resolving path: home -> home/home
+2025-03-19 15:05:28,710 - KOS.filesystem - ERROR - Path not found: /home/home
+2025-03-19 15:05:28,710 - KOS.filesystem - ERROR - Error listing directory .: No such file or directory: home
+2025-03-19 15:05:28,710 - KOS.shell - ERROR - Error in ls command: Failed to list directory: No such file or directory: home
+2025-03-19 15:05:38,051 - KOS.filesystem - DEBUG - Resolving path: home -> home/home
+2025-03-19 15:05:38,052 - KOS.filesystem - ERROR - Path not found: /home/home
+2025-03-19 15:05:38,052 - KOS.filesystem - ERROR - Error creating directory kento: No such file or directory: home
+2025-03-19 15:05:38,052 - KOS.shell - ERROR - Error in mkdir command: Failed to create directory: No such file or directory: home
+2025-03-19 15:05:39,066 - KOS.filesystem - DEBUG - Resolving path: home -> home/home
+2025-03-19 15:05:39,066 - KOS.filesystem - ERROR - Path not found: /home/home
+2025-03-19 15:05:39,066 - KOS.filesystem - ERROR - Error listing directory .: No such file or directory: home
+2025-03-19 15:05:39,066 - KOS.shell - ERROR - Error in ls command: Failed to list directory: No such file or directory: home
+2025-03-19 15:07:42,670 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:07:42,670 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:07:43,868 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:07:43,869 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,870 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:07:43,871 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:07:43,872 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:07:43,872 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:07:43,872 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:07:43,873 - KOS - INFO - FileSystem initialized
+2025-03-19 15:07:43,873 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:07:43,873 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:07:43,873 - KOS - INFO - Package Manager initialized
+2025-03-19 15:07:43,873 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:07:43,873 - KOS - INFO - Process Manager initialized
+2025-03-19 15:07:43,873 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:07:43,874 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:07:43,874 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:07:43,874 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:07:43,985 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:07:43,985 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:07:46,771 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:46,771 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:07:47,259 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:47,259 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:07:52,700 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:52,700 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:07:53,763 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:53,764 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:07:56,335 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:56,335 - KOS.filesystem - DEBUG - Created directory: /home/kento
+2025-03-19 15:07:56,336 - KOS.shell - INFO - Created directory: kento
+2025-03-19 15:07:57,623 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:57,623 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:08:00,645 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:00,646 - KOS.filesystem - DEBUG - Current path updated to: /home/kento
+2025-03-19 15:08:01,632 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:01,632 - KOS.filesystem - DEBUG - Listing directory: /home/kento
+2025-03-19 15:08:04,372 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:08:04,372 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:08:05,160 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:05,161 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:05,162 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:05,163 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:05,164 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:05,165 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:05,165 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:08:05,165 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:08:05,165 - KOS - INFO - FileSystem initialized
+2025-03-19 15:08:05,165 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:08:05,165 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:08:05,165 - KOS - INFO - Package Manager initialized
+2025-03-19 15:08:05,165 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:08:05,165 - KOS - INFO - Process Manager initialized
+2025-03-19 15:08:05,166 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:08:05,166 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:08:05,166 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:08:05,166 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:08:05,275 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:08:05,275 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:08:11,765 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:08:11,765 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:08:19,096 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:08:19,096 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:08:22,095 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:08:22,096 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,104 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:22,104 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:22,104 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:08:22,104 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:08:22,104 - KOS - INFO - FileSystem initialized
+2025-03-19 15:08:22,104 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:08:22,104 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Package Manager initialized
+2025-03-19 15:08:22,105 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Process Manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:08:22,105 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:08:22,105 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:08:22,106 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:08:22,220 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:08:22,220 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:08:35,422 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:08:35,423 - KOS - INFO - Successfully added user kento
+2025-03-19 15:08:38,709 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:38,710 - KOS.filesystem - DEBUG - Listing directory: /
+2025-03-19 15:08:40,892 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:40,892 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:08:40,892 - KOS.shell - DEBUG - Changed directory to: /home
+2025-03-19 15:08:41,539 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:41,539 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:08:44,771 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:44,772 - KOS.filesystem - ERROR - Path not found: /home/kento
+2025-03-19 15:08:49,150 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:49,150 - KOS.filesystem - DEBUG - Created directory: /home/kento
+2025-03-19 15:08:49,150 - KOS.shell - INFO - Created directory: kento
+2025-03-19 15:08:49,969 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:49,969 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:08:55,663 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:55,663 - KOS.filesystem - DEBUG - Current path updated to: /home/kento
+2025-03-19 15:08:55,663 - KOS.shell - DEBUG - Changed directory to: /home/kento
+2025-03-19 15:08:57,780 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:08:57,780 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:09:00,230 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:09:00,233 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:09:00,233 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:09:00,233 - KOS - INFO - FileSystem initialized
+2025-03-19 15:09:00,233 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:09:00,233 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Package Manager initialized
+2025-03-19 15:09:00,234 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Process Manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Loaded 2 users from users.json
+2025-03-19 15:09:00,234 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:09:00,234 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:09:00,234 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:09:00,342 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:09:00,342 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:09:01,393 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:01,393 - KOS.filesystem - DEBUG - Listing directory: /
+2025-03-19 15:09:03,021 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:09:03,022 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:09:03,022 - KOS.shell - DEBUG - Changed directory to: /home
+2025-03-19 15:09:03,735 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:09:03,735 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:11:52,166 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:11:52,166 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,166 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:11:52,166 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:11:52,166 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:11:52,167 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:11:52,168 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:11:52,169 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:11:52,170 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:11:52,170 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:11:52,170 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:11:52,170 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:11:52,170 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:11:52,170 - KOS - INFO - FileSystem initialized
+2025-03-19 15:11:52,170 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:11:52,170 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:11:52,170 - KOS - INFO - Package Manager initialized
+2025-03-19 15:11:52,171 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:11:52,171 - KOS - INFO - Process Manager initialized
+2025-03-19 15:11:52,171 - KOS - INFO - Loaded 2 users from users.json
+2025-03-19 15:11:52,171 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:11:52,171 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:11:52,171 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:11:52,281 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:11:52,281 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:12:10,926 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:12:10,926 - KOS.filesystem - DEBUG - Listing directory: /
+2025-03-19 15:12:15,867 - KOS.filesystem - DEBUG - Resolving path: /
+2025-03-19 15:12:15,867 - KOS.filesystem - DEBUG - Listing directory: /
+2025-03-19 15:12:17,743 - KOS.filesystem - DEBUG - Resolving path: /home
+2025-03-19 15:12:17,744 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:12:17,744 - KOS.shell - DEBUG - Changed directory to: /home
+2025-03-19 15:12:18,340 - KOS.filesystem - DEBUG - Resolving path: /home
+2025-03-19 15:12:18,340 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:15:49,517 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:15:49,517 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:15:55,204 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:15:55,204 - KOS.filesystem - ERROR - Path not found: /home/kento
+2025-03-19 15:15:58,458 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:15:58,458 - KOS.filesystem - DEBUG - Created directory: /home/kento
+2025-03-19 15:15:58,458 - KOS.shell - INFO - Created directory: kento
+2025-03-19 15:16:01,373 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:16:01,373 - KOS.filesystem - DEBUG - Listing directory: /home
+2025-03-19 15:16:02,713 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:16:02,713 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:16:16,223 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:16:16,224 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:23:14,959 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:23:14,959 - KOS - ERROR - Error creating directory /home: 'FileSystem' object has no attribute '_user_system'
+2025-03-19 15:23:14,960 - KOS - ERROR - Failed to initialize filesystem: Failed to create directory: 'FileSystem' object has no attribute '_user_system'
+2025-03-19 15:23:14,960 - KOS - ERROR - Failed to start KOS: Failed to initialize filesystem: Failed to create directory: 'FileSystem' object has no attribute '_user_system'
+2025-03-19 15:24:06,895 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:24:06,897 - KOS - INFO - Basic directory structure created
+2025-03-19 15:24:06,897 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:24:06,897 - KOS - INFO - FileSystem initialized
+2025-03-19 15:24:06,897 - KOS - INFO - User system reference updated
+2025-03-19 15:24:06,897 - KOS - INFO - User System initialized
+2025-03-19 15:24:06,897 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:24:06,897 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:24:06,897 - KOS - INFO - Package Manager initialized
+2025-03-19 15:24:06,898 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:24:06,898 - KOS - INFO - Process Manager initialized
+2025-03-19 15:24:07,009 - KOS - ERROR - Failed to start KOS: 'FileSystem' object has no attribute 'current_path'
+2025-03-19 15:29:10,465 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:29:10,470 - KOS - INFO - Basic directory structure created
+2025-03-19 15:29:10,471 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:29:10,471 - KOS - INFO - FileSystem initialized
+2025-03-19 15:29:10,471 - KOS - INFO - User system reference updated
+2025-03-19 15:29:10,471 - KOS - INFO - User System initialized
+2025-03-19 15:29:10,472 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:29:10,472 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:29:10,472 - KOS - INFO - Package Manager initialized
+2025-03-19 15:29:10,472 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:29:10,472 - KOS - INFO - Process Manager initialized
+2025-03-19 15:29:10,582 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:29:10,583 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:29:28,089 - KOS.shell - INFO - Created directory: kento
+2025-03-19 15:29:29,273 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:29:37,805 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:29:37,805 - KOS - INFO - Basic directory structure created
+2025-03-19 15:29:37,805 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:29:37,805 - KOS - INFO - FileSystem initialized
+2025-03-19 15:29:37,806 - KOS - INFO - User system reference updated
+2025-03-19 15:29:37,806 - KOS - INFO - User System initialized
+2025-03-19 15:29:37,806 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:29:37,806 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:29:37,806 - KOS - INFO - Package Manager initialized
+2025-03-19 15:29:37,807 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:29:37,807 - KOS - INFO - Process Manager initialized
+2025-03-19 15:29:37,915 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:29:37,915 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:30:28,214 - KOS.shell - INFO - Created directory: home
+2025-03-19 15:30:43,530 - KOS.shell - ERROR - Error in find command: 'FileSystem' object has no attribute 'find'
+2025-03-19 15:30:59,652 - KOS.process - ERROR - Error refreshing process list: unhashable type: 'dict'
+2025-03-19 15:30:59,654 - KOS.shell - ERROR - Error in top command: unhashable type: 'dict'
+2025-03-19 15:43:02,537 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:43:02,538 - KOS - INFO - Basic directory structure created
+2025-03-19 15:43:02,538 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:43:02,538 - KOS - INFO - FileSystem initialized
+2025-03-19 15:43:02,538 - KOS - INFO - User system reference updated
+2025-03-19 15:43:02,538 - KOS - INFO - User System initialized
+2025-03-19 15:43:02,538 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:43:02,539 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:43:02,539 - KOS - INFO - Package Manager initialized
+2025-03-19 15:43:02,539 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:43:02,539 - KOS - INFO - Process Manager initialized
+2025-03-19 15:43:02,650 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:43:02,650 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:49:01,115 - KOS.shell - ERROR - Error in tree command: 'FileSystem' object has no attribute 'get_directory_tree'
+2025-03-19 15:49:48,964 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:49:49,328 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:49:49,330 - KOS - INFO - Basic directory structure created
+2025-03-19 15:49:49,331 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:49:49,331 - KOS - INFO - FileSystem initialized
+2025-03-19 15:49:49,331 - KOS - INFO - User system reference updated
+2025-03-19 15:49:49,331 - KOS - INFO - User System initialized
+2025-03-19 15:49:49,332 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:49:49,332 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:49:49,332 - KOS - INFO - Package Manager initialized
+2025-03-19 15:49:49,332 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:49:49,332 - KOS - INFO - Process Manager initialized
+2025-03-19 15:49:49,444 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:49:49,444 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:56:18,232 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:56:20,285 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:56:20,285 - KOS - INFO - Basic directory structure created
+2025-03-19 15:56:20,286 - KOS - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:56:20,286 - KOS - INFO - FileSystem initialized
+2025-03-19 15:56:20,286 - KOS - INFO - User system reference updated
+2025-03-19 15:56:20,286 - KOS - INFO - User System initialized
+2025-03-19 15:56:20,286 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:56:20,286 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:56:20,287 - KOS - INFO - Package Manager initialized
+2025-03-19 15:56:20,287 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:56:20,287 - KOS - INFO - Process Manager initialized
+2025-03-19 15:56:20,397 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:56:20,397 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 15:56:35,839 - KOS - ERROR - Error listing directory .: No such file or directory: /home/kento
+2025-03-19 15:56:35,840 - KOS.shell - ERROR - Error in ls command: Failed to list directory: No such file or directory: /home/kento
+2025-03-19 15:56:56,709 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 15:57:05,033 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:07:07,384 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:07:07,384 - KOS - INFO - FileSystem initialized
+2025-03-19 16:07:07,384 - KOS - INFO - User System initialized
+2025-03-19 16:07:07,385 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:07:07,385 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:07:07,385 - KOS - INFO - Package Manager initialized
+2025-03-19 16:07:07,385 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:07:07,385 - KOS - INFO - Process Manager initialized
+2025-03-19 16:07:07,495 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:07:07,495 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:07:10,016 - KOS - ERROR - Error getting node at /.: Path not found: /.
+2025-03-19 16:07:10,016 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:07:10,016 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:07:23,849 - KOS - ERROR - Error getting node at /.: Path not found: /.
+2025-03-19 16:07:23,849 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:07:23,849 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:07:26,435 - KOS.shell - ERROR - Error in mkdir command: 'FileSystem' object has no attribute '_create_directory'
+2025-03-19 16:07:29,751 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:07:29,751 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:07:29,751 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:09:16,260 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:09:16,260 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:09:16,260 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:09:26,539 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:09:26,539 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:09:26,539 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:09:28,122 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:09:29,360 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:09:29,361 - KOS - INFO - FileSystem initialized
+2025-03-19 16:09:29,362 - KOS - INFO - User System initialized
+2025-03-19 16:09:29,362 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:09:29,363 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:09:29,363 - KOS - INFO - Package Manager initialized
+2025-03-19 16:09:29,363 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:09:29,363 - KOS - INFO - Process Manager initialized
+2025-03-19 16:09:29,475 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:09:29,475 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:09:30,584 - KOS - ERROR - Error getting node at /.: Path not found: /.
+2025-03-19 16:09:30,584 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:09:30,584 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:26:05,033 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:26:05,035 - KOS - INFO - FileSystem initialized
+2025-03-19 16:26:05,035 - KOS - INFO - User System initialized
+2025-03-19 16:26:05,035 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:26:05,035 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:26:05,036 - KOS - INFO - Package Manager initialized
+2025-03-19 16:26:05,036 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:26:05,036 - KOS - INFO - Process Manager initialized
+2025-03-19 16:26:05,149 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:26:05,149 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:26:05,580 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:26:06,191 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:26:06,191 - KOS - INFO - FileSystem initialized
+2025-03-19 16:26:06,192 - KOS - INFO - User System initialized
+2025-03-19 16:26:06,192 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:26:06,192 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:26:06,192 - KOS - INFO - Package Manager initialized
+2025-03-19 16:26:06,192 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:26:06,193 - KOS - INFO - Process Manager initialized
+2025-03-19 16:26:06,305 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:26:06,306 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:27:24,026 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:27:24,026 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:27:24,026 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:29:04,050 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:29:04,659 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:29:04,659 - KOS - INFO - FileSystem initialized
+2025-03-19 16:29:04,660 - KOS - INFO - User System initialized
+2025-03-19 16:29:04,660 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:29:04,660 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:29:04,660 - KOS - INFO - Package Manager initialized
+2025-03-19 16:29:04,660 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:29:04,661 - KOS - INFO - Process Manager initialized
+2025-03-19 16:29:04,774 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:29:04,774 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:29:05,874 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:29:06,462 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:29:06,462 - KOS - INFO - FileSystem initialized
+2025-03-19 16:29:06,463 - KOS - INFO - User System initialized
+2025-03-19 16:29:06,463 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:29:06,463 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:29:06,464 - KOS - INFO - Package Manager initialized
+2025-03-19 16:29:06,464 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:29:06,465 - KOS - INFO - Process Manager initialized
+2025-03-19 16:29:06,577 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:29:06,578 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:39:22,953 - KOS - ERROR - Error getting node at /.: Path not found: /.
+2025-03-19 16:39:22,955 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:39:22,956 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:39:25,536 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:39:25,537 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:39:25,537 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+2025-03-19 16:41:05,290 - KOS.shell - INFO - Shell cleanup completed
+2025-03-19 16:54:52,026 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:54:52,029 - KOS - INFO - User system reference updated
+2025-03-19 16:54:52,031 - KOS - INFO - Basic directory structure created
+2025-03-19 16:54:52,032 - KOS - INFO - FileSystem initialized
+2025-03-19 16:54:52,033 - KOS - INFO - Authentication Manager initialized
+2025-03-19 16:54:52,034 - KOS - ERROR - Failed to start KOS: UserSystem.__init__() takes 1 positional argument but 3 were given
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 40, in main
+    user_system = UserSystem(filesystem, auth_manager)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: UserSystem.__init__() takes 1 positional argument but 3 were given
+2025-03-19 16:55:38,598 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:55:38,598 - KOS - INFO - User system reference updated
+2025-03-19 16:55:38,598 - KOS - INFO - Basic directory structure created
+2025-03-19 16:55:38,598 - KOS - INFO - FileSystem initialized
+2025-03-19 16:55:38,598 - KOS - INFO - Authentication Manager initialized
+2025-03-19 16:55:38,599 - KOS - INFO - User System initialized
+2025-03-19 16:55:38,600 - KOS - INFO - Package Manager initialized
+2025-03-19 16:55:38,600 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:56:27,358 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:56:27,359 - KOS - INFO - Basic directory structure created
+2025-03-19 16:56:27,359 - KOS - INFO - FileSystem initialized
+2025-03-19 16:56:27,359 - KOS - INFO - Authentication Manager initialized
+2025-03-19 16:56:27,359 - KOS - INFO - User System initialized
+2025-03-19 16:56:27,360 - KOS - INFO - Package Manager initialized
+2025-03-19 16:56:27,360 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 16:59:13,508 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:59:13,508 - KOS - INFO - Basic directory structure created
+2025-03-19 16:59:13,509 - KOS - INFO - FileSystem initialized
+2025-03-19 16:59:13,509 - KOS - INFO - Authentication Manager initialized
+2025-03-19 16:59:13,509 - KOS - INFO - User System initialized
+2025-03-19 16:59:13,510 - KOS - INFO - Package Manager initialized
+2025-03-19 16:59:13,511 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:03:48,065 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:03:48,070 - KOS - INFO - Basic directory structure created
+2025-03-19 17:03:48,073 - KOS - INFO - FileSystem initialized
+2025-03-19 17:03:48,074 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:03:48,078 - KOS - INFO - User System initialized
+2025-03-19 17:03:48,080 - KOS - INFO - Package Manager initialized
+2025-03-19 17:03:48,081 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:04:00,982 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:04:00,982 - KOS - INFO - Basic directory structure created
+2025-03-19 17:04:00,982 - KOS - INFO - FileSystem initialized
+2025-03-19 17:04:00,983 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:04:00,983 - KOS - INFO - User System initialized
+2025-03-19 17:04:00,984 - KOS - INFO - Package Manager initialized
+2025-03-19 17:04:00,984 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:07:34,807 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:07:34,811 - KOS - INFO - Basic directory structure created
+2025-03-19 17:07:34,814 - KOS - INFO - FileSystem initialized
+2025-03-19 17:07:34,814 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:07:34,815 - KOS - INFO - User System initialized
+2025-03-19 17:07:34,816 - KOS - INFO - Package Manager initialized
+2025-03-19 17:07:34,817 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:07:36,410 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:07:36,411 - KOS - INFO - Basic directory structure created
+2025-03-19 17:07:36,411 - KOS - INFO - FileSystem initialized
+2025-03-19 17:07:36,411 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:07:36,412 - KOS - INFO - User System initialized
+2025-03-19 17:07:36,412 - KOS - INFO - Package Manager initialized
+2025-03-19 17:07:36,413 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:08:54,509 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:08:54,511 - KOS - INFO - Basic directory structure created
+2025-03-19 17:08:54,512 - KOS - INFO - FileSystem initialized
+2025-03-19 17:08:54,512 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:08:54,513 - KOS - INFO - User System initialized
+2025-03-19 17:08:54,515 - KOS - INFO - Package Manager initialized
+2025-03-19 17:08:54,516 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:09:47,849 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:09:47,851 - KOS - INFO - Basic directory structure created
+2025-03-19 17:09:47,851 - KOS - INFO - FileSystem initialized
+2025-03-19 17:09:47,851 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:09:47,852 - KOS - INFO - User System initialized
+2025-03-19 17:09:47,855 - KOS - INFO - Package Manager initialized
+2025-03-19 17:09:47,855 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:12:23,138 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:12:23,138 - KOS - INFO - Basic directory structure created
+2025-03-19 17:12:23,138 - KOS - INFO - FileSystem initialized
+2025-03-19 17:12:23,139 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:12:23,140 - KOS - INFO - User System initialized
+2025-03-19 17:12:23,140 - KOS - INFO - Package Manager initialized
+2025-03-19 17:12:23,141 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:13:18,471 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:13:18,472 - KOS - INFO - Basic directory structure created
+2025-03-19 17:13:18,472 - KOS - INFO - FileSystem initialized
+2025-03-19 17:13:18,472 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:13:18,473 - KOS - INFO - User System initialized
+2025-03-19 17:13:18,474 - KOS - INFO - Package Manager initialized
+2025-03-19 17:13:18,474 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:14:03,097 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:14:03,097 - KOS - INFO - Basic directory structure created
+2025-03-19 17:14:03,097 - KOS - INFO - FileSystem initialized
+2025-03-19 17:14:03,098 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:14:03,098 - KOS - INFO - User System initialized
+2025-03-19 17:14:03,099 - KOS - INFO - Package Manager initialized
+2025-03-19 17:14:03,099 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:15:04,365 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:15:04,369 - KOS - INFO - Basic directory structure created
+2025-03-19 17:15:04,370 - KOS - INFO - FileSystem initialized
+2025-03-19 17:15:04,371 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:15:04,376 - KOS - INFO - User System initialized
+2025-03-19 17:15:04,383 - KOS - INFO - Package Manager initialized
+2025-03-19 17:15:04,386 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:15:18,675 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:15:18,675 - KOS - INFO - Basic directory structure created
+2025-03-19 17:15:18,676 - KOS - INFO - FileSystem initialized
+2025-03-19 17:15:18,676 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:15:18,677 - KOS - INFO - User System initialized
+2025-03-19 17:15:18,678 - KOS - INFO - Package Manager initialized
+2025-03-19 17:15:18,678 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:16:34,694 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:16:34,696 - KOS - INFO - Basic directory structure created
+2025-03-19 17:16:34,698 - KOS - INFO - FileSystem initialized
+2025-03-19 17:16:34,700 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:16:34,703 - KOS - INFO - User System initialized
+2025-03-19 17:16:34,704 - KOS - INFO - Package Manager initialized
+2025-03-19 17:16:34,704 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:16:50,422 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:16:50,424 - KOS - INFO - Basic directory structure created
+2025-03-19 17:16:50,425 - KOS - INFO - FileSystem initialized
+2025-03-19 17:16:50,425 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:16:50,432 - KOS - INFO - User System initialized
+2025-03-19 17:16:50,434 - KOS - INFO - Package Manager initialized
+2025-03-19 17:16:50,434 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:20:00,405 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:20:00,405 - KOS - INFO - Basic directory structure created
+2025-03-19 17:20:00,406 - KOS - INFO - FileSystem initialized
+2025-03-19 17:20:00,406 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:20:00,407 - KOS - INFO - User System initialized
+2025-03-19 17:20:00,408 - KOS - INFO - Package Manager initialized
+2025-03-19 17:20:00,408 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:21:58,109 - KOS - ERROR - Error changing directory to /home/kaede: Directory not found: /home/kaede
+2025-03-19 17:23:08,432 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:23:08,438 - KOS - INFO - Basic directory structure created
+2025-03-19 17:23:08,445 - KOS - INFO - FileSystem initialized
+2025-03-19 17:23:08,445 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:23:08,446 - KOS - INFO - User System initialized
+2025-03-19 17:23:08,456 - KOS - INFO - Package Manager initialized
+2025-03-19 17:23:08,464 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:23:53,751 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:23:53,753 - KOS - INFO - Basic directory structure created
+2025-03-19 17:23:53,755 - KOS - INFO - FileSystem initialized
+2025-03-19 17:23:53,757 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:23:53,763 - KOS - INFO - User System initialized
+2025-03-19 17:23:53,765 - KOS - INFO - Package Manager initialized
+2025-03-19 17:23:53,766 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:24:43,573 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:24:43,575 - KOS - INFO - Basic directory structure created
+2025-03-19 17:24:43,575 - KOS - INFO - FileSystem initialized
+2025-03-19 17:24:43,576 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:24:43,576 - KOS - INFO - User System initialized
+2025-03-19 17:24:43,576 - KOS - INFO - Package Manager initialized
+2025-03-19 17:24:43,577 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:25:54,218 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:25:54,218 - KOS - INFO - Basic directory structure created
+2025-03-19 17:25:54,219 - KOS - INFO - FileSystem initialized
+2025-03-19 17:25:54,219 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:25:54,219 - KOS - INFO - User System initialized
+2025-03-19 17:25:54,220 - KOS - INFO - Package Manager initialized
+2025-03-19 17:25:54,220 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:25:55,249 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:25:55,250 - KOS - INFO - Basic directory structure created
+2025-03-19 17:25:55,250 - KOS - INFO - FileSystem initialized
+2025-03-19 17:25:55,251 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:25:55,253 - KOS - INFO - User System initialized
+2025-03-19 17:25:55,254 - KOS - INFO - Package Manager initialized
+2025-03-19 17:25:55,254 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:27:54,722 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:27:54,725 - KOS - INFO - Basic directory structure created
+2025-03-19 17:27:54,727 - KOS - INFO - FileSystem initialized
+2025-03-19 17:27:54,729 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:27:54,736 - KOS - INFO - User System initialized
+2025-03-19 17:27:54,740 - KOS - INFO - Package Manager initialized
+2025-03-19 17:27:54,741 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:28:54,786 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:28:54,787 - KOS - INFO - Basic directory structure created
+2025-03-19 17:28:54,787 - KOS - INFO - FileSystem initialized
+2025-03-19 17:28:54,787 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:28:54,788 - KOS - INFO - User System initialized
+2025-03-19 17:28:54,788 - KOS - INFO - Package Manager initialized
+2025-03-19 17:28:54,789 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:29:10,577 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:29:10,579 - KOS - INFO - Basic directory structure created
+2025-03-19 17:29:10,580 - KOS - INFO - FileSystem initialized
+2025-03-19 17:29:10,581 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:29:10,584 - KOS - INFO - User System initialized
+2025-03-19 17:29:10,584 - KOS - INFO - Package Manager initialized
+2025-03-19 17:29:10,585 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:32:21,271 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:32:21,272 - KOS - INFO - Basic directory structure created
+2025-03-19 17:32:21,272 - KOS - INFO - FileSystem initialized
+2025-03-19 17:32:21,272 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:32:21,272 - KOS - INFO - User System initialized
+2025-03-19 17:32:21,273 - KOS - INFO - Package Manager initialized
+2025-03-19 17:32:21,273 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:32:38,046 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:32:38,046 - KOS - INFO - Basic directory structure created
+2025-03-19 17:32:38,047 - KOS - INFO - FileSystem initialized
+2025-03-19 17:32:38,047 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:32:38,047 - KOS - INFO - User System initialized
+2025-03-19 17:32:38,048 - KOS - INFO - Package Manager initialized
+2025-03-19 17:32:38,048 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:41:52,475 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:41:52,480 - KOS - INFO - Basic directory structure created
+2025-03-19 17:41:52,481 - KOS - INFO - FileSystem initialized
+2025-03-19 17:41:52,481 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:41:52,482 - KOS - INFO - User System initialized
+2025-03-19 17:41:52,483 - KOS - INFO - Package Manager initialized
+2025-03-19 17:41:52,483 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:41:53,441 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:41:53,443 - KOS - INFO - Basic directory structure created
+2025-03-19 17:41:53,445 - KOS - INFO - FileSystem initialized
+2025-03-19 17:41:53,446 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:41:53,447 - KOS - INFO - User System initialized
+2025-03-19 17:41:53,448 - KOS - INFO - Package Manager initialized
+2025-03-19 17:41:53,448 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:42:33,402 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:42:33,403 - KOS - INFO - Basic directory structure created
+2025-03-19 17:42:33,404 - KOS - INFO - FileSystem initialized
+2025-03-19 17:42:33,404 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:42:33,405 - KOS - INFO - User System initialized
+2025-03-19 17:42:33,406 - KOS - INFO - Package Manager initialized
+2025-03-19 17:42:33,406 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:43:36,209 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:43:36,209 - KOS - INFO - Basic directory structure created
+2025-03-19 17:43:36,210 - KOS - INFO - FileSystem initialized
+2025-03-19 17:43:36,210 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:43:36,210 - KOS - INFO - User System initialized
+2025-03-19 17:43:36,211 - KOS - INFO - Package Manager initialized
+2025-03-19 17:43:36,212 - KOS - ERROR - Failed to start KOS: 'super' object has no attribute 'pwd'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 48, in main
+    shell = KaedeShell(
+            ^^^^^^^^^^^
+  File "/home/runner/workspace/kos/commands.py", line 42, in __init__
+    self.prompt = self.us.get_prompt()
+                  ^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/user_system.py", line 162, in get_prompt
+    cwd = self.get_current_directory()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/user_system.py", line 167, in get_current_directory
+    cwd = self.filesystem.pwd() if self.filesystem else "/"
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/filesystem/__init__.py", line 72, in pwd
+    return super().pwd()
+           ^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'pwd'
+2025-03-19 17:43:38,126 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:43:38,126 - KOS - INFO - Basic directory structure created
+2025-03-19 17:43:38,126 - KOS - INFO - FileSystem initialized
+2025-03-19 17:43:38,126 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:43:38,127 - KOS - INFO - User System initialized
+2025-03-19 17:43:38,128 - KOS - INFO - Package Manager initialized
+2025-03-19 17:43:38,129 - KOS - ERROR - Failed to start KOS: 'super' object has no attribute 'pwd'
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 48, in main
+    shell = KaedeShell(
+            ^^^^^^^^^^^
+  File "/home/runner/workspace/kos/commands.py", line 42, in __init__
+    self.prompt = self.us.get_prompt()
+                  ^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/user_system.py", line 162, in get_prompt
+    cwd = self.get_current_directory()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/user_system.py", line 167, in get_current_directory
+    cwd = self.filesystem.pwd() if self.filesystem else "/"
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/filesystem/__init__.py", line 72, in pwd
+    return super().pwd()
+           ^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'pwd'
+2025-03-19 17:44:44,372 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:44:44,376 - KOS - INFO - Basic directory structure created
+2025-03-19 17:44:44,376 - KOS - INFO - FileSystem initialized
+2025-03-19 17:44:44,377 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:44:44,378 - KOS - INFO - User System initialized
+2025-03-19 17:44:44,379 - KOS - INFO - Package Manager initialized
+2025-03-19 17:44:44,379 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:45:53,331 - kos.filesystem - ERROR - Error changing directory to ~: Directory not found: ~
+2025-03-19 17:49:00,657 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:49:00,657 - KOS - INFO - Basic directory structure created
+2025-03-19 17:49:00,658 - KOS - INFO - FileSystem initialized
+2025-03-19 17:49:00,658 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:49:00,659 - KOS - INFO - User System initialized
+2025-03-19 17:49:00,660 - KOS - INFO - Package Manager initialized
+2025-03-19 17:49:00,660 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:49:51,381 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:49:51,384 - KOS - INFO - Basic directory structure created
+2025-03-19 17:49:51,388 - KOS - INFO - FileSystem initialized
+2025-03-19 17:49:51,391 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:49:51,392 - KOS - INFO - User System initialized
+2025-03-19 17:49:51,398 - KOS - INFO - Package Manager initialized
+2025-03-19 17:49:51,398 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 17:51:41,080 - KOS - INFO - Initializing KOS components...
+2025-03-19 17:51:41,080 - KOS - INFO - Basic directory structure created
+2025-03-19 17:51:41,080 - KOS - INFO - FileSystem initialized
+2025-03-19 17:51:41,080 - KOS - INFO - Authentication Manager initialized
+2025-03-19 17:51:41,082 - KOS - INFO - User System initialized
+2025-03-19 17:51:41,082 - KOS - INFO - Package Manager initialized
+2025-03-19 17:51:41,083 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:04:42,637 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:04:42,637 - KOS - INFO - Basic directory structure created
+2025-03-19 18:04:42,637 - KOS - INFO - FileSystem initialized
+2025-03-19 18:04:42,638 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:04:42,638 - KOS - INFO - User System initialized
+2025-03-19 18:04:42,640 - KOS - INFO - Package Manager initialized
+2025-03-19 18:04:42,640 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:09:49,635 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:09:49,636 - KOS - INFO - Basic directory structure created
+2025-03-19 18:09:49,639 - KOS - INFO - FileSystem initialized
+2025-03-19 18:09:49,641 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:09:49,646 - KOS - INFO - User System initialized
+2025-03-19 18:09:49,650 - KOS - INFO - Package Manager initialized
+2025-03-19 18:09:49,650 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:10:57,000 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:10:57,000 - KOS - INFO - Basic directory structure created
+2025-03-19 18:10:57,011 - KOS - INFO - FileSystem initialized
+2025-03-19 18:10:57,011 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:10:57,015 - KOS - INFO - User System initialized
+2025-03-19 18:10:57,017 - KOS - INFO - Package Manager initialized
+2025-03-19 18:10:57,017 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:13:32,573 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:13:32,574 - KOS - INFO - Basic directory structure created
+2025-03-19 18:13:32,574 - KOS - INFO - FileSystem initialized
+2025-03-19 18:13:32,574 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:13:32,575 - KOS - INFO - User System initialized
+2025-03-19 18:13:32,576 - KOS - INFO - Package Manager initialized
+2025-03-19 18:13:32,577 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:16:21,553 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:16:21,560 - KOS - INFO - Basic directory structure created
+2025-03-19 18:16:21,560 - KOS - INFO - FileSystem initialized
+2025-03-19 18:16:21,563 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:16:21,564 - KOS - INFO - User System initialized
+2025-03-19 18:16:21,566 - KOS - INFO - Package Manager initialized
+2025-03-19 18:16:21,566 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:16:23,151 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:16:23,151 - KOS - INFO - Basic directory structure created
+2025-03-19 18:16:23,151 - KOS - INFO - FileSystem initialized
+2025-03-19 18:16:23,151 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:16:23,152 - KOS - INFO - User System initialized
+2025-03-19 18:16:23,155 - KOS - INFO - Package Manager initialized
+2025-03-19 18:16:23,155 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:19:13,805 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:19:13,808 - KOS - INFO - Basic directory structure created
+2025-03-19 18:19:13,809 - KOS - INFO - FileSystem initialized
+2025-03-19 18:19:13,809 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:19:13,812 - KOS - INFO - User System initialized
+2025-03-19 18:19:13,813 - KOS - INFO - Package Manager initialized
+2025-03-19 18:19:13,814 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:19:14,308 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:19:14,313 - KOS - INFO - Basic directory structure created
+2025-03-19 18:19:14,313 - KOS - INFO - FileSystem initialized
+2025-03-19 18:19:14,314 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:19:14,315 - KOS - INFO - User System initialized
+2025-03-19 18:19:14,316 - KOS - INFO - Package Manager initialized
+2025-03-19 18:19:14,316 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:21:20,377 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:21:20,378 - KOS - INFO - Basic directory structure created
+2025-03-19 18:21:20,378 - KOS - INFO - FileSystem initialized
+2025-03-19 18:21:20,378 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:21:20,380 - KOS - INFO - User System initialized
+2025-03-19 18:21:20,380 - KOS - INFO - Package Manager initialized
+2025-03-19 18:21:20,380 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:22:43,784 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:22:43,785 - KOS - INFO - Basic directory structure created
+2025-03-19 18:22:43,786 - KOS - INFO - FileSystem initialized
+2025-03-19 18:22:43,786 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:22:43,786 - KOS - INFO - User System initialized
+2025-03-19 18:22:43,787 - KOS - INFO - Package Manager initialized
+2025-03-19 18:22:43,787 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:28:16,608 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:28:16,615 - KOS - INFO - Basic directory structure created
+2025-03-19 18:28:16,616 - KOS - INFO - FileSystem initialized
+2025-03-19 18:28:16,616 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:28:16,624 - KOS - INFO - User System initialized
+2025-03-19 18:28:16,632 - KOS - INFO - Package Manager initialized
+2025-03-19 18:28:16,635 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:28:22,038 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:28:22,039 - KOS - INFO - Basic directory structure created
+2025-03-19 18:28:22,039 - KOS - INFO - FileSystem initialized
+2025-03-19 18:28:22,039 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:28:22,040 - KOS - INFO - User System initialized
+2025-03-19 18:28:22,040 - KOS - INFO - Package Manager initialized
+2025-03-19 18:28:22,041 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:30:01,153 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:30:01,155 - KOS - INFO - Basic directory structure created
+2025-03-19 18:30:01,155 - KOS - INFO - FileSystem initialized
+2025-03-19 18:30:01,155 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:30:01,158 - KOS - INFO - User System initialized
+2025-03-19 18:30:01,162 - KOS - INFO - Package Manager initialized
+2025-03-19 18:30:01,163 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:30:12,787 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:30:12,787 - KOS - INFO - Basic directory structure created
+2025-03-19 18:30:12,788 - KOS - INFO - FileSystem initialized
+2025-03-19 18:30:12,788 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:30:12,789 - KOS - INFO - User System initialized
+2025-03-19 18:30:12,790 - KOS - INFO - Package Manager initialized
+2025-03-19 18:30:12,790 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:30:39,284 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:30:39,284 - KOS - INFO - Basic directory structure created
+2025-03-19 18:30:39,284 - KOS - INFO - FileSystem initialized
+2025-03-19 18:30:39,285 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:30:39,285 - KOS - INFO - User System initialized
+2025-03-19 18:30:39,288 - KOS - INFO - Package Manager initialized
+2025-03-19 18:30:39,288 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:37:26,742 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:37:26,745 - KOS - INFO - Basic directory structure created
+2025-03-19 18:37:26,745 - KOS - INFO - FileSystem initialized
+2025-03-19 18:37:26,745 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:37:26,746 - KOS - INFO - User System initialized
+2025-03-19 18:37:26,747 - KOS - INFO - Package Manager initialized
+2025-03-19 18:37:26,747 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:42:05,181 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:42:05,186 - KOS - INFO - Basic directory structure created
+2025-03-19 18:42:05,186 - KOS - INFO - FileSystem initialized
+2025-03-19 18:42:05,186 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:42:05,187 - KOS - INFO - User System initialized
+2025-03-19 18:42:05,192 - KOS - INFO - Package Manager initialized
+2025-03-19 18:42:05,193 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:42:25,723 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:42:25,725 - KOS - INFO - Basic directory structure created
+2025-03-19 18:42:25,727 - KOS - INFO - FileSystem initialized
+2025-03-19 18:42:25,728 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:42:25,738 - KOS - INFO - User System initialized
+2025-03-19 18:42:25,743 - KOS - INFO - Package Manager initialized
+2025-03-19 18:42:25,750 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:49:32,228 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:49:32,229 - KOS - INFO - Basic directory structure created
+2025-03-19 18:49:32,229 - KOS - INFO - FileSystem initialized
+2025-03-19 18:49:32,229 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:49:32,230 - KOS - INFO - User System initialized
+2025-03-19 18:49:32,231 - KOS - INFO - Package Manager initialized
+2025-03-19 18:49:32,231 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:56:34,825 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:56:34,825 - KOS - INFO - Basic directory structure created
+2025-03-19 18:56:34,826 - KOS - INFO - FileSystem initialized
+2025-03-19 18:56:34,826 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:56:34,826 - KOS - INFO - User System initialized
+2025-03-19 18:56:34,827 - KOS - INFO - Package Manager initialized
+2025-03-19 18:56:34,827 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:58:47,296 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:58:47,296 - KOS - INFO - Basic directory structure created
+2025-03-19 18:58:47,296 - KOS - INFO - FileSystem initialized
+2025-03-19 18:58:47,296 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:58:47,297 - KOS - INFO - User System initialized
+2025-03-19 18:58:47,298 - KOS - INFO - Package Manager initialized
+2025-03-19 18:58:47,298 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 18:59:00,538 - KOS - INFO - Initializing KOS components...
+2025-03-19 18:59:00,538 - KOS - INFO - Basic directory structure created
+2025-03-19 18:59:00,538 - KOS - INFO - FileSystem initialized
+2025-03-19 18:59:00,538 - KOS - INFO - Authentication Manager initialized
+2025-03-19 18:59:00,540 - KOS - INFO - User System initialized
+2025-03-19 18:59:00,541 - KOS - INFO - Package Manager initialized
+2025-03-19 18:59:00,541 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:01:27,195 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:01:27,195 - KOS - INFO - Basic directory structure created
+2025-03-19 19:01:27,196 - KOS - INFO - FileSystem initialized
+2025-03-19 19:01:27,196 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:01:27,197 - KOS - INFO - User System initialized
+2025-03-19 19:01:27,203 - KOS - INFO - Package Manager initialized
+2025-03-19 19:01:27,204 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:06:22,598 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:06:22,599 - KOS - INFO - Basic directory structure created
+2025-03-19 19:06:22,599 - KOS - INFO - FileSystem initialized
+2025-03-19 19:06:22,599 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:06:22,600 - KOS - INFO - User System initialized
+2025-03-19 19:06:22,602 - KOS - INFO - Package Manager initialized
+2025-03-19 19:06:22,602 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:07:56,829 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:07:56,830 - KOS - INFO - Basic directory structure created
+2025-03-19 19:07:56,830 - KOS - INFO - FileSystem initialized
+2025-03-19 19:07:56,830 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:07:56,831 - KOS - INFO - User System initialized
+2025-03-19 19:07:56,832 - KOS - INFO - Package Manager initialized
+2025-03-19 19:07:56,832 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:11:50,887 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:11:50,888 - KOS - INFO - Basic directory structure created
+2025-03-19 19:11:50,888 - KOS - INFO - FileSystem initialized
+2025-03-19 19:11:50,888 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:11:50,890 - KOS - INFO - User System initialized
+2025-03-19 19:11:50,890 - KOS - INFO - Package Manager initialized
+2025-03-19 19:11:50,891 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:16:20,159 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:16:20,161 - KOS - INFO - Basic directory structure created
+2025-03-19 19:16:20,162 - KOS - INFO - FileSystem initialized
+2025-03-19 19:16:20,162 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:16:20,163 - KOS - INFO - User System initialized
+2025-03-19 19:16:20,164 - KOS - INFO - Package Manager initialized
+2025-03-19 19:16:20,164 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:19:20,464 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:19:20,465 - KOS - INFO - Basic directory structure created
+2025-03-19 19:19:20,465 - KOS - INFO - FileSystem initialized
+2025-03-19 19:19:20,465 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:19:20,466 - KOS - INFO - User System initialized
+2025-03-19 19:19:20,467 - KOS - INFO - Package Manager initialized
+2025-03-19 19:19:20,467 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:47:46,290 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:47:46,300 - KOS - INFO - Basic directory structure created
+2025-03-19 19:47:46,300 - KOS - INFO - FileSystem initialized
+2025-03-19 19:47:46,301 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:47:46,302 - KOS - INFO - User System initialized
+2025-03-19 19:47:46,303 - KOS - INFO - Package Manager initialized
+2025-03-19 19:47:46,303 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-19 19:48:08,240 - KOS - INFO - Initializing KOS components...
+2025-03-19 19:48:08,276 - KOS - INFO - Basic directory structure created
+2025-03-19 19:48:08,277 - KOS - INFO - FileSystem initialized
+2025-03-19 19:48:08,277 - KOS - INFO - Authentication Manager initialized
+2025-03-19 19:48:08,278 - KOS - INFO - User System initialized
+2025-03-19 19:48:08,279 - KOS - INFO - Package Manager initialized
+2025-03-19 19:48:08,280 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-20 01:24:53,098 - KOS - INFO - Initializing KOS components...
+2025-03-20 01:24:53,098 - KOS - INFO - Basic directory structure created
+2025-03-20 01:24:53,098 - KOS - INFO - FileSystem initialized
+2025-03-20 01:24:53,098 - KOS - INFO - Authentication Manager initialized
+2025-03-20 01:24:53,098 - KOS - INFO - User System initialized
+2025-03-20 01:24:53,099 - KOS - INFO - Package Manager initialized
+2025-03-20 01:24:53,099 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-20 01:26:22,750 - KOS - INFO - Initializing KOS components...
+2025-03-20 01:26:22,751 - KOS - INFO - Basic directory structure created
+2025-03-20 01:26:22,751 - KOS - INFO - FileSystem initialized
+2025-03-20 01:26:22,751 - KOS - INFO - Authentication Manager initialized
+2025-03-20 01:26:22,751 - KOS - INFO - User System initialized
+2025-03-20 01:26:22,752 - KOS - INFO - Package Manager initialized
+2025-03-20 01:26:22,752 - KOS - INFO - Shell initialized, starting command loop...
+2025-03-20 01:28:17,834 - KOS - INFO - Initializing KOS components...
+2025-03-20 01:28:17,834 - KOS - INFO - Basic directory structure created
+2025-03-20 01:28:17,834 - KOS - INFO - FileSystem initialized
+2025-03-20 01:28:17,834 - KOS - INFO - Authentication Manager initialized
+2025-03-20 01:28:17,835 - KOS - INFO - User System initialized
+2025-03-20 01:28:17,835 - KOS - INFO - Package Manager initialized
+2025-03-20 01:28:17,835 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 22:27:21,553 - KOS - INFO - Initializing KOS components...
+2025-05-21 22:27:21,554 - KOS - INFO - Basic directory structure created
+2025-05-21 22:27:21,554 - KOS - INFO - FileSystem initialized
+2025-05-21 22:27:21,554 - KOS - INFO - Authentication Manager initialized
+2025-05-21 22:27:21,555 - KOS - INFO - User System initialized
+2025-05-21 22:27:21,556 - KOS - INFO - Package Manager initialized
+2025-05-21 22:27:21,556 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 22:28:51,845 - KOS - INFO - Initializing KOS components...
+2025-05-21 22:28:51,845 - KOS - INFO - Basic directory structure created
+2025-05-21 22:28:51,845 - KOS - INFO - FileSystem initialized
+2025-05-21 22:28:51,845 - KOS - INFO - Authentication Manager initialized
+2025-05-21 22:28:51,845 - KOS - INFO - User System initialized
+2025-05-21 22:28:51,847 - KOS - INFO - Package Manager initialized
+2025-05-21 22:28:51,847 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 22:48:30,301 - KOS - INFO - Initializing KOS components...
+2025-05-21 22:48:30,302 - KOS - INFO - Basic directory structure created
+2025-05-21 22:48:30,302 - KOS - INFO - FileSystem initialized
+2025-05-21 22:48:30,302 - KOS - INFO - Authentication Manager initialized
+2025-05-21 22:48:30,302 - KOS - INFO - User System initialized
+2025-05-21 22:48:30,303 - KOS - INFO - Package Manager initialized
+2025-05-21 22:48:30,303 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 22:59:23,478 - KOS - INFO - Initializing KOS components...
+2025-05-21 22:59:23,478 - KOS - INFO - Basic directory structure created
+2025-05-21 22:59:23,478 - KOS - INFO - FileSystem initialized
+2025-05-21 22:59:23,478 - KOS - INFO - Authentication Manager initialized
+2025-05-21 22:59:23,479 - KOS - INFO - User System initialized
+2025-05-21 22:59:23,480 - KOS - INFO - Package Manager initialized
+2025-05-21 22:59:23,480 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 23:05:09,451 - KOS - INFO - Initializing KOS components...
+2025-05-21 23:05:09,451 - KOS - ERROR - Error creating directory /bin: Parent directory not found: /\bin
+2025-05-21 23:05:09,451 - KOS - ERROR - Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:05:09,451 - KOS - ERROR - Failed to start KOS: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 151, in mkdir
+    raise FileNotFound(f"Parent directory not found: {parent_path}")
+kos.exceptions.FileNotFound: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 47, in _init_filesystem
+    self.mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 86, in mkdir
+    super().mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 169, in mkdir
+    raise FileSystemError(f"Failed to create directory: {str(e)}")
+kos.exceptions.FileSystemError: Failed to create directory: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\main.py", line 32, in main
+    filesystem = FileSystem(disk_size_mb=100)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 18, in __init__
+    super().__init__(disk_size_mb)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 38, in __init__
+    self._init_filesystem()
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 52, in _init_filesystem
+    raise FileSystemError(f"Failed to initialize filesystem: {str(e)}")
+kos.exceptions.FileSystemError: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:05:18,477 - KOS - INFO - Initializing KOS components...
+2025-05-21 23:05:18,477 - KOS - ERROR - Error creating directory /bin: Parent directory not found: /\bin
+2025-05-21 23:05:18,477 - KOS - ERROR - Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:05:18,477 - KOS - ERROR - Failed to start KOS: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 151, in mkdir
+    raise FileNotFound(f"Parent directory not found: {parent_path}")
+kos.exceptions.FileNotFound: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 47, in _init_filesystem
+    self.mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 86, in mkdir
+    super().mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 169, in mkdir
+    raise FileSystemError(f"Failed to create directory: {str(e)}")
+kos.exceptions.FileSystemError: Failed to create directory: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\main.py", line 32, in main
+    filesystem = FileSystem(disk_size_mb=100)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 18, in __init__
+    super().__init__(disk_size_mb)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 38, in __init__
+    self._init_filesystem()
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 52, in _init_filesystem
+    raise FileSystemError(f"Failed to initialize filesystem: {str(e)}")
+kos.exceptions.FileSystemError: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:06:02,287 - KOS - INFO - Initializing KOS components...
+2025-05-21 23:06:02,287 - KOS - ERROR - Error creating directory /bin: Parent directory not found: /\bin
+2025-05-21 23:06:02,287 - KOS - ERROR - Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:06:02,287 - KOS - ERROR - Failed to start KOS: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 151, in mkdir
+    raise FileNotFound(f"Parent directory not found: {parent_path}")
+kos.exceptions.FileNotFound: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 47, in _init_filesystem
+    self.mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 86, in mkdir
+    super().mkdir(path)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 169, in mkdir
+    raise FileSystemError(f"Failed to create directory: {str(e)}")
+kos.exceptions.FileSystemError: Failed to create directory: Parent directory not found: /\bin
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cleav\Downloads\Archive\main.py", line 32, in main
+    filesystem = FileSystem(disk_size_mb=100)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\__init__.py", line 18, in __init__
+    super().__init__(disk_size_mb)
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 38, in __init__
+    self._init_filesystem()
+  File "C:\Users\cleav\Downloads\Archive\kos\filesystem\base.py", line 52, in _init_filesystem
+    raise FileSystemError(f"Failed to initialize filesystem: {str(e)}")
+kos.exceptions.FileSystemError: Failed to initialize filesystem: Failed to create directory: Parent directory not found: /\bin
+2025-05-21 23:07:18,274 - KOS - INFO - Initializing KOS components...
+2025-05-21 23:07:18,275 - KOS - INFO - Basic directory structure created
+2025-05-21 23:07:18,275 - KOS - INFO - FileSystem initialized
+2025-05-21 23:07:18,275 - KOS - INFO - Authentication Manager initialized
+2025-05-21 23:07:18,275 - KOS - INFO - User System initialized
+2025-05-21 23:07:18,277 - KOS - INFO - Package Manager initialized
+2025-05-21 23:07:18,288 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-21 23:11:21,384 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\Archive': Directory not found: 'c:\Users\cleav\Downloads\Archive'
+2025-05-21 23:11:55,126 - KOS - INFO - Initializing KOS components...
+2025-05-21 23:11:55,127 - KOS - INFO - Basic directory structure created
+2025-05-21 23:11:55,127 - KOS - INFO - FileSystem initialized
+2025-05-21 23:11:55,127 - KOS - INFO - Authentication Manager initialized
+2025-05-21 23:11:55,131 - KOS - INFO - User System initialized
+2025-05-21 23:11:55,132 - KOS - INFO - Package Manager initialized
+2025-05-21 23:11:55,142 - KOS - INFO - Shell initialized, starting command loop...

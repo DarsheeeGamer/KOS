@@ -1,0 +1,303 @@
+[15:07 root@kos / (main)]# cd home
+2025-03-19 15:07:46,771 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:46,771 - KOS.filesystem - DEBUG - Current path updated to: /home
+[15:07 root@kos /home (main)]# ls
+2025-03-19 15:07:47,259 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:47,259 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:07 root@kos /home (main)]# ls
+2025-03-19 15:07:52,700 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:52,700 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:07 root@kos /home (main)]# ls
+2025-03-19 15:07:53,763 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:53,764 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:07 root@kos /home (main)]# mkdir kento
+2025-03-19 15:07:56,335 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:56,335 - KOS.filesystem - DEBUG - Created directory: /home/kento
+2025-03-19 15:07:56,336 - KOS.shell - INFO - Created directory: kento
+[15:07 root@kos /home (main)]# ls
+2025-03-19 15:07:57,623 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:07:57,623 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents 
+  of .   
+┏━━━━━━━┓
+┃ Name  ┃
+┡━━━━━━━┩
+│ kento │
+└───────┘
+[15:07 root@kos /home (main)]# cd kento
+2025-03-19 15:08:00,645 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:00,646 - KOS.filesystem - DEBUG - Current path updated to: /home/kento
+[15:08 root@kos /home/kento (main)]# ls
+2025-03-19 15:08:01,632 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:01,632 - KOS.filesystem - DEBUG - Listing directory: /home/kento
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:08 root@kos /home/kento (main)]# help
+
+Documented commands (type help <topic>):
+========================================
+EOF    clear  exit  groups    ls      ps   sysinfo  uname    users 
+cat    cp     find  help      mkdir   pwd  top      uptime   whoami
+cd     date   free  hostname  mv      rm   touch    useradd
+chmod  disk   grep  kudo      passwd  su   tree     userdel
+
+[15:08 root@kos /home/kento (main)]# 
+^C
+exit
+2025-03-19 15:08:19,096 - KOS - INFO - Saved 1 users to users.json
+2025-03-19 15:08:19,096 - KOS.shell - INFO - Shell cleanup completed
+Exiting KaedeShell...
+ Environment updated. Reloading shell...
+~/workspace$ python3 main.py
+2025-03-19 15:08:22,095 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:08:22,096 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:08:22,097 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:22,098 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:22,099 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:22,100 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:22,101 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:08:22,102 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:08:22,103 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:22,104 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:22,104 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:08:22,104 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:08:22,104 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:08:22,104 - KOS - INFO - FileSystem initialized
+2025-03-19 15:08:22,104 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:08:22,104 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Package Manager initialized
+2025-03-19 15:08:22,105 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Process Manager initialized
+2025-03-19 15:08:22,105 - KOS - INFO - Loaded 1 users from users.json
+2025-03-19 15:08:22,105 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:08:22,105 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:08:22,106 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:08:22,220 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:08:22,220 - KOS - INFO - Shell initialized, starting command loop...
+
+╔══════════════════════════════════════════════════════════╗
+║                 Welcome to Kaede OS (KOS)                ║
+║                                                         ║
+║  System Information:                                    ║
+║  - CPU Usage: 73.4%                                  ║
+║  - Memory: 89.3% used                              ║
+║  - Disk: 42.2% used                                ║
+║                                                         ║
+║  Type 'help' for commands, 'intro' for system info     ║
+╚══════════════════════════════════════════════════════════╝
+
+[15:08 root@kos / (main)]# help
+
+Documented commands (type help <topic>):
+========================================
+EOF    clear  exit  groups    ls      ps   sysinfo  uname    users 
+cat    cp     find  help      mkdir   pwd  top      uptime   whoami
+cd     date   free  hostname  mv      rm   touch    useradd
+chmod  disk   grep  kudo      passwd  su   tree     userdel
+
+[15:08 root@kos / (main)]# whoami
+kaede
+[15:08 root@kos / (main)]# useradd kento
+Enter password: 
+2025-03-19 15:08:35,422 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:08:35,423 - KOS - INFO - Successfully added user kento
+User kento created successfully
+[15:08 root@kos / (main)]# ls
+2025-03-19 15:08:38,709 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:08:38,710 - KOS.filesystem - DEBUG - Listing directory: /
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+│ bin  │
+│ dev  │
+│ etc  │
+│ home │
+│ mnt  │
+│ opt  │
+│ proc │
+│ sys  │
+│ tmp  │
+│ usr  │
+│ var  │
+└──────┘
+[15:08 root@kos / (main)]# cd home
+2025-03-19 15:08:40,892 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:40,892 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:08:40,892 - KOS.shell - DEBUG - Changed directory to: /home
+[15:08 root@kos /home (main)]# ls
+2025-03-19 15:08:41,539 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:41,539 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:08 root@kos /home (main)]# cd kento
+2025-03-19 15:08:44,771 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:44,772 - KOS.filesystem - ERROR - Path not found: /home/kento
+cd: No such file or directory: /home/kento
+[15:08 root@kos /home (main)]# mkdir kento
+2025-03-19 15:08:49,150 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:49,150 - KOS.filesystem - DEBUG - Created directory: /home/kento
+2025-03-19 15:08:49,150 - KOS.shell - INFO - Created directory: kento
+[15:08 root@kos /home (main)]# ls
+2025-03-19 15:08:49,969 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:08:49,969 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents 
+  of .   
+┏━━━━━━━┓
+┃ Name  ┃
+┡━━━━━━━┩
+│ kento │
+└───────┘
+[15:08 root@kos /home (main)]# cd kento
+2025-03-19 15:08:55,663 - KOS.filesystem - DEBUG - Resolving path: /home/kento -> /home/kento
+2025-03-19 15:08:55,663 - KOS.filesystem - DEBUG - Current path updated to: /home/kento
+2025-03-19 15:08:55,663 - KOS.shell - DEBUG - Changed directory to: /home/kento
+[15:08 root@kos /home/kento (main)]# EOF
+2025-03-19 15:08:57,780 - KOS - INFO - Saved 2 users to users.json
+2025-03-19 15:08:57,780 - KOS.shell - INFO - Shell cleanup completed
+Exiting KaedeShell...
+~/workspace$ python3 main.py
+2025-03-19 15:09:00,230 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /home
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Created directory: /bin
+2025-03-19 15:09:00,230 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /etc
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /var
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /tmp
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:09:00,231 - KOS.filesystem - DEBUG - Created directory: /usr
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /opt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /mnt
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Created directory: /proc
+2025-03-19 15:09:00,232 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /sys
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:09:00,233 - KOS.filesystem - DEBUG - Created directory: /dev
+2025-03-19 15:09:00,233 - KOS.filesystem - INFO - Basic directory structure created
+2025-03-19 15:09:00,233 - KOS.filesystem - INFO - Initialized filesystem with 100MB capacity
+2025-03-19 15:09:00,233 - KOS - INFO - FileSystem initialized
+2025-03-19 15:09:00,233 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 15:09:00,233 - KOS.package - INFO - Package manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Package Manager initialized
+2025-03-19 15:09:00,234 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Process Manager initialized
+2025-03-19 15:09:00,234 - KOS - INFO - Loaded 2 users from users.json
+2025-03-19 15:09:00,234 - KOS - INFO - User System initialized with current user: kaede
+2025-03-19 15:09:00,234 - KOS.filesystem - INFO - User system reference updated
+2025-03-19 15:09:00,234 - KOS - INFO - Filesystem user system reference set
+2025-03-19 15:09:00,342 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 15:09:00,342 - KOS - INFO - Shell initialized, starting command loop...
+
+╔══════════════════════════════════════════════════════════╗
+║                 Welcome to Kaede OS (KOS)                ║
+║                                                         ║
+║  System Information:                                    ║
+║  - CPU Usage: 19.2%                                  ║
+║  - Memory: 90.6% used                              ║
+║  - Disk: 42.3% used                                ║
+║                                                         ║
+║  Type 'help' for commands, 'intro' for system info     ║
+╚══════════════════════════════════════════════════════════╝
+
+[15:09 root@kos / (main)]# ls
+2025-03-19 15:09:01,393 - KOS.filesystem - DEBUG - Resolving path: / -> /
+2025-03-19 15:09:01,393 - KOS.filesystem - DEBUG - Listing directory: /
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+│ bin  │
+│ dev  │
+│ etc  │
+│ home │
+│ mnt  │
+│ opt  │
+│ proc │
+│ sys  │
+│ tmp  │
+│ usr  │
+│ var  │
+└──────┘
+[15:09 root@kos / (main)]# cd home
+2025-03-19 15:09:03,021 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:09:03,022 - KOS.filesystem - DEBUG - Current path updated to: /home
+2025-03-19 15:09:03,022 - KOS.shell - DEBUG - Changed directory to: /home
+[15:09 root@kos /home (main)]# ls
+2025-03-19 15:09:03,735 - KOS.filesystem - DEBUG - Resolving path: /home -> /home
+2025-03-19 15:09:03,735 - KOS.filesystem - DEBUG - Listing directory: /home
+Contents
+  of .  
+┏━━━━━━┓
+┃ Name ┃
+┡━━━━━━┩
+└──────┘
+[15:09 root@kos /home (main)]# 

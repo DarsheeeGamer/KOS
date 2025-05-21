@@ -1,0 +1,37 @@
+2025-03-19 15:23:14,959 - KOS - INFO - Initializing KOS components...
+2025-03-19 15:23:14,959 - KOS - ERROR - Error creating directory /home: 'FileSystem' object has no attribute '_user_system'
+2025-03-19 15:23:14,960 - KOS - ERROR - Failed to initialize filesystem: Failed to create directory: 'FileSystem' object has no attribute '_user_system'
+2025-03-19 15:23:14,960 - KOS - ERROR - Failed to start KOS: Failed to initialize filesystem: Failed to create directory: 'FileSystem' object has no attribute '_user_system'
+Traceback (most recent call last):
+  File "/home/runner/workspace/kos/filesystem/base.py", line 154, in _create_directory
+    'owner': self.user_system.current_user if self.user_system else 'kaede',
+                                              ^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/filesystem/base.py", line 75, in user_system
+    return self._user_system
+           ^^^^^^^^^^^^^^^^^
+AttributeError: 'FileSystem' object has no attribute '_user_system'. Did you mean: 'user_system'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/kos/filesystem/base.py", line 55, in _initialize_disk
+    self._create_directory(f'/{dir_name}')
+  File "/home/runner/workspace/kos/filesystem/base.py", line 168, in _create_directory
+    raise FileSystemError(f"Failed to create directory: {str(e)}")
+kos.filesystem.base.FileSystemError: Failed to create directory: 'FileSystem' object has no attribute '_user_system'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 60, in <module>
+    main()
+  File "/home/runner/workspace/main.py", line 28, in main
+    filesystem = FileSystem(disk_size_mb=100)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/kos/filesystem/base.py", line 70, in __init__
+    super().__init__(disk_size_mb)
+  File "/home/runner/workspace/kos/filesystem/base.py", line 34, in __init__
+    self._initialize_disk()
+  File "/home/runner/workspace/kos/filesystem/base.py", line 60, in _initialize_disk
+    raise FileSystemError(f"Failed to initialize filesystem: {str(e)}")
+kos.filesystem.base.FileSystemError: Failed to initialize filesystem: Failed to create directory: 'FileSystem' object has no attribute '_user_system'

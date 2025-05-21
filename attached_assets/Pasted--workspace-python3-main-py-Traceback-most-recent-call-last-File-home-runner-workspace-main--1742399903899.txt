@@ -1,0 +1,37 @@
+~/workspace$ python3 main.py
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 8, in <module>
+    from kos import FileSystem, UserSystem, PackageManager, ProcessManager, KaedeShell
+  File "/home/runner/workspace/kos/__init__.py", line 4, in <module>
+    from .filesystem import FileSystem
+  File "/home/runner/workspace/kos/filesystem/__init__.py", line 5, in <module>
+    from .base import BaseFileSystem, FileNode, FileSystem
+  File "/home/runner/workspace/kos/filesystem/base.py", line 10, in <module>
+    from ..exceptions import FileSystemError, InvalidDiskFormat, FileNotFound
+ImportError: cannot import name 'InvalidDiskFormat' from 'kos.exceptions' (/home/runner/workspace/kos/exceptions.py)
+~/workspace$ python3 main.py
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 8, in <module>
+    from kos import FileSystem, UserSystem, PackageManager, ProcessManager, KaedeShell
+  File "/home/runner/workspace/kos/__init__.py", line 4, in <module>
+    from .filesystem import FileSystem
+  File "/home/runner/workspace/kos/filesystem/__init__.py", line 5, in <module>
+    from .base import BaseFileSystem, FileNode, FileSystem
+  File "/home/runner/workspace/kos/filesystem/base.py", line 10, in <module>
+    from ..exceptions import FileSystemError, InvalidDiskFormat, FileNotFound
+ImportError: cannot import name 'InvalidDiskFormat' from 'kos.exceptions' (/home/runner/workspace/kos/exceptions.py)
+~/workspace$ python3 main.py
+Traceback (most recent call last):
+  File "/home/runner/workspace/main.py", line 8, in <module>
+    from kos import FileSystem, UserSystem, PackageManager, ProcessManager, KaedeShell
+  File "/home/runner/workspace/kos/__init__.py", line 4, in <module>
+    from .filesystem import FileSystem
+  File "/home/runner/workspace/kos/filesystem/__init__.py", line 5, in <module>
+    from .base import BaseFileSystem, FileNode, FileSystem
+  File "/home/runner/workspace/kos/filesystem/base.py", line 94, in <module>
+    class FileSystem:
+  File "/home/runner/workspace/kos/filesystem/base.py", line 268, in FileSystem
+    def list_directory(self, path: str = ".", long_format: bool = False) -> List[Union[str, Dict[str, Any]]]:
+                                                                                 ^^^^^
+NameError: name 'Union' is not defined
+~/workspace$ 

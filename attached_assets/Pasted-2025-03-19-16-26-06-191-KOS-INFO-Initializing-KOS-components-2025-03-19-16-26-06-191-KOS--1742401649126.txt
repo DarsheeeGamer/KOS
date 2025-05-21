@@ -1,0 +1,38 @@
+2025-03-19 16:26:06,191 - KOS - INFO - Initializing KOS components...
+2025-03-19 16:26:06,191 - KOS - INFO - FileSystem initialized
+2025-03-19 16:26:06,192 - KOS - INFO - User System initialized
+2025-03-19 16:26:06,192 - KOS.package - INFO - Loaded 0 installed packages
+2025-03-19 16:26:06,192 - KOS.package - INFO - Package manager initialized
+2025-03-19 16:26:06,192 - KOS - INFO - Package Manager initialized
+2025-03-19 16:26:06,192 - KOS.process - INFO - Enhanced process manager initialized
+2025-03-19 16:26:06,193 - KOS - INFO - Process Manager initialized
+2025-03-19 16:26:06,305 - KOS.shell - INFO - Enhanced shell initialized with extended features
+2025-03-19 16:26:06,306 - KOS - INFO - Shell initialized, starting command loop...
+
+╔══════════════════════════════════════════════════════════╗
+║                 Welcome to Kaede OS (KOS)                ║
+║                                                         ║
+║  System Information:                                    ║
+║  - CPU Usage: 50.0%                                  ║
+║  - Memory: 64.5% used                              ║
+║  - Disk: 46.3% used                                ║
+║                                                         ║
+║  Type 'help' for commands, 'intro' for system info     ║
+╚══════════════════════════════════════════════════════════╝
+
+[16:26 root@kos / (main)]# help
+
+Documented commands (type help <topic>):
+========================================
+EOF    clear  exit  groups    kudo   passwd  su       tree     userdel
+cat    cp     find  help      ls     ps      sysinfo  uname    users  
+cd     date   free  hostname  mkdir  pwd     top      uptime   whoami 
+chmod  disk   grep  intro     mv     rm      touch    useradd
+
+[16:26 root@kos / (main)]# cd home
+[16:27 root@kos home (main)]# ls
+2025-03-19 16:27:24,026 - KOS - ERROR - Error getting node at home/.: Path not found: home/.
+2025-03-19 16:27:24,026 - KOS - ERROR - Error listing directory .: . is not a directory
+2025-03-19 16:27:24,026 - KOS.shell - ERROR - Error in ls command: Failed to list directory: . is not a directory
+ls: Failed to list directory: . is not a directory
+[16:27 root@kos home (main)]# 

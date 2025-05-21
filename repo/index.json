@@ -1,0 +1,25 @@
+
+{
+    "name": "KOS Repository",
+    "description": "Kaede Package Manager Repository",
+    "packages": {
+        "calculator": {
+            "name": "calculator",
+            "version": "1.0.0",
+            "description": "Simple calculator application",
+            "author": "KOS",
+            "entry_point": "calculator.py",
+            "files": ["calculator.py"],
+            "checksum": "TEST_CHECKSUM_DISABLED"
+        },
+        "qotd": {
+            "name": "qotd",
+            "version": "1.0.0",
+            "description": "Quote of the Day - Get and manage daily inspirational quotes",
+            "author": "KOS",
+            "entry_point": "qotd.py",
+            "files": ["qotd.py", "quotes.json"],
+            "checksum": "TEST_CHECKSUM_DISABLED"
+        }
+    }
+}
