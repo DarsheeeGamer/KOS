@@ -299,20 +299,94 @@ class KpmManager:
 
             print(f"Package {package_name} installed successfully")
             return True
+            return False
+
+        # Process package data
+        if version != "latest" and package_data.get('version') != version:
+            print(f"Version {version} not found for package {package_name}")
+            return False
+
+        # Create Package object
+        pkg = Package.from_dict(package_data)
+        pkg.name = package_name  # Ensure name is set correctly
+        app_dir = os.path.join(self.package_dir, package_name)
+
+        # Create app directory if it doesn't exist
+        if not os.path.exists(app_dir):
+            os.makedirs(app_dir)
+
+        # Download package files
+        file_url = package_data.get('download_url', '')
+        if not file_url:
+            # Get repo from URL and construct GitHub download URL
+            repo_parts = found_url.split('/')
+            if len(repo_parts) >= 3:
+                owner = repo_parts[-3]
+                repo = repo_parts[-2]
+                # Construct GitHub release URL
+                file_url = f"https://github.com/{owner}/{repo}/releases/download/v{pkg.version}/{pkg.name}.zip"
+            else:
+                print(f"Could not determine download URL for package {package_name}")
+                return False
+
+        # Download the package zip file
+        print(f"Downloading package {package_name} from {file_url}")
+        try:
+            response = requests.get(file_url, stream=True, timeout=20)
+            if response.status_code != 200:
+                print(f"Failed to download package {package_name}: HTTP error {response.status_code}")
+                return False
+
+            zip_path = os.path.join(self.package_dir, f"{package_name}.zip")
+            with open(zip_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+            # Extract package
+            import zipfile
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(app_dir)
+
+            # Remove zip file after extraction
+            os.remove(zip_path)
 
         except Exception as e:
-            logger.error(f"Error installing package {package_name}: {e}")
-            print(f"Error installing package {package_name}: {str(e)}")
+            print(f"Failed to download or extract package {package_name}: {str(e)}")
             return False
-                            return True
-                        else:
-                            print(f"DEBUG: Package '{package_name}' not found in index.json from {repo_url}")
-                    else:
-                        print(f"DEBUG: Failed to fetch index.json from {repo['url']}: {response.status_code}")
-                        continue  # Go to the next repo if index.json fetch fails
 
-                    if package_name in repo_data.get("packages", {}):
-                        return True  # Return True if package is found and processed (even if install had errors later)
+        # Check if package has a requirements.txt file
+        pip_requirements_installed = self._handle_pip_requirements(app_dir, package_name)
+        if not pip_requirements_installed:
+            print(f"Warning: Failed to install pip requirements for {package_name}")
+        
+        # Check if the package has KOS dependencies and install them
+        if pkg.dependencies:
+            print(f"Installing dependencies for {package_name}...")
+            for dep in pkg.dependencies:
+                dep_name = dep.name
+                
+                # Check if it's a pip dependency
+                if dep_name.startswith('pip:'):
+                    pip_pkg_spec = dep_name[4:]  # Remove 'pip:' prefix
+                    success, message = self.pip_manager.install_package(pip_pkg_spec, package_name)
+                    if not success and not dep.optional:
+                        print(f"Required pip dependency {pip_pkg_spec} failed to install: {message}")
+                        return False
+                    elif not success:
+                        print(f"Optional pip dependency {pip_pkg_spec} failed to install: {message}")
+                else:
+                    # Regular KOS package dependency
+                    dep_version = dep.version if dep.version != "*" else "latest"
+                    if not self.install(dep_name, dep_version):
+                        if dep.optional:
+                            print(f"Optional dependency {dep_name} failed to install")
+                        else:
+                            print(f"Required dependency {dep_name} failed to install")
+                            return False
+
+        # Update package info and mark as installed
+        pkg.installed = True
+        pkg.install_date = datetime.now()
                     else:
                         continue  # Continue to next repo if package is not found in this repo
 
