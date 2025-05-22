@@ -27,19 +27,7 @@ Welcome to the KOS (Kaede Operating System) documentation! This directory contai
    - [Contributing](developer-guide/contributing.md)
    - [Release Process](developer-guide/release-process.md)
 
-## Building the Documentation
 
-To build the documentation locally:
-
-```bash
-# Install dependencies
-pip install mkdocs mkdocs-material
-
-# Serve the documentation locally
-mkdocs serve
-```
-
-Then open http://127.0.0.1:8000 in your browser.
 
 ## Contributing
 
