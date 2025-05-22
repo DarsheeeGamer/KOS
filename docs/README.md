@@ -1,12 +1,13 @@
-# KOS Documentation
+# KOS - Kernel Operating System
 
-Welcome to the KOS (Kaede Operating System) documentation! This directory contains comprehensive documentation for users and developers.
+KOS (Kernel Operating System) is a lightweight, high-performance operating system designed for modern computing needs. This documentation provides comprehensive guides for users and developers.
 
 ## Table of Contents
 
-1. [Getting Started](getting-started/README.md)
-   - [Introduction](getting-started/introduction.md)
-   - [Installation](getting-started/installation.md)
+### Getting Started
+- [Introduction](getting-started/introduction.md)
+- [Installation Guide](getting-started/installation.md)
+- [First Steps](getting-started/first-steps.md)
    - [First Steps](getting-started/first-steps.md)
 
 2. [User Guide](user-guide/README.md)
