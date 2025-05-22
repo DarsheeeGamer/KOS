@@ -385,3 +385,243 @@
 2025-05-22 21:07:51,457 - KOS - INFO - Shell initialized, starting command loop...
 2025-05-22 21:07:53,238 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
 2025-05-22 21:07:53,240 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:19:41,209 - KOS.internal - INFO - KOS system started
+2025-05-22 21:19:41,209 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:19:41,209 - KOS - INFO - Basic directory structure created
+2025-05-22 21:19:41,209 - KOS - INFO - FileSystem initialized
+2025-05-22 21:19:41,209 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:19:41,211 - KOS - INFO - User System initialized
+2025-05-22 21:19:41,211 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:19:41,212 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:19:41,214 - KOS - INFO - Package Manager initialized
+2025-05-22 21:19:41,223 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 21:19:41,223 - KOS.shell_loop - DEBUG - Starting shell loop
+2025-05-22 21:19:41,223 - KOS.shell_loop - DEBUG - After preloop
+2025-05-22 21:19:41,224 - KOS.shell_loop - DEBUG - Entering main shell loop
+2025-05-22 21:19:41,224 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:19:41,224 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:19:45,233 - KOS.shell_loop - DEBUG - User input: cal
+2025-05-22 21:19:45,233 - KOS.shell_loop - DEBUG - Processing command: cal
+2025-05-22 21:19:45,233 - KOS.shell_loop - DEBUG - After precmd: cal
+2025-05-22 21:19:45,234 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:19:45,235 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:19:45,235 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:19:45,236 - KOS.shell_loop - DEBUG - After postcmd, stop=True
+2025-05-22 21:19:45,236 - KOS.shell_loop - DEBUG - Stop flag set, exiting shell loop
+2025-05-22 21:19:45,237 - KOS.shell_loop - DEBUG - Cleaning up shell
+2025-05-22 21:19:45,237 - KOS.shell_loop - DEBUG - Postloop completed
+2025-05-22 21:21:40,917 - KOS.internal - INFO - KOS system started
+2025-05-22 21:21:40,917 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:21:40,918 - KOS - INFO - Basic directory structure created
+2025-05-22 21:21:40,918 - KOS - INFO - FileSystem initialized
+2025-05-22 21:21:40,918 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:21:40,919 - KOS - INFO - User System initialized
+2025-05-22 21:21:40,919 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:21:40,921 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:21:40,922 - KOS - INFO - Package Manager initialized
+2025-05-22 21:21:40,934 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 21:21:40,935 - KOS.shell_loop - DEBUG - Starting shell loop
+2025-05-22 21:21:40,935 - KOS.shell_loop - DEBUG - After preloop
+2025-05-22 21:21:40,935 - KOS.shell_loop - DEBUG - Entering main shell loop
+2025-05-22 21:21:40,935 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:21:40,935 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:25:45,866 - KOS.shell_loop - DEBUG - User input: cal
+2025-05-22 21:25:45,867 - KOS.shell_loop - DEBUG - Processing command: cal
+2025-05-22 21:25:45,867 - KOS.shell_loop - DEBUG - After precmd: cal
+2025-05-22 21:25:45,867 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:25:45,868 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:25:45,868 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:25:45,869 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:25:45,869 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:25:45,869 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:25:52,587 - KOS.shell_loop - DEBUG - User input: calculatoor
+2025-05-22 21:25:52,587 - KOS.shell_loop - DEBUG - Processing command: calculatoor
+2025-05-22 21:25:52,588 - KOS.shell_loop - DEBUG - After precmd: calculatoor
+2025-05-22 21:25:52,588 - KOS.package_manager - ERROR - Application 'calculatoor' not found
+2025-05-22 21:25:52,588 - KOS.shell_loop - DEBUG - After onecmd, stop=False
+2025-05-22 21:25:52,588 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:25:52,589 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:25:52,589 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:25:56,052 - KOS.shell_loop - DEBUG - User input: calculator
+2025-05-22 21:25:56,052 - KOS.shell_loop - DEBUG - Processing command: calculator
+2025-05-22 21:25:56,052 - KOS.shell_loop - DEBUG - After precmd: calculator
+2025-05-22 21:25:56,053 - KOS.package_manager - INFO - Running application 'calculator' in a separate interpreter
+2025-05-22 21:25:58,852 - KOS.package_manager - INFO - Application 'calculator' completed successfully
+2025-05-22 21:25:58,852 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:25:58,852 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:25:58,852 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:25:58,853 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:26:39,666 - KOS.shell_loop - DEBUG - Caught KeyboardInterrupt or EOF
+2025-05-22 21:26:39,666 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:26:39,667 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:28:08,602 - KOS.shell_loop - DEBUG - User input: clear
+2025-05-22 21:28:08,603 - KOS.shell_loop - DEBUG - Processing command: clear
+2025-05-22 21:28:08,603 - KOS.shell_loop - DEBUG - After precmd: clear
+2025-05-22 21:28:08,604 - KOS.shell_loop - DEBUG - After onecmd, stop=None
+2025-05-22 21:28:08,604 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:28:08,604 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:28:08,605 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:29:52,847 - KOS.shell_loop - DEBUG - Caught KeyboardInterrupt or EOF
+2025-05-22 21:29:52,848 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:29:52,848 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:29:57,098 - KOS.shell_loop - DEBUG - User input: EOF
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - Processing command: EOF
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - After precmd: EOF
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:29:57,099 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:29:58,348 - KOS.shell_loop - DEBUG - User input: eof
+2025-05-22 21:29:58,348 - KOS.shell_loop - DEBUG - Processing command: eof
+2025-05-22 21:29:58,349 - KOS.shell_loop - DEBUG - After precmd: eof
+2025-05-22 21:29:58,349 - KOS.package_manager - ERROR - Application 'eof' not found
+2025-05-22 21:29:58,349 - KOS.shell_loop - DEBUG - After onecmd, stop=False
+2025-05-22 21:29:58,349 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:29:58,349 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:29:58,349 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:00,184 - KOS.shell_loop - DEBUG - User input: EOF
+2025-05-22 21:30:00,184 - KOS.shell_loop - DEBUG - Processing command: EOF
+2025-05-22 21:30:00,184 - KOS.shell_loop - DEBUG - After precmd: EOF
+2025-05-22 21:30:00,186 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:30:00,186 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:30:00,186 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:00,186 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:04,588 - KOS.shell_loop - DEBUG - Caught KeyboardInterrupt or EOF
+2025-05-22 21:30:04,589 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:04,589 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:06,803 - KOS.shell_loop - DEBUG - User input: 
+2025-05-22 21:30:06,803 - KOS.shell_loop - DEBUG - Processing command: 
+2025-05-22 21:30:06,803 - KOS.shell_loop - DEBUG - After precmd: 
+2025-05-22 21:30:06,803 - KOS.package_manager - ERROR - Application '' not found
+2025-05-22 21:30:06,804 - KOS.shell_loop - DEBUG - After onecmd, stop=False
+2025-05-22 21:30:06,804 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:30:06,804 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:06,804 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:09,878 - KOS.shell_loop - DEBUG - User input: 
+2025-05-22 21:30:09,880 - KOS.shell_loop - DEBUG - Processing command: 
+2025-05-22 21:30:09,880 - KOS.shell_loop - DEBUG - After precmd: 
+2025-05-22 21:30:09,881 - KOS.package_manager - ERROR - Application '' not found
+2025-05-22 21:30:09,881 - KOS.shell_loop - DEBUG - After onecmd, stop=False
+2025-05-22 21:30:09,881 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:30:09,881 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:09,882 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:10,564 - KOS.shell_loop - DEBUG - User input: 
+2025-05-22 21:30:10,564 - KOS.shell_loop - DEBUG - Empty input, skipping
+2025-05-22 21:30:10,564 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:10,565 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:12,032 - KOS.shell_loop - DEBUG - Caught KeyboardInterrupt or EOF
+2025-05-22 21:30:12,032 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:12,032 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:13,916 - KOS.shell_loop - DEBUG - User input: exit
+2025-05-22 21:30:13,916 - KOS.shell_loop - DEBUG - Processing command: exit
+2025-05-22 21:30:13,916 - KOS.shell_loop - DEBUG - After precmd: exit
+2025-05-22 21:30:13,916 - KOS.shell_loop - DEBUG - After onecmd, stop=True
+2025-05-22 21:30:13,918 - KOS.shell_loop - DEBUG - Command completed, staying in shell
+2025-05-22 21:30:13,918 - KOS.shell_loop - DEBUG - Starting new command cycle
+2025-05-22 21:30:13,918 - KOS.shell_loop - DEBUG - Waiting for user input
+2025-05-22 21:30:30,141 - KOS.internal - INFO - KOS system started
+2025-05-22 21:30:30,141 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:30:30,142 - KOS - INFO - Basic directory structure created
+2025-05-22 21:30:30,142 - KOS - INFO - FileSystem initialized
+2025-05-22 21:30:30,142 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:30:30,143 - KOS - INFO - User System initialized
+2025-05-22 21:30:30,143 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:30:30,143 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:30:30,145 - KOS - INFO - Package Manager initialized
+2025-05-22 21:31:30,069 - KOS.internal - INFO - KOS system started
+2025-05-22 21:31:30,069 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:31:30,070 - KOS - INFO - Basic directory structure created
+2025-05-22 21:31:30,070 - KOS - INFO - FileSystem initialized
+2025-05-22 21:31:30,070 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:31:30,071 - KOS - INFO - User System initialized
+2025-05-22 21:31:30,071 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:31:30,072 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:31:30,072 - KOS - INFO - Package Manager initialized
+2025-05-22 21:31:33,274 - KOS.internal - INFO - KOS system started
+2025-05-22 21:31:33,274 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:31:33,275 - KOS - INFO - Basic directory structure created
+2025-05-22 21:31:33,275 - KOS - INFO - FileSystem initialized
+2025-05-22 21:31:33,275 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:31:33,276 - KOS - INFO - User System initialized
+2025-05-22 21:31:33,277 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:31:33,277 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:31:33,278 - KOS - INFO - Package Manager initialized
+2025-05-22 21:31:34,662 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:31:34,663 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:32:11,608 - KOS.internal - INFO - KOS system started
+2025-05-22 21:32:11,608 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:32:11,608 - KOS - INFO - Basic directory structure created
+2025-05-22 21:32:11,608 - KOS - INFO - FileSystem initialized
+2025-05-22 21:32:11,608 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:32:11,609 - KOS - INFO - User System initialized
+2025-05-22 21:32:11,610 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:32:11,610 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:32:11,611 - KOS - INFO - Package Manager initialized
+2025-05-22 21:32:13,874 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:32:13,876 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:32:22,721 - KOS.internal - INFO - KOS system started
+2025-05-22 21:32:22,721 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:32:22,721 - KOS - INFO - Basic directory structure created
+2025-05-22 21:32:22,721 - KOS - INFO - FileSystem initialized
+2025-05-22 21:32:22,721 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:32:22,723 - KOS - INFO - User System initialized
+2025-05-22 21:32:22,724 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:32:22,724 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:32:22,725 - KOS - INFO - Package Manager initialized
+2025-05-22 21:32:28,049 - KOS.internal - INFO - KOS system started
+2025-05-22 21:32:28,049 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:32:28,049 - KOS - INFO - Basic directory structure created
+2025-05-22 21:32:28,049 - KOS - INFO - FileSystem initialized
+2025-05-22 21:32:28,049 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:32:28,051 - KOS - INFO - User System initialized
+2025-05-22 21:32:28,053 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:32:28,053 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:32:28,054 - KOS - INFO - Package Manager initialized
+2025-05-22 21:32:29,958 - KOS.package_manager - ERROR - Application 'lol' not found
+2025-05-22 21:32:32,009 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:32:32,011 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:32:33,872 - KOS.package_manager - ERROR - Application 'calc' not found
+2025-05-22 21:32:36,744 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:32:36,745 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:32:39,818 - KOS.internal - INFO - KOS system started
+2025-05-22 21:32:39,818 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:32:39,819 - KOS - INFO - Basic directory structure created
+2025-05-22 21:32:39,819 - KOS - INFO - FileSystem initialized
+2025-05-22 21:32:39,819 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:32:39,820 - KOS - INFO - User System initialized
+2025-05-22 21:32:39,821 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:32:39,821 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:32:39,822 - KOS - INFO - Package Manager initialized
+2025-05-22 21:32:42,880 - KOS.package_manager - ERROR - Application '' not found
+2025-05-22 21:32:44,769 - KOS.package_manager - ERROR - Application '' not found
+2025-05-22 21:32:49,333 - KOS.internal - INFO - KOS system started
+2025-05-22 21:32:49,333 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:32:49,333 - KOS - INFO - Basic directory structure created
+2025-05-22 21:32:49,333 - KOS - INFO - FileSystem initialized
+2025-05-22 21:32:49,333 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:32:49,335 - KOS - INFO - User System initialized
+2025-05-22 21:32:49,335 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:32:49,335 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:32:49,336 - KOS - INFO - Package Manager initialized
+2025-05-22 21:35:23,557 - KOS.internal - INFO - KOS system started
+2025-05-22 21:35:23,557 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:35:23,557 - KOS - INFO - Basic directory structure created
+2025-05-22 21:35:23,557 - KOS - INFO - FileSystem initialized
+2025-05-22 21:35:23,557 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:35:23,559 - KOS - INFO - User System initialized
+2025-05-22 21:35:23,559 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:35:23,559 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:35:23,560 - KOS - INFO - Package Manager initialized
+2025-05-22 21:35:24,717 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:35:24,717 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:35:27,901 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 21:39:06,815 - KOS.package_manager - ERROR - Application 'exi' not found
+2025-05-22 21:39:11,231 - KOS.internal - INFO - KOS system started
+2025-05-22 21:39:11,231 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:39:11,231 - KOS - INFO - Basic directory structure created
+2025-05-22 21:39:11,231 - KOS - INFO - FileSystem initialized
+2025-05-22 21:39:11,231 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:39:11,233 - KOS - INFO - User System initialized
+2025-05-22 21:39:11,233 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:39:11,234 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:39:11,234 - KOS - INFO - Package Manager initialized

@@ -422,22 +422,51 @@ class KpmManager:
             return False
 
     def list_packages(self):
-        """List installed packages"""
-        installed = self.package_db.list_installed()
-
-        if not installed:
-            print("No packages installed")
-            return
-
-        print("\nInstalled packages:")
-        for pkg in installed:
-            print(f"{pkg.name} (version: {pkg.version})")
-            print(f"  Description: {pkg.description}")
-            print(f"  Author: {pkg.author}")
-            print(f"  Repository: {pkg.repository}")
-            if pkg.dependencies:
-                print("  Dependencies:", ", ".join(str(dep) for dep in pkg.dependencies))
-            print(f"  {pkg.get_install_info()}")
+        """List both installed and available packages"""
+        # Get installed packages
+        installed = {pkg.name: pkg for pkg in self.package_db.list_installed()}
+        
+        # Get available packages from repositories
+        available = {}
+        for repo_name in self.repo_config.list_repos():
+            if self.repo_config.is_repo_enabled(repo_name):
+                repo_pkgs = self.repo_index.get_repo_packages(repo_name)
+                for pkg_name, pkg_info in repo_pkgs.items():
+                    if pkg_name not in available:  # First come, first served
+                        available[pkg_name] = pkg_info
+        
+        # Print installed packages
+        if installed:
+            print("\nInstalled packages:")
+            print("-" * 50)
+            for name, pkg in installed.items():
+                print(f"{name} (version: {pkg.version})")
+                print(f"  Description: {pkg.description}")
+                print(f"  Author: {pkg.author}")
+                print(f"  Repository: {pkg.repository}")
+                if pkg.dependencies:
+                    print("  Dependencies:", ", ".join(str(dep) for dep in pkg.dependencies))
+                print(f"  {pkg.get_install_info()}")
+                print()
+        else:
+            print("No packages installed.")
+        
+        # Print available packages (not installed)
+        available_not_installed = {k: v for k, v in available.items() if k not in installed}
+        if available_not_installed:
+            print("\nAvailable packages:")
+            print("-" * 50)
+            for name, pkg in available_not_installed.items():
+                print(f"{name} (version: {pkg.get('version', 'unknown')})")
+                print(f"  Description: {pkg.get('description', 'No description')}")
+                print(f"  Author: {pkg.get('author', 'Unknown')}")
+                print(f"  Repository: {pkg.get('repository', 'Unknown')}")
+                if 'dependencies' in pkg and pkg['dependencies']:
+                    deps = ", ".join(str(dep) for dep in pkg['dependencies'])
+                    print(f"  Dependencies: {deps}")
+                print()
+        elif not installed:
+            print("No packages available in repositories. Try 'kpm update' to fetch the latest package lists.")
 
     def run_program(self, command: str, args: list = None) -> bool:
         """
@@ -446,117 +475,137 @@ class KpmManager:
         This function runs the program in the same process but with a fresh Python
         interpreter to prevent the main KOS process from being affected.
         """
+        logger.debug(f"run_program called with command: {command}, args: {args}")
+        
         if args is None:
             args = []
+            logger.debug("No args provided, using empty list")
+        else:
+            logger.debug(f"Using provided args: {args}")
             
         try:
             # First, check if the command is in app index by name or alias
+            logger.debug(f"Looking up app '{command}' in app index")
             app = self.app_index.get_app(command)
             
             # If not found by name, try to find by alias
             if not app:
+                logger.debug(f"App '{command}' not found by name, trying alias")
                 app = self.app_index.get_app_by_alias(command)
             
             # If still not found, fall back to package database
             if not app:
+                logger.debug(f"App '{command}' not found in app index, checking package database")
                 for p in self.package_db.packages.values():
                     if p.installed and (p.name == command or command in getattr(p, 'cli_aliases', [])):
                         # Create an app entry from package info
                         app_dir = self._get_app_path(p.name)
+                        logger.debug(f"Found package {p.name} in database, creating app entry")
                         app = AppIndexEntry(
                             name=p.name,
                             version=p.version,
                             entry_point=p.entry_point,
-                            app_path=app_dir,
-                            cli_aliases=getattr(p, 'cli_aliases', []),
-                            cli_function=getattr(p, 'cli_function', ''),
-                            description=p.description,
-                            author=p.author,
-                            repository=p.repository
+                            app_path=app_dir
                         )
-                        # Add to app index for future use
-                        self.app_index.add_app(app)
                         break
             
             if not app:
-                logger.debug(f"Command not found: {command}")
+                error_msg = f"Application '{command}' not found"
+                logger.error(error_msg)
+                print(f"Error: {error_msg}")
                 return False
-
+                
+            logger.debug(f"Found app: {app.name} (version: {getattr(app, 'version', 'unknown')})")
+            
             # Get the absolute path to the app directory and entry point file
+            logger.debug(f"Getting absolute path to app directory and entry point file")
             app_dir = os.path.abspath(app.app_path)
             entry_path = os.path.join(app_dir, app.entry_point)
+            logger.debug(f"App directory: {app_dir}, entry point: {entry_path}")
 
             if not os.path.exists(entry_path):
-                print(f"Entry point {app.entry_point} not found at {entry_path}")
+                error_msg = f"Entry point {app.entry_point} not found at {entry_path}"
+                logger.error(error_msg)
+                print(f"Error: {error_msg}")
                 return False
                 
             logger.info(f"Running application '{command}' in a separate interpreter")
             
+            # Import the module directly
+            logger.debug(f"Importing module: {app.entry_point}")
+            module_name = os.path.splitext(app.entry_point)[0]
+            
+            # Save current path
+            old_path = list(sys.path)
+            sys.path.insert(0, app_dir)
+            
             try:
-                # Import the module directly
-                module_name = os.path.splitext(app.entry_point)[0]
-                sys.path.insert(0, app_dir)
+                # Import the module
+                logger.debug(f"Importing module: {module_name}")
+                module = importlib.import_module(module_name)
                 
-                try:
-                    # Import the module
-                    module = importlib.import_module(module_name)
-                    
-                    # If the module has a main function, call it with args if it accepts them
-                    if hasattr(module, 'main') and callable(module.main):
-                        try:
-                            # Try calling with args first
-                            import inspect
-                            sig = inspect.signature(module.main)
-                            if len(sig.parameters) > 0:
-                                module.main(args)
-                            else:
-                                module.main()
-                        except Exception as e:
-                            # If that fails, try without args
+                # If the module has a main function, call it with args if it accepts them
+                if hasattr(module, 'main') and callable(module.main):
+                    logger.debug(f"Found main() function in {module_name}")
+                    try:
+                        # Try calling with args first
+                        import inspect
+                        sig = inspect.signature(module.main)
+                        if len(sig.parameters) > 0:
+                            logger.debug(f"Calling main() with args: {args}")
+                            module.main(args)
+                        else:
+                            logger.debug("Calling main() without args")
                             module.main()
-                    # If the module has a cli_app function, call it with or without args as needed
-                    elif hasattr(module, 'cli_app') and callable(module.cli_app):
-                        try:
-                            # Try calling with args first
-                            import inspect
-                            sig = inspect.signature(module.cli_app)
-                            if len(sig.parameters) > 0:
-                                module.cli_app(args)
-                            else:
-                                module.cli_app()
-                        except Exception as e:
-                            # If that fails, try without args
-                            module.cli_app()
-                    else:
-                        print(f"No executable entry point found in {module_name}")
-                        return False
-                        
+                    except Exception as e:
+                        logger.debug(f"Error calling main() with args, trying without: {e}")
+                        module.main()
+                    
                     logger.info(f"Application '{command}' completed successfully")
                     return True
                     
-                except ImportError as e:
-                    print(f"Error importing module {module_name}: {str(e)}")
-                    logger.error(f"Error importing module {module_name}: {str(e)}")
+                # If the module has a cli_app function, call it with or without args as needed
+                elif hasattr(module, 'cli_app') and callable(module.cli_app):
+                    logger.debug(f"Found cli_app() function in {module_name}")
+                    try:
+                        # Try calling with args first
+                        import inspect
+                        sig = inspect.signature(module.cli_app)
+                        if len(sig.parameters) > 0:
+                            logger.debug(f"Calling cli_app() with args: {args}")
+                            module.cli_app(args)
+                        else:
+                            logger.debug("Calling cli_app() without args")
+                            module.cli_app()
+                    except Exception as e:
+                        logger.debug(f"Error calling cli_app() with args, trying without: {e}")
+                        module.cli_app()
+                    
+                    logger.info(f"Application '{command}' completed successfully")
+                    return True
+                    
+                else:
+                    error_msg = f"No executable entry point (main() or cli_app()) found in {module_name}"
+                    logger.error(error_msg)
+                    print(f"Error: {error_msg}")
                     return False
                     
-            except Exception as e:
-                error_msg = f"Error running {command}: {str(e)}"
-                logger.error(error_msg)
-                logger.debug(traceback.format_exc())
+            except ImportError as e:
+                error_msg = f"Failed to import module {module_name}: {e}"
+                logger.error(error_msg, exc_info=True)
                 print(f"Error: {error_msg}")
                 return False
                 
             finally:
-                # Clean up the module from sys.modules and reset sys.path
-                if 'module_name' in locals() and module_name in sys.modules:
+                # Restore original path and clean up
+                sys.path = old_path
+                if module_name in sys.modules:
                     del sys.modules[module_name]
-                if app_dir in sys.path:
-                    sys.path.remove(app_dir)
                 
         except Exception as e:
-            print(f"Error running program: {str(e)}")
-            logger.error(f"Error running program {command}: {str(e)}")
-            logger.debug(traceback.format_exc())
+            error_msg = f"Unexpected error running application '{command}': {e}"
+            logger.error(error_msg, exc_info=True)
+            print(f"Error: {error_msg}")
             return False
 
     def _initialize_apps(self):

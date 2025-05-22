@@ -709,15 +709,22 @@ class KaedeShell(cmd.Cmd):
             logger.error(f"Error in useradd command: {e}")
             print(f"useradd: {str(e)}")
 
+    def postcmd(self, stop, line):
+        """Hook method executed just after a command dispatch is finished"""
+        # Reset stop to False to prevent shell from exiting
+        logger.debug(f"postcmd: stop={stop}, line='{line}'")
+        return False
+
     def do_exit(self, arg):
         """Exit the shell properly using KOS internal exit system"""
-        logger.info("Exit command received")
-        self._cleanup()
+        logger.info("Exiting KOS shell")
+        return True
+
         # Use internal KOS exit instead of returning True
         kos_exit(0)
         # This should never be reached, but just in case
         return False
-        
+
     def do_EOF(self, arg):
         """Exit the shell on end of file"""
         logger.info("EOF received")
