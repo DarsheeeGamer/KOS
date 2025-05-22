@@ -321,6 +321,19 @@ class KpmManager:
                             print(f"Installing dependency: {dep}")
                             self.install(dep)
             
+            # Check for pip-requirements in package metadata
+            if hasattr(repo_package, 'pip_requirements') and repo_package.pip_requirements:
+                print(f"Installing pip requirements for {package_name}...")
+                try:
+                    from kos.shell.pip_handler import PipCommandHandler
+                    pip_handler = PipCommandHandler()
+                    for req in repo_package.pip_requirements:
+                        print(f"Installing pip requirement: {req}")
+                        pip_handler.install(req)
+                except Exception as e:
+                    print(f"Warning: Failed to install pip requirements: {str(e)}")
+                    # Don't fail the installation for pip requirement failures
+            
             # If package has a package.json with pip dependencies, install them
             pkg_json_path = os.path.join(app_dir, 'package.json')
             if os.path.exists(pkg_json_path):
@@ -422,7 +435,7 @@ class KpmManager:
             return False
 
     def list_packages(self):
-        """List both installed and available packages"""
+        """List installed packages, applications, and available packages"""
         # Get installed packages
         installed = {pkg.name: pkg for pkg in self.package_db.list_installed()}
         
@@ -435,9 +448,21 @@ class KpmManager:
                     if pkg_name not in available:  # First come, first served
                         available[pkg_name] = pkg_info
         
+        # Get installed applications from app index
+        installed_apps = {}
+        for app_name, app in self.app_index.apps.items():
+            installed_apps[app_name] = {
+                'name': app.name,
+                'version': app.version,
+                'description': app.description,
+                'author': app.author,
+                'repository': app.repository,
+                'type': 'application'
+            }
+        
         # Print installed packages
         if installed:
-            print("\nInstalled packages:")
+            print("\nInstalled Packages:")
             print("-" * 50)
             for name, pkg in installed.items():
                 print(f"{name} (version: {pkg.version})")
@@ -448,13 +473,27 @@ class KpmManager:
                     print("  Dependencies:", ", ".join(str(dep) for dep in pkg.dependencies))
                 print(f"  {pkg.get_install_info()}")
                 print()
-        else:
-            print("No packages installed.")
+        
+        # Print installed applications
+        if installed_apps:
+            print("\nInstalled Applications:")
+            print("-" * 50)
+            for name, app in installed_apps.items():
+                print(f"{name} (version: {app.get('version', 'unknown')})")
+                print(f"  Description: {app.get('description', 'No description')}")
+                print(f"  Author: {app.get('author', 'Unknown')}")
+                print(f"  Repository: {app.get('repository', 'Unknown')}")
+                print()
+        
+        if not installed and not installed_apps:
+            print("No packages or applications installed.")
         
         # Print available packages (not installed)
-        available_not_installed = {k: v for k, v in available.items() if k not in installed}
+        available_not_installed = {k: v for k, v in available.items() 
+                                 if k not in installed and k not in installed_apps}
+        
         if available_not_installed:
-            print("\nAvailable packages:")
+            print("\nAvailable Packages:")
             print("-" * 50)
             for name, pkg in available_not_installed.items():
                 print(f"{name} (version: {pkg.get('version', 'unknown')})")
@@ -465,7 +504,7 @@ class KpmManager:
                     deps = ", ".join(str(dep) for dep in pkg['dependencies'])
                     print(f"  Dependencies: {deps}")
                 print()
-        elif not installed:
+        elif not installed and not installed_apps:
             print("No packages available in repositories. Try 'kpm update' to fetch the latest package lists.")
 
     def run_program(self, command: str, args: list = None) -> bool:

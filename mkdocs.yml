@@ -1,0 +1,156 @@
+site_name: KOS Documentation
+site_url: https://darsheegamer.github.io/KOS/
+repo_url: https://github.com/DarsheeeGamer/KOS
+site_author: KOS Team
+
+# Theme
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.expand
+    - navigation.instant
+    - navigation.top
+    - navigation.sections
+    - toc.follow
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+# Extensions
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+    - getting-started/introduction.md
+    - getting-started/installation.md
+    - getting-started/first-steps.md
+  - User Guide:
+    - user-guide/basic-commands.md
+    - user-guide/package-management.md
+    - user-guide/user-management.md
+    - user-guide/process-management.md
+  - Developer Guide:
+    - developer-guide/getting-started.md
+    - developer-guide/creating-packages.md
+    - developer-guide/package-metadata.md
+    - developer-guide/repository-management.md
+    - developer-guide/testing.md
+    - developer-guide/debugging.md
+    - developer-guide/contributing.md
+    - developer-guide/release-process.md
+
+# Plugins
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_root_heading: true
+            show_source: true
+      watch:
+        - kos
+
+# Extra
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+
+# Copyright
+copyright: Copyright &copy; 2025 KOS Team
+
+# Google Analytics
+google_analytics:
+  - UA-XXXXX
+  - auto
+
+# GitHub
+repo_name: DarsheeeGamer/KOS
+repo_icon: fontawesome/brands/github
+
+# Edit URL
+docs_dir: docs
+edit_uri: edit/main/docs/
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/DarsheeeGamer/KOS
+      
+
+# Build options
+strict: true
+use_directory_urls: true
+
+# Dev server
+dev_addr: 127.0.0.1:8000
+
+# Build output
+docs_dir: docs
+site_dir: site
+
+# Extras
+extra_css: []
+extra_javascript: []
+
+# Build environment
+ENV: development
