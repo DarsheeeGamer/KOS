@@ -1,28 +1,74 @@
-# Basic Commands
+# KOS Basic Commands Reference
 
-This guide covers the essential commands for navigating and using KOS.
+This comprehensive guide covers all essential commands for effectively using KOS. Each command includes detailed usage, common options, and practical examples.
 
-## Navigation
+## Table of Contents
+- [File System Navigation](#file-system-navigation)
+- [File Operations](#file-operations)
+- [Text Processing](#text-processing)
+- [System Information](#system-information)
+- [Process Management](#process-management)
+- [User Management](#user-management)
+- [Networking](#networking)
+- [Package Management](#package-management)
+- [Searching](#searching)
+- [Compression](#compression)
+- [File Permissions](#file-permissions)
+- [Command Chaining](#command-chaining)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Command History](#command-history)
+- [Environment Variables](#environment-variables)
+- [Aliases](#aliases)
+- [Exit Codes](#exit-codes)
 
-### `ls` - List Directory Contents
+## File System Navigation
 
-List files and directories in the current directory.
+### `pwd` - Print Working Directory
+
+Display the full path of the current working directory.
 
 **Usage:**
 ```bash
-ls [options] [directory]
+pwd [options]
 ```
 
 **Options:**
-- `-l`: Long format (detailed listing)
-- `-a`: Show hidden files
-- `-h`: Human-readable file sizes
+- `-L`: (Default) Print the logical current directory
+- `-P`: Print the physical directory (resolves symlinks)
 
 **Examples:**
 ```bash
-ls          # List files in current directory
-ls -la      # Detailed listing including hidden files
-ls /path    # List files in /path
+pwd         # /home/username
+cd /var/www
+pwd         # /var/www
+```
+
+### `ls` - List Directory Contents
+
+List information about files and directories.
+
+**Usage:**
+```bash
+ls [options] [file/directory...]
+```
+
+**Common Options:**
+- `-a, --all`: Show hidden files (starting with .)
+- `-l`: Use long listing format
+- `-h, --human-readable`: Print sizes in human readable format (e.g., 1K, 234M, 2G)
+- `-t`: Sort by modification time, newest first
+- `-r, --reverse`: Reverse order while sorting
+- `-S`: Sort by file size, largest first
+- `-R, --recursive`: List subdirectories recursively
+- `--color[=WHEN]`: Colorize the output (always/never/auto)
+
+**Examples:**
+```bash
+ls -lah              # Detailed human-readable list with hidden files
+ls -lS /etc          # List /etc by file size
+ls -t | head -5      # 5 most recently modified files
+ls -d */             # List only directories
+ls -l --time-style=long-iso  # ISO date format
 ```
 
 ### `cd` - Change Directory
@@ -37,49 +83,307 @@ cd [directory]
 **Special Directories:**
 - `.`: Current directory
 - `..`: Parent directory
-- `~`: Home directory
+- `~` or `~username`: Home directory of current user or specified user
+- `-`: Previous working directory
 - `/`: Root directory
+
+**Environment Variables:**
+- `CDPATH`: Colon-separated list of directories to search
+- `HOME`: Default directory if no arguments provided
+- `OLDPWD`: Previous working directory
 
 **Examples:**
 ```bash
-cd /path/to/dir  # Change to specific directory
-cd ..            # Move up one directory
-cd ~             # Go to home directory
-cd /             # Go to root directory
+cd /var/www/html     # Absolute path
+cd ../relative/path  # Relative path
+cd ~/Documents      # Home directory
+cd -                 # Switch to previous directory
+cd                   # Go to home directory
 ```
 
-### `pwd` - Print Working Directory
+### `pushd`, `popd`, `dirs` - Directory Stack
 
-Display the current working directory.
+Manage a stack of directories for quick navigation.
 
 **Usage:**
 ```bash
-pwd
+pushd [directory]
+popd [options]
+dirs [options]
+```
+
+**Options for popd:**
+- `-n`: Don't change directory
+- `-q`: Quiet mode, don't print directory stack
+
+**Options for dirs:**
+- `-c`: Clear directory stack
+- `-l`: Expand ~ to home directory
+- `-p`: One directory per line
+- `-v`: One directory per line with indices
+
+**Examples:**
+```bash
+pushd /var/log      # Add /var/log to stack and cd to it
+pushd +2            # Rotate stack to bring 3rd directory to top
+popd                # Go to previous directory and remove from stack
+dirs -v             # Show directory stack with indices
+```
+
+### `tree` - List Directory Contents in Tree-like Format
+
+**Installation:**
+```bash
+# Ubuntu/Debian
+sudo apt install tree
+
+# RHEL/CentOS
+sudo yum install tree
+
+# macOS
+brew install tree
+```
+
+**Usage:**
+```bash
+tree [options] [directory]
+```
+
+**Options:**
+- `-a`: Show hidden files
+- `-d`: List directories only
+- `-f`: Print full path prefix
+- `-L level`: Max display depth
+- `-P pattern`: List files matching pattern
+- `-I pattern`: Exclude files matching pattern
+- `-h`: Print sizes in human readable format
+- `--du`: Show directory size
+
+**Examples:**
+```bash
+tree -L 2           # Show 2 levels deep
+tree -d             # Show directories only
+tree -h --du        # Show sizes in human readable format
+tree -P '*.py'      # Show only Python files
 ```
 
 ## File Operations
 
-### `cat` - View File Contents
-
-Display the contents of a file.
+### `cp` - Copy Files and Directories
 
 **Usage:**
 ```bash
-cat <file>
+cp [options] source... destination
 ```
+
+**Common Options:**
+- `-i`: Interactive mode (prompt before overwrite)
+- `-r, -R`: Copy directories recursively
+- `-v`: Verbose output
+- `-p`: Preserve file attributes
+- `-a`: Archive mode (preserve permissions, ownership, timestamps)
+- `-n`: No clobber (don't overwrite existing)
+- `-u`: Copy only when source is newer
+
+**Examples:**
+```bash
+cp file1.txt file2.txt     # Copy file
+cp -r dir1/ dir2/         # Copy directory
+cp -p file1.txt /backup/  # Preserve attributes
+cp -u *.txt backup/      # Update only changed files
+```
+
+### `mv` - Move or Rename Files
+
+**Usage:**
+```bash
+mv [options] source... destination
+```
+
+**Common Options:**
+- `-i`: Prompt before overwrite
+- `-n`: Don't overwrite existing
+- `-v`: Verbose output
+- `-u`: Move only when source is newer
+
+**Examples:**
+```bash
+mv oldname newname        # Rename file
+mv file.txt dir/         # Move file
+mv -i *.txt ~/backup/    # Interactive move
+```
+
+### `rm` - Remove Files or Directories
+
+**Usage:**
+```bash
+rm [options] file...
+```
+
+**Common Options:**
+- `-f`: Force removal
+- `-i`: Interactive mode
+- `-r, -R`: Remove directories recursively
+- `-v`: Verbose output
+
+**Examples:**
+```bash
+rm file.txt              # Remove file
+rm -r directory/         # Remove directory
+rm -i *.tmp             # Interactive removal
+rm -f /tmp/*.log        # Force remove
+```
+
+### `mkdir` - Create Directories
+
+**Usage:**
+```bash
+mkdir [options] directory...
+```
+
+**Common Options:**
+- `-p`: Create parent directories as needed
+- `-m`: Set file mode (permissions)
+- `-v`: Verbose output
+
+**Examples:**
+```bash
+mkdir newdir
+mkdir -p path/to/dir
+mkdir -m 755 secure_dir
+```
+
+### `touch` - Create Empty Files or Update Timestamps
+
+**Usage:**
+```bash
+touch [options] file...
+```
+
+**Common Options:**
+- `-a`: Change only access time
+- `-m`: Change only modification time
+- `-t`: Use specific timestamp
+- `-r`: Use another file's timestamp
+
+**Examples:**
+```bash
+touch file.txt           # Create empty file
+touch -t 202301011200 file.txt  # Set specific time
+touch -r ref.txt file.txt  # Use reference file's timestamp
+```
+
+### `cat` - Concatenate and Display Files
+
+**Usage:**
+```bash
+cat [options] [file...]
+```
+
+**Common Options:**
+- `-n`: Number all output lines
+- `-b`: Number non-empty output lines
+- `-s`: Squeeze multiple adjacent empty lines
+- `-v`: Display non-printing characters
 
 **Examples:**
 ```bash
 cat file.txt
+cat -n file.txt
+cat file1.txt file2.txt > combined.txt
 ```
 
-### `touch` - Create Empty File
-
-Create a new empty file or update file timestamps.
+### `less` - View File Contents with Navigation
 
 **Usage:**
 ```bash
-touch <file>
+less [options] file
+```
+
+**Navigation Commands:**
+- `Space`: Next page
+- `b`: Previous page
+- `g`: Go to start
+- `G`: Go to end
+- `/pattern`: Search forward
+- `?pattern`: Search backward
+- `n`: Next match
+- `N`: Previous match
+- `q`: Quit
+
+**Examples:**
+```bash
+less large_file.log
+less +F /var/log/syslog  # Follow mode (like tail -f)
+```
+
+### `head` and `tail` - View File Start/End
+
+**Usage:**
+```bash
+head [options] [file...]
+tail [options] [file...]
+```
+
+**Common Options:**
+- `-n NUM`: Show NUM lines (default: 10)
+- `-f`: Follow file changes (tail only)
+- `-q`: Quiet mode
+- `-v`: Verbose mode
+
+**Examples:**
+```bash
+head -n 20 file.txt
+tail -f /var/log/syslog  # Follow log file
+tail -n +100 file.txt   # Start from line 100
+```
+
+### `file` - Determine File Type
+
+**Usage:**
+```bash
+file [options] file...
+```
+
+**Examples:**
+```bash
+file document.pdf
+file /bin/ls
+```
+
+### `stat` - Display File Status
+
+**Usage:**
+```bash
+stat [options] file...
+```
+
+**Common Options:**
+- `-c`: Custom output format
+- `-f`: Display filesystem status
+- `-t`: Display in terse format
+
+**Examples:**
+```bash
+stat file.txt
+stat -c "%A %n" *  # Permissions and filenames
+```
+
+### `ln` - Create Links
+
+**Usage:**
+```bash
+# Hard link
+ln source_file link_name
+
+# Symbolic link
+ln -s source_file link_name
+```
+
+**Examples:**
+```bash
+ln -s /path/to/original /path/to/link
+ln file.txt hardlink.txt
 ```
 
 **Examples:**
