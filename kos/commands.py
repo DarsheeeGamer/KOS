@@ -127,54 +127,86 @@ class KaedeShell(cmd.Cmd):
         return stop
 
     def default(self, line: str) -> bool:
-        """Handle unknown commands, including installed packages"""
-        # Parse command and arguments
-        cmd_parts = shlex.split(line)
-        cmd_name = cmd_parts[0] if cmd_parts else ""
-        args = cmd_parts[1:] if len(cmd_parts) > 1 else []
-        
-        # Skip empty commands
-        if not cmd_name:
+        """Handle unknown commands by checking if they are applications."""
+        # Skip empty lines
+        if not line or not line.strip():
             return False
             
-        # Try to run command from app index
-        if hasattr(self.km, 'app_index'):
-            # First check if it's in the app index by name
-            app = self.km.app_index.get_app(cmd_name)
+        # Parse command and arguments
+        try:
+            cmd_parts = shlex.split(line)
+        except ValueError as e:
+            print(f"kos: error parsing command: {str(e)}")
+            return False
             
-            # If not found by name, check by alias
-            if not app:
-                app = self.km.app_index.get_app_by_alias(cmd_name)
+        if not cmd_parts:
+            return False
+            
+        cmd_name = cmd_parts[0]
+        args = cmd_parts[1:] if len(cmd_parts) > 1 else []
+        
+        try:
+            # First try built-in commands
+            if hasattr(self, f'do_{cmd_name}'):
+                return getattr(self, f'do_{cmd_name}')(' '.join(args))
                 
-            # If found in app index, run it
-            if app:
-                logger.info(f"Running app from index: {cmd_name}")
+            # Then try to run as an application through package manager
+            if hasattr(self.km, 'run_program'):
                 try:
-                    self.km.run_program(cmd_name, args)
+                    if self.km.run_program(cmd_name, args):
+                        return False
                 except Exception as e:
-                    print(f"Error running {cmd_name}: {str(e)}")
-                # Always return False to prevent shell from exiting
-                return False
-        
-        # Fall back to package database if app index doesn't exist or command not found
-        if hasattr(self.km, 'package_db'):
-            # Get all installed packages
-            installed_packages = self.km.package_db.list_installed()
-            
-            # Check if the command matches any installed package name
-            for pkg in installed_packages:
-                if pkg.name == cmd_name:
-                    logger.info(f"Running installed package: {cmd_name}")
-                    try:
-                        self.km.run_program(cmd_name, args)
-                    except Exception as e:
-                        print(f"Error running {cmd_name}: {str(e)}")
-                    # Always return False to prevent shell from exiting
+                    print(f"kos: error running {cmd_name}: {str(e)}")
+                    logger.error(f"Error running {cmd_name}: {str(e)}", exc_info=True)
                     return False
-        
-        # Command not found
-        print(f"kos: command not found: {cmd_name}")
-        return False
+            
+            # Check app index
+            if hasattr(self.km, 'app_index'):
+                app = self.km.app_index.get_app(cmd_name)
+                if not app:
+                    app = self.km.app_index.get_app_by_alias(cmd_name)
+                
+                if app:
+                    logger.info(f"Running app from index: {cmd_name}")
+                    try:
+                        if self.km.run_program(cmd_name, args):
+                            return False
+                    except Exception as e:
+                        print(f"kos: error running {cmd_name}: {str(e)}")
+                        logger.error(f"Error running {cmd_name}: {str(e)}", exc_info=True)
+                        return False
+            
+            # Check package database
+            if hasattr(self.km, 'package_db'):
+                try:
+                    installed_packages = self.km.package_db.list_installed()
+                    for pkg in installed_packages:
+                        if pkg.name == cmd_name:
+                            logger.info(f"Running installed package: {cmd_name}")
+                            if self.km.run_program(cmd_name, args):
+                                return False
+                except Exception as e:
+                    logger.error(f"Error accessing package database: {str(e)}", exc_info=True)
+            
+            # Command not found
+            print(f"kos: command not found: {cmd_name}")
+            return False
+            
+        except SystemExit as e:
+            # Catch any SystemExit exceptions from applications
+            print(f"kos: application exited with code {getattr(e, 'code', 1)}")
+            return False
+            
+        except KeyboardInterrupt:
+            # Handle Ctrl+C
+            print("^C")
+            return False
+            
+        except Exception as e:
+            # Catch-all for any other exceptions
+            print(f"kos: error executing command: {str(e)}")
+            logger.error(f"Command execution error: {str(e)}", exc_info=True)
+            return False
 
     def do_help(self, arg):
         """Show help about commands"""

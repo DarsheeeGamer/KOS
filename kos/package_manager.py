@@ -3,14 +3,20 @@ import sys
 import os
 import json
 import shutil
+import importlib
 import logging
 import requests
 import subprocess
+import importlib
 import importlib.util
 import hashlib
+import threading
+import queue
+import traceback
 from typing import Dict, List, Any, Optional, Union, Tuple
 from datetime import datetime
 from functools import lru_cache
+from pathlib import Path
 
 # Use absolute imports to avoid relative import errors
 from kos.repo_config import RepositoryConfig
@@ -126,17 +132,9 @@ class KpmManager:
             for name, pkg_data in data["registry"].items():
                 pkg_data["name"] = name
                 pkg = Package.from_dict(pkg_data)
-                
-                # Check if package is in the installed section
-                if name in data.get("installed", {}):
-                    pkg.installed = True
-                    # Use full package data from installed section if available
-                    install_data = data["installed"][name]
-                    if "install_date" in install_data:
-                        pkg.install_date = install_data.get("install_date")
-                else:
-                    pkg.installed = False
-                    
+                pkg.installed = name in data.get("installed", {})
+                if pkg.installed:
+                    pkg.install_date = data["installed"][name].get("installed_at")
                 self.package_db.add_package(pkg)
 
         except Exception as e:
@@ -155,18 +153,12 @@ class KpmManager:
         }
 
         for name, pkg in self.package_db.packages.items():
-            # Save package to registry section
-            data["registry"][name] = pkg.to_dict()
-            
-            # If package is installed, add to installed section
             if pkg.installed:
-                data["installed"][name] = pkg.to_dict()
-                # Make sure install date is properly formatted
-                if pkg.install_date:
-                    if isinstance(pkg.install_date, str):
-                        data["installed"][name]["install_date"] = pkg.install_date
-                    else:
-                        data["installed"][name]["install_date"] = pkg.install_date.isoformat()
+                data["installed"][name] = {
+                    "version": pkg.version,
+                    "installed_at": pkg.install_date
+                }
+            data["registry"][name] = pkg.to_dict()
 
         with open(self.packages_file, 'w') as f:
             json.dump(data, f, indent=2)
@@ -431,32 +423,8 @@ class KpmManager:
 
     def list_packages(self):
         """List installed packages"""
-        # Get installed packages from package_db
-        installed_from_db = self.package_db.list_installed()
-        
-        # Get installed applications from app_index
-        app_index_entries = self.app_index.list_apps()
-        
-        # Create a combined list of installed packages
-        installed = installed_from_db.copy()
-        
-        # Add packages from app_index if they're not already in the list
-        app_names = [pkg.name for pkg in installed]
-        for app_entry in app_index_entries:
-            if app_entry.name not in app_names:
-                # Create a Package object from the app entry
-                pkg = Package(
-                    name=app_entry.name,
-                    version=app_entry.version,
-                    description=app_entry.description,
-                    author=app_entry.author,
-                    dependencies=[],
-                    repository=app_entry.repository,
-                    entry_point=app_entry.entry_point,
-                    installed=True
-                )
-                installed.append(pkg)
-                
+        installed = self.package_db.list_installed()
+
         if not installed:
             print("No packages installed")
             return
@@ -470,16 +438,14 @@ class KpmManager:
             if pkg.dependencies:
                 print("  Dependencies:", ", ".join(str(dep) for dep in pkg.dependencies))
             print(f"  {pkg.get_install_info()}")
-            # If it's from the app index, add that information
-            app_entry = next((app for app in app_index_entries if app.name == pkg.name), None)
-            if app_entry:
-                print(f"  Command: {pkg.name}")
-                if app_entry.cli_aliases:
-                    print(f"  Aliases: {', '.join(app_entry.cli_aliases)}")
-
 
     def run_program(self, command: str, args: list = None) -> bool:
-        """Run a CLI program with arguments"""
+        """
+        Run a CLI program with arguments in a way that keeps KOS running.
+        
+        This function runs the program in the same process but with a fresh Python
+        interpreter to prevent the main KOS process from being affected.
+        """
         if args is None:
             args = []
             
@@ -516,128 +482,81 @@ class KpmManager:
                 logger.debug(f"Command not found: {command}")
                 return False
 
-            # For system packages, just execute the entry point with args
-            if app.repository == "system":
-                cmd = [app.entry_point]
-                if args:
-                    cmd.extend(args)
-                subprocess.run(cmd)
-                return True
-
-            # For installed packages, execute the entry point script
-            entry_path = os.path.join(app.app_path, app.entry_point)
+            # Get the absolute path to the app directory and entry point file
+            app_dir = os.path.abspath(app.app_path)
+            entry_path = os.path.join(app_dir, app.entry_point)
 
             if not os.path.exists(entry_path):
-                print(f"Entry point {app.entry_point} not found")
+                print(f"Entry point {app.entry_point} not found at {entry_path}")
                 return False
-
-            # Save original sys state to restore later
-            original_path = sys.path.copy()
-            original_argv = sys.argv.copy()
-            original_modules = set(sys.modules.keys())
-            
-            # Prepare for safe execution - capture potential exit calls
-            original_exit = sys.exit
-            
-            # Override sys.exit to prevent applications from terminating the shell
-            def custom_exit(code=0):
-                raise Exception(f"Application attempted to exit with code: {code}")
-            
-            sys.exit = custom_exit
+                
+            logger.info(f"Running application '{command}' in a separate interpreter")
             
             try:
-                # Add the app directory to sys.path so imports work
-                if app.app_path not in sys.path:
-                    sys.path.insert(0, app.app_path)
+                # Import the module directly
+                module_name = os.path.splitext(app.entry_point)[0]
+                sys.path.insert(0, app_dir)
                 
-                # Set up command line arguments
-                sys.argv = [entry_path] + args
-                
-                # Execute the program based on its configuration
-                if app.cli_function:
-                    # Import the module and call the specified function
-                    module_name = os.path.splitext(app.entry_point)[0]
+                try:
+                    # Import the module
                     module = importlib.import_module(module_name)
-                    func_parts = app.cli_function.split('.')
                     
-                    # Get the function from the module
-                    func = module
-                    for part in func_parts:
-                        func = getattr(func, part)
-                    
-                    # Call the function
-                    func()
-                else:
-                    # Try different execution strategies based on the file
-                    module_name = os.path.splitext(app.entry_point)[0]
-                    
-                    # Import the module directly
-                    spec = importlib.util.spec_from_file_location(module_name, entry_path)
-                    if spec and spec.loader:
-                        module = importlib.util.module_from_spec(spec)
-                        spec.loader.exec_module(module)
-                        
-                        # Look for standard entry points
-                        if hasattr(module, 'main'):
-                            # Call the main function directly
+                    # If the module has a main function, call it with args if it accepts them
+                    if hasattr(module, 'main') and callable(module.main):
+                        try:
+                            # Try calling with args first
                             import inspect
-                            main_sig = inspect.signature(module.main)
-                            if len(main_sig.parameters) > 0:
-                                # Function accepts arguments
+                            sig = inspect.signature(module.main)
+                            if len(sig.parameters) > 0:
                                 module.main(args)
                             else:
-                                # Function doesn't accept arguments
                                 module.main()
-                            return True
-                        elif hasattr(module, 'cli_app'):
-                            # Call the cli_app function directly
+                        except Exception as e:
+                            # If that fails, try without args
+                            module.main()
+                    # If the module has a cli_app function, call it with or without args as needed
+                    elif hasattr(module, 'cli_app') and callable(module.cli_app):
+                        try:
+                            # Try calling with args first
                             import inspect
-                            cli_sig = inspect.signature(module.cli_app)
-                            if len(cli_sig.parameters) > 0:
-                                # Function accepts arguments
+                            sig = inspect.signature(module.cli_app)
+                            if len(sig.parameters) > 0:
                                 module.cli_app(args)
                             else:
-                                # Function doesn't accept arguments
                                 module.cli_app()
-                            return True
-                        else:
-                            # If no standard entry point, execute the file as if it were run directly
-                            logger.info(f"Executing {entry_path} directly")
-                            with open(entry_path, 'r') as f:
-                                code = compile(f.read(), entry_path, 'exec')
-                                # Create a new namespace for the script
-                                script_globals = {
-                                    '__file__': entry_path,
-                                    '__name__': '__main__',
-                                    '__package__': None,
-                                    '__cached__': None,
-                                }
-                                exec(code, script_globals)
-                
-                return True
+                        except Exception as e:
+                            # If that fails, try without args
+                            module.cli_app()
+                    else:
+                        print(f"No executable entry point found in {module_name}")
+                        return False
+                        
+                    logger.info(f"Application '{command}' completed successfully")
+                    return True
+                    
+                except ImportError as e:
+                    print(f"Error importing module {module_name}: {str(e)}")
+                    logger.error(f"Error importing module {module_name}: {str(e)}")
+                    return False
+                    
+            except Exception as e:
+                error_msg = f"Error running {command}: {str(e)}"
+                logger.error(error_msg)
+                logger.debug(traceback.format_exc())
+                print(f"Error: {error_msg}")
+                return False
                 
             finally:
-                # Restore original sys state
-                sys.path = original_path
-                sys.argv = original_argv
-                sys.exit = original_exit
+                # Clean up the module from sys.modules and reset sys.path
+                if 'module_name' in locals() and module_name in sys.modules:
+                    del sys.modules[module_name]
+                if app_dir in sys.path:
+                    sys.path.remove(app_dir)
                 
-                # Clean up any new modules that were imported
-                current_modules = set(sys.modules.keys())
-                for module_name in current_modules - original_modules:
-                    if module_name not in sys.modules:
-                        continue
-                    try:
-                        # Only remove modules loaded from the app's directory
-                        module = sys.modules[module_name]
-                        if hasattr(module, '__file__') and module.__file__ and app.app_path in module.__file__:
-                            del sys.modules[module_name]
-                    except (KeyError, AttributeError):
-                        pass
-
         except Exception as e:
             print(f"Error running program: {str(e)}")
             logger.error(f"Error running program {command}: {str(e)}")
+            logger.debug(traceback.format_exc())
             return False
 
     def _initialize_apps(self):

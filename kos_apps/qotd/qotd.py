@@ -80,32 +80,43 @@ quote list             List all quotes
 quote help             Show this help message
     """)
 
-def cli_app() -> None:
-    """Main CLI application entry point"""
-    import sys
+def cli_app(args=None):
+    """Command-line interface for the quote manager"""
     
     manager = QuoteManager()
-    args = sys.argv[1:] if len(sys.argv) > 1 else []
+    
+    # If args is None, get from sys.argv, otherwise use provided args
+    # This allows KOS to call the function directly with arguments
+    if args is None:
+        import sys
+        args = sys.argv[1:] if len(sys.argv) > 1 else []
 
     if not args or args[0] == 'help':
         print_help()
-        return
+        return True  # Indicate successful execution
 
     if args[0] == 'add':
         print("\nAdd a new quote:")
-        text = input("Enter the quote text: ").strip()
-        author = input("Enter the author name: ").strip()
-        
-        if manager.add_quote(text, author):
-            print("\nQuote added successfully!")
-        else:
-            print("\nFailed to add quote. Make sure both text and author are provided.")
+        try:
+            text = input("Enter the quote text: ").strip()
+            author = input("Enter the author name: ").strip()
+            
+            if manager.add_quote(text, author):
+                print("\nQuote added successfully!")
+            else:
+                print("\nFailed to add quote. Make sure both text and author are provided.")
+        except KeyboardInterrupt:
+            print("\nQuote addition cancelled.")
+        except Exception as e:
+            print(f"\nError adding quote: {str(e)}")
+        return True  # Indicate successful execution
     
     elif args[0] == 'list':
         quotes = manager.list_quotes()
         print(f"\nFound {len(quotes)} quotes:")
         for quote in quotes:
             print_quote(quote)
+        return True  # Indicate successful execution
     
     else:  # Default: show random quote
         quote = manager.get_random_quote()
@@ -113,6 +124,7 @@ def cli_app() -> None:
             print_quote(quote)
         else:
             print("No quotes found!")
+        return True  # Indicate successful execution
 
 if __name__ == '__main__':
     cli_app()

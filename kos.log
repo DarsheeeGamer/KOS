@@ -200,3 +200,188 @@
 2025-05-22 17:38:38,908 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
 2025-05-22 17:38:38,909 - KOS - INFO - Package Manager initialized
 2025-05-22 17:38:38,917 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:43:14,089 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:43:14,448 - KOS.package.app_index - INFO - Added application 'qotd' to index
+2025-05-22 17:43:27,981 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:43:27,981 - KOS - INFO - Basic directory structure created
+2025-05-22 17:43:27,981 - KOS - INFO - FileSystem initialized
+2025-05-22 17:43:27,982 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:43:27,983 - KOS - INFO - User System initialized
+2025-05-22 17:43:27,984 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 17:43:27,984 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:43:27,986 - KOS - INFO - Package Manager initialized
+2025-05-22 17:43:27,995 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:45:41,123 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:45:41,123 - KOS - INFO - Basic directory structure created
+2025-05-22 17:45:41,123 - KOS - INFO - FileSystem initialized
+2025-05-22 17:45:41,124 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:45:41,124 - KOS - INFO - User System initialized
+2025-05-22 17:45:41,126 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 17:45:41,128 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:45:41,130 - KOS - INFO - Package Manager initialized
+2025-05-22 17:45:41,137 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 18:06:17,732 - KOS.internal - INFO - KOS system started
+2025-05-22 18:06:17,734 - KOS - INFO - Initializing KOS components...
+2025-05-22 18:06:17,734 - KOS - INFO - Basic directory structure created
+2025-05-22 18:06:17,734 - KOS - INFO - FileSystem initialized
+2025-05-22 18:06:17,734 - KOS - INFO - Authentication Manager initialized
+2025-05-22 18:06:17,735 - KOS - INFO - User System initialized
+2025-05-22 18:06:17,736 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 18:06:17,736 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 18:06:17,739 - KOS - INFO - Package Manager initialized
+2025-05-22 18:06:17,748 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 18:54:04,717 - KOS.internal - INFO - KOS system started
+2025-05-22 18:54:04,717 - KOS - INFO - Initializing KOS components...
+2025-05-22 18:54:04,718 - KOS - INFO - Basic directory structure created
+2025-05-22 18:54:04,718 - KOS - INFO - FileSystem initialized
+2025-05-22 18:54:04,718 - KOS - INFO - Authentication Manager initialized
+2025-05-22 18:54:04,718 - KOS - INFO - User System initialized
+2025-05-22 18:54:04,720 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 18:54:04,720 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 18:54:04,722 - KOS - INFO - Package Manager initialized
+2025-05-22 18:54:04,731 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 18:54:15,803 - KOS.package_manager - INFO - Successfully executed qotd.cli_app()
+2025-05-22 18:57:41,886 - KOS.internal - INFO - KOS system started
+2025-05-22 18:57:41,886 - KOS - INFO - Initializing KOS components...
+2025-05-22 18:57:41,886 - KOS - INFO - Basic directory structure created
+2025-05-22 18:57:41,887 - KOS - INFO - FileSystem initialized
+2025-05-22 18:57:41,887 - KOS - INFO - Authentication Manager initialized
+2025-05-22 18:57:41,888 - KOS - INFO - User System initialized
+2025-05-22 18:57:41,889 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 18:57:41,889 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 18:57:41,891 - KOS - INFO - Package Manager initialized
+2025-05-22 18:57:41,899 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 18:58:41,244 - KOS.internal - INFO - KOS system started
+2025-05-22 18:58:41,244 - KOS - INFO - Initializing KOS components...
+2025-05-22 18:58:41,245 - KOS - INFO - Basic directory structure created
+2025-05-22 18:58:41,245 - KOS - INFO - FileSystem initialized
+2025-05-22 18:58:41,246 - KOS - INFO - Authentication Manager initialized
+2025-05-22 18:58:41,247 - KOS - INFO - User System initialized
+2025-05-22 18:58:41,248 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 18:58:41,248 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 18:58:41,250 - KOS - INFO - Package Manager initialized
+2025-05-22 18:58:41,259 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 18:58:49,528 - KOS.package_manager - INFO - Starting application 'qotd' in a separate thread
+2025-05-22 18:58:49,530 - KOS.package_manager - INFO - Successfully executed qotd.cli_app()
+2025-05-22 19:02:14,989 - KOS.internal - INFO - KOS system started
+2025-05-22 19:02:14,989 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:02:14,991 - KOS - INFO - Basic directory structure created
+2025-05-22 19:02:14,991 - KOS - INFO - FileSystem initialized
+2025-05-22 19:02:14,991 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:02:14,991 - KOS - INFO - User System initialized
+2025-05-22 19:02:14,992 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:02:14,993 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:02:14,995 - KOS - INFO - Package Manager initialized
+2025-05-22 19:02:15,005 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:02:23,718 - KOS.package_manager - INFO - Running application 'qotd' in a separate process
+2025-05-22 19:02:23,792 - KOS.package_manager - WARNING - Error output from qotd: C:\Program Files\Python312\python.exe: can't open file 'C:\\Users\\cleav\\Downloads\\KOS\\kos_apps\\qotd\\kos_apps\\qotd\\qotd.py': [Errno 2] No such file or directory
+
+2025-05-22 19:02:23,793 - KOS.package_manager - WARNING - Application 'qotd' exited with code 2
+2025-05-22 19:05:14,483 - KOS.internal - INFO - KOS system started
+2025-05-22 19:05:14,483 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:05:14,483 - KOS - INFO - Basic directory structure created
+2025-05-22 19:05:14,485 - KOS - INFO - FileSystem initialized
+2025-05-22 19:05:14,485 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:05:14,486 - KOS - INFO - User System initialized
+2025-05-22 19:05:14,487 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:05:14,488 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:05:14,489 - KOS - INFO - Package Manager initialized
+2025-05-22 19:05:14,614 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:05:18,336 - KOS.package_manager - INFO - Running application 'qotd' in a separate process
+2025-05-22 19:05:18,411 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-22 19:09:27,945 - KOS.internal - INFO - KOS system started
+2025-05-22 19:09:27,946 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:09:27,946 - KOS - INFO - Basic directory structure created
+2025-05-22 19:09:27,946 - KOS - INFO - FileSystem initialized
+2025-05-22 19:09:27,946 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:09:27,947 - KOS - INFO - User System initialized
+2025-05-22 19:09:27,947 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:09:27,948 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:09:27,949 - KOS - INFO - Package Manager initialized
+2025-05-22 19:09:27,956 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:14:14,868 - KOS.package_manager - INFO - Running application 'qotd' in a separate process
+2025-05-22 19:14:15,034 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-22 19:14:16,871 - KOS.internal - INFO - KOS system started
+2025-05-22 19:14:16,871 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:14:16,871 - KOS - INFO - Basic directory structure created
+2025-05-22 19:14:16,872 - KOS - INFO - FileSystem initialized
+2025-05-22 19:14:16,872 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:14:16,884 - KOS - INFO - User System initialized
+2025-05-22 19:14:16,905 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:14:16,919 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:14:16,935 - KOS - INFO - Package Manager initialized
+2025-05-22 19:14:16,942 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:14:18,444 - KOS.package_manager - INFO - Running application 'qotd' in a separate process
+2025-05-22 19:14:18,521 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-22 19:19:35,323 - KOS.internal - INFO - KOS system started
+2025-05-22 19:19:35,324 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:19:35,324 - KOS - INFO - Basic directory structure created
+2025-05-22 19:19:35,325 - KOS - INFO - FileSystem initialized
+2025-05-22 19:19:35,326 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:19:35,342 - KOS - INFO - User System initialized
+2025-05-22 19:19:35,346 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:19:35,348 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:19:35,351 - KOS - INFO - Package Manager initialized
+2025-05-22 19:19:35,378 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:57:31,430 - KOS.internal - INFO - KOS system started
+2025-05-22 19:57:31,431 - KOS - INFO - Initializing KOS components...
+2025-05-22 19:57:31,431 - KOS - INFO - Basic directory structure created
+2025-05-22 19:57:31,432 - KOS - INFO - FileSystem initialized
+2025-05-22 19:57:31,432 - KOS - INFO - Authentication Manager initialized
+2025-05-22 19:57:31,434 - KOS - INFO - User System initialized
+2025-05-22 19:57:31,435 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 19:57:31,435 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 19:57:31,436 - KOS - INFO - Package Manager initialized
+2025-05-22 19:57:31,450 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 19:57:34,870 - KOS.package_manager - INFO - Running application 'cal' in a separate process
+2025-05-22 19:57:34,946 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 20:31:39,492 - KOS.internal - INFO - KOS system started
+2025-05-22 20:31:39,493 - KOS - INFO - Initializing KOS components...
+2025-05-22 20:31:39,493 - KOS - INFO - Basic directory structure created
+2025-05-22 20:31:39,494 - KOS - INFO - FileSystem initialized
+2025-05-22 20:31:39,494 - KOS - INFO - Authentication Manager initialized
+2025-05-22 20:31:39,495 - KOS - INFO - User System initialized
+2025-05-22 20:31:39,496 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 20:31:39,497 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 20:31:39,499 - KOS - INFO - Package Manager initialized
+2025-05-22 20:31:39,512 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 20:31:40,444 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 20:31:40,447 - KOS.package_manager - ERROR - Error running cal: cli_app() takes 0 positional arguments but 1 was given
+2025-05-22 20:32:49,236 - KOS.internal - INFO - KOS system started
+2025-05-22 20:32:49,236 - KOS - INFO - Initializing KOS components...
+2025-05-22 20:32:49,237 - KOS - INFO - Basic directory structure created
+2025-05-22 20:32:49,237 - KOS - INFO - FileSystem initialized
+2025-05-22 20:32:49,237 - KOS - INFO - Authentication Manager initialized
+2025-05-22 20:32:49,238 - KOS - INFO - User System initialized
+2025-05-22 20:32:49,238 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 20:32:49,238 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 20:32:49,240 - KOS - INFO - Package Manager initialized
+2025-05-22 20:32:49,248 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 20:57:25,281 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 20:57:25,283 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 20:58:42,867 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 20:58:42,868 - KOS.package_manager - ERROR - Error running cal: cli_app() takes 0 positional arguments but 1 was given
+2025-05-22 20:58:45,595 - KOS.internal - INFO - KOS system started
+2025-05-22 20:58:45,595 - KOS - INFO - Initializing KOS components...
+2025-05-22 20:58:45,596 - KOS - INFO - Basic directory structure created
+2025-05-22 20:58:45,596 - KOS - INFO - FileSystem initialized
+2025-05-22 20:58:45,596 - KOS - INFO - Authentication Manager initialized
+2025-05-22 20:58:45,598 - KOS - INFO - User System initialized
+2025-05-22 20:58:45,617 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 20:58:45,618 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 20:58:45,622 - KOS - INFO - Package Manager initialized
+2025-05-22 20:58:45,636 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 20:58:46,215 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 20:58:46,217 - KOS.package_manager - INFO - Application 'cal' completed successfully
+2025-05-22 21:07:51,443 - KOS.internal - INFO - KOS system started
+2025-05-22 21:07:51,444 - KOS - INFO - Initializing KOS components...
+2025-05-22 21:07:51,444 - KOS - INFO - Basic directory structure created
+2025-05-22 21:07:51,445 - KOS - INFO - FileSystem initialized
+2025-05-22 21:07:51,445 - KOS - INFO - Authentication Manager initialized
+2025-05-22 21:07:51,445 - KOS - INFO - User System initialized
+2025-05-22 21:07:51,446 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-22 21:07:51,446 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 21:07:51,447 - KOS - INFO - Package Manager initialized
+2025-05-22 21:07:51,457 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 21:07:53,238 - KOS.package_manager - INFO - Running application 'cal' in a separate interpreter
+2025-05-22 21:07:53,240 - KOS.package_manager - INFO - Application 'cal' completed successfully

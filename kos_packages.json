@@ -94,7 +94,7 @@
       "description": "Example KOS application",
       "author": "system",
       "dependencies": [],
-      "install_date": "2025-05-22T17:38:38.908383",
+      "install_date": "2025-05-22T21:07:51.447338",
       "size": 0,
       "checksum": "",
       "homepage": "",
@@ -136,6 +136,23 @@
       "tags": [],
       "repository": "main",
       "entry_point": "calculator.py",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
+    "qotd": {
+      "name": "qotd",
+      "version": "1.0.0",
+      "description": "Quote of the Day - Get and manage daily inspirational quotes",
+      "author": "KOS",
+      "dependencies": [],
+      "install_date": "2025-05-22T17:43:14.448812",
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "main",
+      "entry_point": "qotd.py",
       "cli_aliases": [],
       "cli_function": ""
     }

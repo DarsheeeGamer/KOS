@@ -10,6 +10,7 @@ import logging
 import sys
 import time
 import psutil # Added import for system information
+from kos.internal import system_manager, register_exit_handler, exit as kos_exit
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
@@ -709,14 +710,21 @@ class KaedeShell(cmd.Cmd):
             print(f"useradd: {str(e)}")
 
     def do_exit(self, arg):
-        """Exit the shell"""
+        """Exit the shell properly using KOS internal exit system"""
+        logger.info("Exit command received")
         self._cleanup()
-        print("Exiting KaedeShell...")
-        return True
-
+        # Use internal KOS exit instead of returning True
+        kos_exit(0)
+        # This should never be reached, but just in case
+        return False
+        
     def do_EOF(self, arg):
         """Exit the shell on end of file"""
-        return self.do_exit(arg)
+        logger.info("EOF received")
+        # Only exit if user explicitly used Ctrl+D
+        # otherwise ignore to avoid accidental exits
+        self.do_exit(arg)
+        return False
 
     def do_cat(self, arg):
         """Display file contents with syntax highlighting"""
