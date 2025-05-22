@@ -1,47 +1,42 @@
 {
   "repositories": {
     "main": {
+      "name": "main",
       "url": "https://raw.githubusercontent.com/DarsheeeGamer/kos-repo/refs/heads/main",
-      "enabled": true,
-      "last_update": "2025-05-22T16:36:39.654143",
+      "active": true,
+      "last_update": "2025-05-22T17:35:59.161983",
       "packages": {
         "calculator": {
           "name": "calculator",
           "version": "1.0.0",
           "description": "Simple calculator application",
           "author": "KOS",
+          "dependencies": [],
           "entry_point": "calculator.py",
-          "files": [
-            "calculator.py"
-          ],
-          "checksum": "TEST_CHECKSUM_DISABLED"
+          "tags": [],
+          "repository": "main"
         },
         "qotd": {
           "name": "qotd",
           "version": "1.0.0",
           "description": "Quote of the Day - Get and manage daily inspirational quotes",
           "author": "KOS",
+          "dependencies": [],
           "entry_point": "qotd.py",
-          "files": [
-            "qotd.py",
-            "quotes.json"
-          ],
-          "checksum": "TEST_CHECKSUM_DISABLED"
+          "tags": [],
+          "repository": "main"
         },
         "cal": {
           "name": "cal",
           "version": "0.1.0",
           "description": "a simple calender app",
           "author": "InZane84",
+          "dependencies": [],
           "entry_point": "cal.py",
-          "files": [
-            "cal.py"
-          ],
-          "checksum": "TEST_CHECKSUM_DISABLED"
+          "tags": [],
+          "repository": "main"
         }
-      },
-      "display_name": "KOS Repository",
-      "description": "Kaede Package Manager Repository"
+      }
     }
   }
 }

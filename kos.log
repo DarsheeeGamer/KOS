@@ -1,7 +1,202 @@
-2025-05-21 23:33:27,890 - KOS - INFO - Initializing KOS components...
-2025-05-21 23:33:27,890 - KOS - INFO - Basic directory structure created
-2025-05-21 23:33:27,890 - KOS - INFO - FileSystem initialized
-2025-05-21 23:33:27,890 - KOS - INFO - Authentication Manager initialized
-2025-05-21 23:33:27,891 - KOS - INFO - User System initialized
-2025-05-21 23:33:27,892 - KOS - INFO - Package Manager initialized
-2025-05-21 23:33:27,899 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:11:38,265 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:11:38,265 - KOS - INFO - Basic directory structure created
+2025-05-22 16:11:38,265 - KOS - INFO - FileSystem initialized
+2025-05-22 16:11:38,266 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:11:38,268 - KOS - INFO - User System initialized
+2025-05-22 16:11:38,268 - KOS - INFO - Package Manager initialized
+2025-05-22 16:11:38,276 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:18:45,301 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:18:45,302 - KOS - INFO - Basic directory structure created
+2025-05-22 16:18:45,302 - KOS - INFO - FileSystem initialized
+2025-05-22 16:18:45,302 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:18:45,305 - KOS - INFO - User System initialized
+2025-05-22 16:18:45,306 - KOS - INFO - Package Manager initialized
+2025-05-22 16:18:45,321 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:25:02,803 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:25:02,804 - KOS - INFO - Basic directory structure created
+2025-05-22 16:25:02,804 - KOS - INFO - FileSystem initialized
+2025-05-22 16:25:02,804 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:25:02,806 - KOS - INFO - User System initialized
+2025-05-22 16:25:02,809 - KOS - INFO - Package Manager initialized
+2025-05-22 16:25:02,831 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:30:59,804 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:30:59,804 - KOS - INFO - Basic directory structure created
+2025-05-22 16:30:59,804 - KOS - INFO - FileSystem initialized
+2025-05-22 16:30:59,804 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:30:59,805 - KOS - INFO - User System initialized
+2025-05-22 16:30:59,806 - KOS - INFO - Package Manager initialized
+2025-05-22 16:30:59,813 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:31:52,226 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:31:52,226 - KOS - INFO - Basic directory structure created
+2025-05-22 16:31:52,227 - KOS - INFO - FileSystem initialized
+2025-05-22 16:31:52,227 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:31:52,228 - KOS - INFO - User System initialized
+2025-05-22 16:31:52,228 - KOS - INFO - Package Manager initialized
+2025-05-22 16:31:52,236 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:34:15,082 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-22 16:40:22,240 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:40:22,240 - KOS - INFO - Basic directory structure created
+2025-05-22 16:40:22,240 - KOS - INFO - FileSystem initialized
+2025-05-22 16:40:22,240 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:40:22,242 - KOS - INFO - User System initialized
+2025-05-22 16:40:22,243 - KOS - INFO - Package Manager initialized
+2025-05-22 16:40:22,251 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 16:44:08,565 - KOS - INFO - Initializing KOS components...
+2025-05-22 16:44:08,565 - KOS - INFO - Basic directory structure created
+2025-05-22 16:44:08,565 - KOS - INFO - FileSystem initialized
+2025-05-22 16:44:08,565 - KOS - INFO - Authentication Manager initialized
+2025-05-22 16:44:08,566 - KOS - INFO - User System initialized
+2025-05-22 16:44:08,567 - KOS - INFO - Package Manager initialized
+2025-05-22 16:44:08,576 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:04:26,297 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:04:26,297 - KOS - INFO - Basic directory structure created
+2025-05-22 17:04:26,297 - KOS - INFO - FileSystem initialized
+2025-05-22 17:04:26,297 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:04:26,298 - KOS - INFO - User System initialized
+2025-05-22 17:04:26,298 - KOS.package.app_index - INFO - Loaded 0 applications from index
+2025-05-22 17:04:26,299 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:04:26,300 - KOS - INFO - Package Manager initialized
+2025-05-22 17:04:26,310 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:04:53,350 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:04:53,351 - KOS - INFO - Basic directory structure created
+2025-05-22 17:04:53,351 - KOS - INFO - FileSystem initialized
+2025-05-22 17:04:53,351 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:04:53,353 - KOS - INFO - User System initialized
+2025-05-22 17:04:53,353 - KOS.package.app_index - INFO - Loaded 0 applications from index
+2025-05-22 17:04:53,354 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:04:53,355 - KOS - INFO - Package Manager initialized
+2025-05-22 17:04:53,365 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:04:57,137 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:05:04,036 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:05:04,468 - KOS.package.app_index - INFO - Added application 'calculator' to index
+2025-05-22 17:05:07,231 - KOS.package_manager - INFO - Running command: python kos_apps\calculator\calculator.py
+2025-05-22 17:05:27,280 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:05:27,661 - KOS.package.app_index - INFO - Added application 'cal' to index
+2025-05-22 17:05:29,260 - KOS.package_manager - INFO - Running command: python kos_apps\cal\cal.py
+2025-05-22 17:07:13,525 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:07:13,525 - KOS - INFO - Basic directory structure created
+2025-05-22 17:07:13,526 - KOS - INFO - FileSystem initialized
+2025-05-22 17:07:13,526 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:07:13,527 - KOS - INFO - User System initialized
+2025-05-22 17:07:13,527 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:07:13,527 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:07:13,528 - KOS - INFO - Package Manager initialized
+2025-05-22 17:07:13,537 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:07:52,955 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:07:52,955 - KOS - INFO - Basic directory structure created
+2025-05-22 17:07:52,955 - KOS - INFO - FileSystem initialized
+2025-05-22 17:07:52,956 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:07:52,956 - KOS - INFO - User System initialized
+2025-05-22 17:07:52,957 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:07:52,957 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:07:52,957 - KOS - INFO - Package Manager initialized
+2025-05-22 17:07:52,965 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:07:56,373 - KOS.package_manager - ERROR - Error running program cal: cli_app() takes 0 positional arguments but 1 was given
+2025-05-22 17:08:26,505 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-22 17:08:46,094 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:08:46,094 - KOS - INFO - Basic directory structure created
+2025-05-22 17:08:46,094 - KOS - INFO - FileSystem initialized
+2025-05-22 17:08:46,094 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:08:46,094 - KOS - INFO - User System initialized
+2025-05-22 17:08:46,096 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:08:46,096 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:08:46,097 - KOS - INFO - Package Manager initialized
+2025-05-22 17:08:46,104 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:08:52,152 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:08:52,152 - KOS - INFO - Basic directory structure created
+2025-05-22 17:08:52,152 - KOS - INFO - FileSystem initialized
+2025-05-22 17:08:52,152 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:08:52,154 - KOS - INFO - User System initialized
+2025-05-22 17:08:52,154 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:08:52,155 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:08:52,156 - KOS - INFO - Package Manager initialized
+2025-05-22 17:08:52,162 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:09:13,055 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:09:13,129 - KOS.package.app_index - INFO - Added application 'cal' to index
+2025-05-22 17:09:14,624 - KOS.package_manager - INFO - Running command: python kos_apps\cal\cal.py
+2025-05-22 17:12:34,471 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:12:34,472 - KOS - INFO - Basic directory structure created
+2025-05-22 17:12:34,472 - KOS - INFO - FileSystem initialized
+2025-05-22 17:12:34,472 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:12:34,473 - KOS - INFO - User System initialized
+2025-05-22 17:12:34,473 - KOS.package.app_index - INFO - Loaded 1 applications from index
+2025-05-22 17:12:34,473 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:12:34,475 - KOS - INFO - Package Manager initialized
+2025-05-22 17:12:34,482 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:13:04,565 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:13:04,565 - KOS - INFO - Basic directory structure created
+2025-05-22 17:13:04,565 - KOS - INFO - FileSystem initialized
+2025-05-22 17:13:04,566 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:13:04,567 - KOS - INFO - User System initialized
+2025-05-22 17:13:04,567 - KOS.package.app_index - INFO - Loaded 1 applications from index
+2025-05-22 17:13:04,568 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:13:04,569 - KOS - INFO - Package Manager initialized
+2025-05-22 17:13:04,585 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:13:45,192 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:13:45,193 - KOS - INFO - Basic directory structure created
+2025-05-22 17:13:45,193 - KOS - INFO - FileSystem initialized
+2025-05-22 17:13:45,193 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:13:45,195 - KOS - INFO - User System initialized
+2025-05-22 17:13:45,195 - KOS.package.app_index - INFO - Loaded 1 applications from index
+2025-05-22 17:13:45,195 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:13:45,196 - KOS - INFO - Package Manager initialized
+2025-05-22 17:13:45,205 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:31:27,193 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:31:47,155 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:31:47,483 - KOS.package.app_index - INFO - Added application 'cal' to index
+2025-05-22 17:33:33,303 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:33:33,303 - KOS - INFO - Basic directory structure created
+2025-05-22 17:33:33,303 - KOS - INFO - FileSystem initialized
+2025-05-22 17:33:33,303 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:33:33,304 - KOS - INFO - User System initialized
+2025-05-22 17:33:33,304 - KOS.package.app_index - INFO - Loaded 1 applications from index
+2025-05-22 17:33:33,306 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:33:33,306 - KOS - INFO - Package Manager initialized
+2025-05-22 17:33:33,319 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:35:43,517 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:35:43,517 - KOS - INFO - Basic directory structure created
+2025-05-22 17:35:43,517 - KOS - INFO - FileSystem initialized
+2025-05-22 17:35:43,517 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:35:43,519 - KOS - INFO - User System initialized
+2025-05-22 17:35:43,520 - KOS.package.app_index - INFO - Loaded 1 applications from index
+2025-05-22 17:35:43,520 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:35:43,522 - KOS - INFO - Package Manager initialized
+2025-05-22 17:35:43,528 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:35:59,162 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-22 17:35:59,497 - KOS.package.app_index - INFO - Added application 'calculator' to index
+2025-05-22 17:36:06,118 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:36:06,118 - KOS - INFO - Basic directory structure created
+2025-05-22 17:36:06,118 - KOS - INFO - FileSystem initialized
+2025-05-22 17:36:06,119 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:36:06,119 - KOS - INFO - User System initialized
+2025-05-22 17:36:06,120 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:36:06,120 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:36:06,121 - KOS - INFO - Package Manager initialized
+2025-05-22 17:36:06,129 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:37:06,413 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:37:06,413 - KOS - INFO - Basic directory structure created
+2025-05-22 17:37:06,413 - KOS - INFO - FileSystem initialized
+2025-05-22 17:37:06,413 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:37:06,415 - KOS - INFO - User System initialized
+2025-05-22 17:37:06,415 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:37:06,417 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:37:06,417 - KOS - INFO - Package Manager initialized
+2025-05-22 17:37:06,426 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:38:16,652 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:38:16,653 - KOS - INFO - Basic directory structure created
+2025-05-22 17:38:16,653 - KOS - INFO - FileSystem initialized
+2025-05-22 17:38:16,653 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:38:16,655 - KOS - INFO - User System initialized
+2025-05-22 17:38:16,655 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:38:16,657 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:38:16,658 - KOS - INFO - Package Manager initialized
+2025-05-22 17:38:16,667 - KOS - INFO - Shell initialized, starting command loop...
+2025-05-22 17:38:38,906 - KOS - INFO - Initializing KOS components...
+2025-05-22 17:38:38,907 - KOS - INFO - Basic directory structure created
+2025-05-22 17:38:38,907 - KOS - INFO - FileSystem initialized
+2025-05-22 17:38:38,907 - KOS - INFO - Authentication Manager initialized
+2025-05-22 17:38:38,908 - KOS - INFO - User System initialized
+2025-05-22 17:38:38,908 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-22 17:38:38,908 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-22 17:38:38,909 - KOS - INFO - Package Manager initialized
+2025-05-22 17:38:38,917 - KOS - INFO - Shell initialized, starting command loop...

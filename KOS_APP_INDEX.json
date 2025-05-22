@@ -1,0 +1,28 @@
+{
+  "apps": {
+    "cal": {
+      "name": "cal",
+      "version": "0.1.0",
+      "entry_point": "cal.py",
+      "app_path": "kos_apps\\cal",
+      "cli_aliases": [],
+      "cli_function": "",
+      "description": "a simple calender app",
+      "author": "InZane84",
+      "repository": "main",
+      "tags": []
+    },
+    "calculator": {
+      "name": "calculator",
+      "version": "1.0.0",
+      "entry_point": "calculator.py",
+      "app_path": "kos_apps\\calculator",
+      "cli_aliases": [],
+      "cli_function": "",
+      "description": "Simple calculator application",
+      "author": "KOS",
+      "repository": "main",
+      "tags": []
+    }
+  }
+}

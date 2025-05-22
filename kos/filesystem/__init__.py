@@ -80,9 +80,10 @@ class FileSystem(BaseFileSystem):
         """Print working directory"""
         return self.current_path or "/"
 
-    def mkdir(self, path: str) -> None:
+    def mkdir(self, path: str, *args) -> None:
         """Create a directory"""
         logger.debug(f"FileSystem: creating directory {path}")
+        # Ignore any additional arguments (for backward compatibility)
         super().mkdir(path)
 
     def touch(self, path: str) -> None:

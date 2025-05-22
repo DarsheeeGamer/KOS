@@ -127,8 +127,53 @@ class KaedeShell(cmd.Cmd):
         return stop
 
     def default(self, line: str) -> bool:
-        """Handle unknown commands"""
-        print(f"kos: command not found: {line}")
+        """Handle unknown commands, including installed packages"""
+        # Parse command and arguments
+        cmd_parts = shlex.split(line)
+        cmd_name = cmd_parts[0] if cmd_parts else ""
+        args = cmd_parts[1:] if len(cmd_parts) > 1 else []
+        
+        # Skip empty commands
+        if not cmd_name:
+            return False
+            
+        # Try to run command from app index
+        if hasattr(self.km, 'app_index'):
+            # First check if it's in the app index by name
+            app = self.km.app_index.get_app(cmd_name)
+            
+            # If not found by name, check by alias
+            if not app:
+                app = self.km.app_index.get_app_by_alias(cmd_name)
+                
+            # If found in app index, run it
+            if app:
+                logger.info(f"Running app from index: {cmd_name}")
+                try:
+                    self.km.run_program(cmd_name, args)
+                except Exception as e:
+                    print(f"Error running {cmd_name}: {str(e)}")
+                # Always return False to prevent shell from exiting
+                return False
+        
+        # Fall back to package database if app index doesn't exist or command not found
+        if hasattr(self.km, 'package_db'):
+            # Get all installed packages
+            installed_packages = self.km.package_db.list_installed()
+            
+            # Check if the command matches any installed package name
+            for pkg in installed_packages:
+                if pkg.name == cmd_name:
+                    logger.info(f"Running installed package: {cmd_name}")
+                    try:
+                        self.km.run_program(cmd_name, args)
+                    except Exception as e:
+                        print(f"Error running {cmd_name}: {str(e)}")
+                    # Always return False to prevent shell from exiting
+                    return False
+        
+        # Command not found
+        print(f"kos: command not found: {cmd_name}")
         return False
 
     def do_help(self, arg):
@@ -808,13 +853,18 @@ class KaedeShell(cmd.Cmd):
                 if results:
                     print("\nSearch results:")
                     for pkg in results:
-                        print(f"\n{pkg.name} ({pkg.version})")
-                        print(f"  Description: {pkg.description}")
-                        print(f"  Author: {pkg.author}")
-                        if pkg.dependencies:
-                            print("  Dependencies:", ", ".join(str(dep) for dep in pkg.dependencies))
+                        # Handle dictionary results from the updated search method
+                        print(f"\n{pkg['name']} ({pkg['version']})")
+                        print(f"  Description: {pkg['description']}")
+                        print(f"  Author: {pkg['author']}")
+                        if pkg.get('dependencies'):
+                            deps = pkg.get('dependencies', [])
+                            if deps:
+                                print(f"  Dependencies: {', '.join(str(d) for d in deps)}")
+                        if pkg.get('installed'):
+                            print("  [Installed]")
                 else:
-                            print("No packages found")
+                    print("No packages found")
             elif command == "add-repo" and len(args) > 1:
                 repo_url = args[1] # Get the URL directly from args[1]
                         # url = args[2] if len(args) > 2 else f"https://{name}.kos-repo.org" # Remove this line, we don't need 'name' here

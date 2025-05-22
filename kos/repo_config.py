@@ -50,41 +50,54 @@ class RepositoryConfig:
             "name": name,
             **repo
         } for name, repo in self.repos["repositories"].items()]
+        
+    def get_active_repositories(self):
+        """Returns a list of active/enabled repositories"""
+        return [name for name, repo in self.repos["repositories"].items() if repo.get("enabled", True)]
+        
+    def get_repository(self, name):
+        """Returns repository information for a given repository name"""
+        return self.repos["repositories"].get(name)
 
     def update_repository(self, name: str) -> bool:
-        print(
-            f"DEBUG: update_repository called for repo: {name}")  # DEBUG PRINT
+        print(f"DEBUG: update_repository called for repo: {name}")  # DEBUG PRINT
         if name not in self.repos["repositories"]:
             print(f"Repository '{name}' not found.")
             return False
 
         repo_url = self.repos["repositories"][name]["url"]
-        print(f"DEBUG: Fetching index.json from: {repo_url}/repo/index.json"
-              )  # DEBUG PRINT
+        print(f"DEBUG: Fetching index.json from: {repo_url}/repo/index.json")  # DEBUG PRINT
         try:
             response = requests.get(f"{repo_url}/repo/index.json")
-            print(f"DEBUG: Response status code: {response.status_code}"
-                  )  # DEBUG PRINT
+            print(f"DEBUG: Response status code: {response.status_code}")  # DEBUG PRINT
             if response.status_code == 200:
                 raw_content = response.text  # Get raw text content
-                print(f"DEBUG: Raw index.json content:\n{raw_content}"
-                      )  # DEBUG PRINT - PRINT RAW CONTENT
+                print(f"DEBUG: Raw index.json content:\n{raw_content}")  # DEBUG PRINT - PRINT RAW CONTENT
+                
                 try:
-                    response.json(
-                    )  # Try parsing JSON again (for error message)
+                    # Parse and process the repository data
+                    repo_data = response.json()
+                    
+                    # Store the packages data in the repository configuration
+                    self.repos["repositories"][name]["packages"] = repo_data.get("packages", {})
+                    
+                    # Update repository metadata
+                    if "name" in repo_data:
+                        self.repos["repositories"][name]["display_name"] = repo_data["name"]
+                    if "description" in repo_data:
+                        self.repos["repositories"][name]["description"] = repo_data["description"]
+                    
+                    # Update timestamp
+                    self.repos["repositories"][name]["last_update"] = datetime.now().isoformat()
+                    self._save_config()
+                    print(f"Repository '{name}' updated.")
+                    return True
+                    
                 except json.JSONDecodeError as json_error:
-                    print(f"DEBUG: JSON Parse Error: {json_error}"
-                          )  # Print specific JSON error
-                # In a real implementation, you would process the index.json here
-                self.repos["repositories"][name]["last_update"] = datetime.now(
-                ).isoformat()
-                self._save_config()
-                print(f"Repository '{name}' updated.")
-                return True
+                    print(f"DEBUG: JSON Parse Error: {json_error}")
+                    return False
             else:
-                print(
-                    f"Failed to update repository '{name}' from {repo_url}: HTTP {response.status_code}"
-                )
+                print(f"Failed to update repository '{name}' from {repo_url}: HTTP {response.status_code}")
                 return False
         except requests.exceptions.RequestException as e:
             print(f"Failed to update repository '{name}' from {repo_url}: {e}")

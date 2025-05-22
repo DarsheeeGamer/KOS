@@ -27,11 +27,11 @@ except ImportError:
     Console = Table = Progress = SpinnerColumn = TimeElapsedColumn = Panel = Syntax = None
     logging.warning("Rich library not available, falling back to basic output")
 
-from ..filesystem.base import FileSystem
-from ..process.manager import ProcessManager
-from ..package.manager import PackageManager
-from ..exceptions import KOSError, FileSystemError
-from ..user_system import UserSystem
+from kos.filesystem.base import FileSystem
+from kos.process.manager import ProcessManager
+from kos.package_manager import KpmManager
+from kos.exceptions import KOSError, FileSystemError
+from kos.user_system import UserSystem
 
 logger = logging.getLogger('KOS.shell')
 
@@ -41,7 +41,7 @@ class KaedeShell(cmd.Cmd):
     MAX_HISTORY = 1000
     COMMAND_HELP_FILE = "command_help.json"
 
-    def __init__(self, filesystem: FileSystem, package_manager: PackageManager, 
+    def __init__(self, filesystem: FileSystem, package_manager: KpmManager, 
                  process_manager: ProcessManager, user_system: UserSystem):
         super().__init__()
         self.fs = filesystem

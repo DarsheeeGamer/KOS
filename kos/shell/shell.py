@@ -30,8 +30,11 @@ except ImportError:
 from ..filesystem.base import FileSystem
 from ..process.manager import ProcessManager
 from ..package.manager import PackageManager
-from ..exceptions import KOSError, FileSystemError
+from ..exceptions import KOSError, FileSystemError, FileNotFound, NotADirectory, IsADirectory
 from ..user_system import UserSystem
+from .file_commands import touch_file, find_files, grep_text
+from .pip_handler import PipCommandHandler
+from .system_monitor import SystemMonitor
 
 logger = logging.getLogger('KOS.shell')
 
@@ -674,6 +677,7 @@ class KaedeShell(cmd.Cmd):
             # Note: Mode is not used since the filesystem only supports mkdir with default permissions
             # If we need to support mode, we'll need to enhance the BaseFileSystem.mkdir method
 
+            # Call the filesystem's mkdir method
             self.fs.mkdir(path)
             logger.info(f"Created directory: {path}")
 
@@ -766,26 +770,483 @@ class KaedeShell(cmd.Cmd):
                 print("rm: missing operand")
                 return
 
+            path = args[0]
             recursive = "-r" in args or "-R" in args
-            force = "-f" in args
 
-            # Filter out options
-            paths = [a for a in args if not a.startswith("-")]
+            # Check if file exists
+            node = self.fs._get_node(self.fs._resolve_path(path))
+            if not node:
+                print(f"rm: cannot remove '{path}': No such file or directory")
+                return
 
-            for path in paths:
-                try:
-                    self.fs.remove(path, recursive=recursive)
-                    logger.info(f"Removed: {path}")
-                except FileSystemError as e:
-                    if not force:
-                        print(f"rm: cannot remove '{path}': {str(e)}")
-                        return
-                    logger.warning(f"Forced removal despite error: {path}")
+            # Check if directory and recursive flag
+            if node.type == 'directory' and not recursive:
+                print(
+                    f"rm: cannot remove '{path}': Is a directory, use -r for recursive removal"
+                )
+                return
+
+            # Remove file/directory
+            if node.parent:
+                if node.name in node.parent.content:
+                    del node.parent.content[node.name]
+                    node.parent.metadata['modified'] = datetime.now()
+                    logger.info(f"Removed {path}")
 
         except Exception as e:
             logger.error(f"Error in rm command: {e}")
             print(f"rm: {str(e)}")
+            
+    def do_touch(self, arg):
+        """Create a new empty file or update file timestamp"""
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("touch: missing file operand")
+                return
 
+            path = args[0]
+            success, message = touch_file(self.fs, path)
+            if not success:
+                print(f"touch: {message}")
+                
+        except Exception as e:
+            logger.error(f"Error in touch command: {e}")
+            print(f"touch: {str(e)}")
+            
+    def do_find(self, arg):
+        """Find files matching a pattern"""
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("find: missing path operand")
+                return
+
+            path = args[0]
+            pattern = "*"
+            max_depth = None
+            
+            # Parse arguments
+            i = 1
+            while i < len(args):
+                if args[i] == "-name" and i + 1 < len(args):
+                    pattern = args[i + 1]
+                    i += 2
+                elif args[i] == "-maxdepth" and i + 1 < len(args):
+                    try:
+                        max_depth = int(args[i + 1])
+                        i += 2
+                    except ValueError:
+                        print(f"find: invalid maximum depth: {args[i + 1]}")
+                        return
+                else:
+                    i += 1
+            
+            results = find_files(self.fs, path, pattern, max_depth)
+            
+            if RICH_AVAILABLE and self.console:
+                table = Table(title=f"Find Results for '{pattern}'")
+                table.add_column("Path", style="cyan")
+                
+                for file_path in results:
+                    table.add_row(file_path)
+                    
+                self.console.print(table)
+            else:
+                if results:
+                    for file_path in results:
+                        print(file_path)
+                else:
+                    print("No files found")
+                
+        except Exception as e:
+            logger.error(f"Error in find command: {e}")
+            print(f"find: {str(e)}")
+            
+    def do_grep(self, arg):
+        """Search for pattern in files"""
+        try:
+            args = shlex.split(arg)
+            if len(args) < 2:
+                print("grep: missing pattern and file operand")
+                print("Usage: grep [options] PATTERN FILE")
+                return
+
+            pattern = args[0]
+            path = args[1]
+            case_sensitive = True
+            
+            # Check for case insensitive flag
+            if "-i" in args:
+                case_sensitive = False
+            
+            results = grep_text(self.fs, pattern, path, case_sensitive)
+            
+            if RICH_AVAILABLE and self.console:
+                table = Table(title=f"Grep Results for '{pattern}'")
+                table.add_column("File", style="cyan")
+                table.add_column("Line", style="green")
+                table.add_column("Content", style="white")
+                
+                for file_path, line_num, content in results:
+                    table.add_row(file_path, str(line_num), content)
+                    
+                self.console.print(table)
+            else:
+                if results:
+                    for file_path, line_num, content in results:
+                        print(f"{file_path}:{line_num}: {content}")
+                else:
+                    print("No matches found")
+                
+        except Exception as e:
+            logger.error(f"Error in grep command: {e}")
+            print(f"grep: {str(e)}")
+            
+    def do_pip(self, arg):
+        """Manage Python packages with pip"""
+        try:
+            if not arg:
+                print("Usage: pip COMMAND [OPTIONS]")
+                print("Commands:")
+                print("  install PACKAGE    Install a package")
+                print("  uninstall PACKAGE  Uninstall a package")
+                print("  list              List installed packages")
+                print("  show PACKAGE      Show information about a package")
+                print("  search QUERY      Search for packages")
+                return
+
+            args = shlex.split(arg)
+            command = args[0].lower()
+            
+            if command == "install" and len(args) > 1:
+                package = args[1]
+                upgrade = "--upgrade" in args or "-U" in args
+                success, message = PipCommandHandler.install(package, upgrade)
+                print(message)
+                
+            elif command == "uninstall" and len(args) > 1:
+                package = args[1]
+                success, message = PipCommandHandler.uninstall(package)
+                print(message)
+                
+            elif command == "list":
+                success, message = PipCommandHandler.list_packages()
+                if message:
+                    print(message)
+                    
+            elif command == "show" and len(args) > 1:
+                package = args[1]
+                success, message = PipCommandHandler.show(package)
+                print(message)
+                
+            elif command == "search" and len(args) > 1:
+                query = args[1]
+                success, message = PipCommandHandler.search(query)
+                print(message)
+                
+            else:
+                print(f"pip: unknown command '{command}'")
+                print("Try 'pip' without arguments for help")
+                
+        except Exception as e:
+            logger.error(f"Error in pip command: {e}")
+            print(f"pip: {str(e)}")
+            
+    def do_help(self, arg):
+        """List available commands by category or show help for a specific command"""
+        if arg:
+            # Show help for specific command
+            return super().do_help(arg)
+        
+        # Define additional command categories that weren't in the original self.command_categories
+        additional_categories = {
+            "Package Management": {
+                "pip": "Manage Python packages with pip",
+                "kpm": "Install/remove KOS packages",
+            },
+            "System Monitor": {
+                "top": "Interactive process viewer", 
+                "free": "Display memory usage",
+                "sysinfo": "Show system statistics",
+            },
+            "Disk Management": {
+                "disk": "Disk management utility",
+            },
+        }
+        
+        # Combine all categories
+        all_categories = {**self.command_categories, **additional_categories}
+        
+        # Get all methods that start with do_
+        commands = {}
+        for name in dir(self):
+            if name.startswith('do_'):
+                cmd_name = name[3:]
+                if cmd_name not in ['EOF', 'shell']:
+                    method = getattr(self, name)
+                    doc = method.__doc__ or ''
+                    commands[cmd_name] = doc.strip()
+        
+        if RICH_AVAILABLE and self.console:
+            # Rich formatted output
+            self.console.print("\n[bold cyan]KOS Shell Commands[/bold cyan]\n")
+            
+            for category, category_commands in all_categories.items():
+                # Only show categories that have commands
+                has_commands = False
+                for cmd_name in category_commands:
+                    if cmd_name in commands:
+                        has_commands = True
+                        break
+                        
+                if has_commands:
+                    table = Table(title=category)
+                    table.add_column("Command", style="green")
+                    table.add_column("Description", style="yellow")
+                    
+                    for cmd_name, description in sorted(category_commands.items()):
+                        if cmd_name in commands:
+                            table.add_row(cmd_name, description)
+                    
+                    self.console.print(table)
+                    self.console.print("")
+            
+            # Show uncategorized commands
+            uncategorized = set(commands.keys())
+            for category in all_categories.values():
+                for cmd_name in category:
+                    if cmd_name in uncategorized:
+                        uncategorized.remove(cmd_name)
+            
+            if uncategorized:
+                table = Table(title="Other Commands")
+                table.add_column("Command", style="green")
+                table.add_column("Description", style="yellow")
+                
+                for cmd_name in sorted(uncategorized):
+                    table.add_row(cmd_name, commands[cmd_name])
+                
+                self.console.print(table)
+        else:
+            # Plain text output
+            print("\nKOS Shell Commands\n")
+            
+            for category, category_commands in all_categories.items():
+                has_commands = False
+                for cmd_name in category_commands:
+                    if cmd_name in commands:
+                        has_commands = True
+                        break
+                        
+                if has_commands:
+                    print(f"\n{category}:")
+                    
+                    for cmd_name, description in sorted(category_commands.items()):
+                        if cmd_name in commands:
+                            print(f"  {cmd_name.ljust(15)} {description}")
+            
+            # Show uncategorized commands
+            uncategorized = set(commands.keys())
+            for category in all_categories.values():
+                for cmd_name in category:
+                    if cmd_name in uncategorized:
+                        uncategorized.remove(cmd_name)
+            
+            if uncategorized:
+                print("\nOther Commands:")
+                for cmd_name in sorted(uncategorized):
+                    print(f"  {cmd_name.ljust(15)} {commands[cmd_name]}")
+                    
+        print("\nFor help on a specific command, type: help COMMAND")
+        return False
+
+    def do_monitor(self, arg):
+        """Monitor system resource usage over time"""
+        try:
+            args = shlex.split(arg)
+            resource_type = "cpu"  # Default resource to monitor
+            interval = 1  # Default sampling interval in seconds
+            duration = 10  # Default monitoring duration in seconds
+            
+            if args:
+                resource_type = args[0].lower()
+                
+            # Parse optional arguments
+            i = 1
+            while i < len(args):
+                if args[i] == "-i" or args[i] == "--interval" and i + 1 < len(args):
+                    try:
+                        interval = max(0.1, float(args[i + 1]))
+                        i += 2
+                    except ValueError:
+                        print(f"monitor: invalid interval: {args[i + 1]}")
+                        return
+                elif args[i] == "-d" or args[i] == "--duration" and i + 1 < len(args):
+                    try:
+                        duration = max(1, int(args[i + 1]))
+                        i += 2
+                    except ValueError:
+                        print(f"monitor: invalid duration: {args[i + 1]}")
+                        return
+                else:
+                    i += 1
+            
+            if resource_type not in ["cpu", "memory", "disk", "network"]:
+                print(f"monitor: invalid resource type: {resource_type}")
+                print("Valid resource types: cpu, memory, disk, network")
+                return
+                
+            print(f"Monitoring {resource_type} resource usage for {duration} seconds (sampling every {interval} seconds)...")
+            
+            if RICH_AVAILABLE and self.console:
+                # Rich formatted live monitoring
+                from rich.live import Live
+                from rich.layout import Layout
+                from rich.panel import Panel
+                
+                layout = Layout()
+                
+                def update_display(sample):
+                    # Update the display with new sample data
+                    content = f"[bold]Timestamp:[/bold] {sample['timestamp']}\n\n"
+                    
+                    if resource_type == "cpu":
+                        data = sample["data"]
+                        content += f"CPU Usage: [bold green]{data['percent']}%[/bold green]\n"
+                        if data['freq']:
+                            content += f"Frequency: {data['freq']['current']}MHz\n"
+                        content += f"Cores: {data['count']}\n"
+                        
+                    elif resource_type == "memory":
+                        virtual = sample["data"]["virtual"]
+                        swap = sample["data"]["swap"]
+                        content += f"Memory Usage: [bold green]{virtual['percent']}%[/bold green]\n"
+                        content += f"Total: {virtual['total'] / 1024 / 1024:.1f}MB\n"
+                        content += f"Available: {virtual['available'] / 1024 / 1024:.1f}MB\n"
+                        content += f"Used: {virtual['used'] / 1024 / 1024:.1f}MB\n"
+                        content += f"\nSwap Usage: {swap['percent']}%\n"
+                        
+                    elif resource_type == "disk":
+                        usage = sample["data"]["usage"]
+                        content += f"Disk Usage: [bold green]{usage['percent']}%[/bold green]\n"
+                        content += f"Total: {usage['total'] / 1024 / 1024:.1f}MB\n"
+                        content += f"Used: {usage['used'] / 1024 / 1024:.1f}MB\n"
+                        content += f"Free: {usage['free'] / 1024 / 1024:.1f}MB\n"
+                        
+                    elif resource_type == "network":
+                        if sample["data"]["io"]:
+                            io = sample["data"]["io"]
+                            content += f"Bytes Sent: {io['bytes_sent'] / 1024:.1f}KB\n"
+                            content += f"Bytes Received: {io['bytes_recv'] / 1024:.1f}KB\n"
+                            content += f"Packets Sent: {io['packets_sent']}\n"
+                            content += f"Packets Received: {io['packets_recv']}\n"
+                        content += f"Network Connections: {sample['data']['connections']}\n"
+                        
+                    layout.update(Panel(content, title=f"{resource_type.title()} Monitoring"))
+                
+                # Start live display
+                with Live(layout, refresh_per_second=4) as live:
+                    SystemMonitor.monitor_resource(resource_type, interval, duration, update_display)
+            else:
+                # Plain text monitoring
+                def print_sample(sample):
+                    print(f"\nTimestamp: {sample['timestamp']}")
+                    
+                    if resource_type == "cpu":
+                        print(f"CPU Usage: {sample['data']['percent']}%")
+                    elif resource_type == "memory":
+                        print(f"Memory Usage: {sample['data']['virtual']['percent']}%")
+                    elif resource_type == "disk":
+                        print(f"Disk Usage: {sample['data']['usage']['percent']}%")
+                    elif resource_type == "network":
+                        if sample["data"]["io"]:
+                            print(f"Network I/O: {sample['data']['io']['bytes_recv']/1024:.1f}KB received, {sample['data']['io']['bytes_sent']/1024:.1f}KB sent")
+                
+                SystemMonitor.monitor_resource(resource_type, interval, duration, print_sample)
+                
+        except KeyboardInterrupt:
+            print("Monitoring interrupted by user")
+        except Exception as e:
+            logger.error(f"Error in monitor command: {e}")
+            print(f"monitor: {str(e)}")
+            
+    def do_procinfo(self, arg):
+        """Display detailed information about a process"""
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("procinfo: missing process ID")
+                print("Usage: procinfo PID")
+                return
+
+            try:
+                pid = int(args[0])
+            except ValueError:
+                print(f"procinfo: invalid process ID: {args[0]}")
+                return
+                
+            process_info = SystemMonitor.get_process_info(pid)
+            
+            if 'error' in process_info:
+                print(f"procinfo: {process_info['error']}")
+                return
+                
+            if RICH_AVAILABLE and self.console:
+                # Rich formatted output
+                table = Table(title=f"Process {pid} Information")
+                table.add_column("Property", style="cyan")
+                table.add_column("Value", style="green")
+                
+                for key, value in process_info.items():
+                    if key != 'pid':  # Skip PID since it's in the title
+                        table.add_row(key, str(value))
+                        
+                self.console.print(table)
+            else:
+                # Plain text output
+                print(f"\nProcess {pid} Information:")
+                for key, value in process_info.items():
+                    if key != 'pid':  # Skip PID since it's in the title
+                        print(f"  {key}: {value}")
+                        
+        except Exception as e:
+            logger.error(f"Error in procinfo command: {e}")
+            print(f"procinfo: {str(e)}")
+            
+    def do_kill(self, arg):
+        """Kill a process by PID"""
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("kill: missing process ID")
+                print("Usage: kill [-f] PID")
+                return
+
+            force = "-f" in args
+            # Filter out options
+            try:
+                pid = int([a for a in args if not a.startswith("-")][0])
+            except (ValueError, IndexError):
+                print("kill: invalid process ID")
+                return
+                
+            if force:
+                print(f"Forcefully killing process {pid}...")
+            else:
+                print(f"Terminating process {pid}...")
+                
+            success = SystemMonitor.kill_process(pid, force)
+            
+            if success:
+                print(f"Process {pid} {('killed' if force else 'terminated')} successfully")
+            else:
+                print(f"Failed to {('kill' if force else 'terminate')} process {pid}")
+                
+        except Exception as e:
+            logger.error(f"Error in kill command: {e}")
+            print(f"kill: {str(e)}")
+    
     def do_cp(self, arg):
         """Copy files or directories"""
         try:

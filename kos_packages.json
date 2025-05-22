@@ -1,14 +1,5 @@
 {
-  "installed": {
-    "calculator": {
-      "version": "1.0.0",
-      "installed_at": null
-    },
-    "qotd": {
-      "version": "1.0.0",
-      "installed_at": null
-    }
-  },
+  "installed": {},
   "registry": {
     "python": {
       "name": "python",
@@ -103,7 +94,7 @@
       "description": "Example KOS application",
       "author": "system",
       "dependencies": [],
-      "install_date": "2025-05-21T23:33:27.892899",
+      "install_date": "2025-05-22T17:38:38.908383",
       "size": 0,
       "checksum": "",
       "homepage": "",
@@ -114,37 +105,37 @@
       "cli_aliases": [],
       "cli_function": ""
     },
+    "cal": {
+      "name": "cal",
+      "version": "0.1.0",
+      "description": "a simple calender app",
+      "author": "InZane84",
+      "dependencies": [],
+      "install_date": "2025-05-22T17:31:47.483606",
+      "size": 0,
+      "checksum": "",
+      "homepage": "",
+      "license": "",
+      "tags": [],
+      "repository": "main",
+      "entry_point": "cal.py",
+      "cli_aliases": [],
+      "cli_function": ""
+    },
     "calculator": {
       "name": "calculator",
       "version": "1.0.0",
       "description": "Simple calculator application",
       "author": "KOS",
       "dependencies": [],
-      "install_date": null,
+      "install_date": "2025-05-22T17:35:59.495786",
       "size": 0,
-      "checksum": "FAKE_CHECKSUM_DISABLED",
+      "checksum": "",
       "homepage": "",
       "license": "",
       "tags": [],
       "repository": "main",
-      "entry_point": "",
-      "cli_aliases": [],
-      "cli_function": ""
-    },
-    "qotd": {
-      "name": "qotd",
-      "version": "1.0.0",
-      "description": "Quote of the Day - Get and manage daily inspirational quotes",
-      "author": "KOS",
-      "dependencies": [],
-      "install_date": null,
-      "size": 0,
-      "checksum": "FAKE_CHECKSUM_DISABLED",
-      "homepage": "",
-      "license": "",
-      "tags": [],
-      "repository": "main",
-      "entry_point": "",
+      "entry_point": "calculator.py",
       "cli_aliases": [],
       "cli_function": ""
     }
