@@ -39,6 +39,8 @@ class KLayer:
         self.app_manager = None
         self.package_manager = None
         self.file_system = None
+        self.virtual_fs = None
+        self.memory_manager = None
         self.shell = None
         self.permissions = None
         self.app_registry = None
@@ -68,6 +70,18 @@ class KLayer:
             self.file_system = FileSystemInterface()
         except ImportError:
             logger.warning("FileSystemInterface component not available")
+        
+        try:
+            from .virtual_fs import virtual_fs
+            self.virtual_fs = virtual_fs
+        except ImportError:
+            logger.warning("Virtual FileSystem component not available")
+        
+        try:
+            from .memory_manager import memory_manager
+            self.memory_manager = memory_manager
+        except ImportError:
+            logger.warning("Memory Manager component not available")
         
         try:
             from .shell import ShellInterface
@@ -152,6 +166,28 @@ class KLayer:
                 logger.error("AppRegistry component not available")
                 return None
         return self.app_registry
+    
+    def get_virtual_fs(self) -> Any:
+        """Get the Virtual FileSystem component"""
+        if not self.virtual_fs:
+            try:
+                from .virtual_fs import virtual_fs
+                self.virtual_fs = virtual_fs
+            except ImportError:
+                logger.error("Virtual FileSystem component not available")
+                return None
+        return self.virtual_fs
+    
+    def get_memory_manager(self) -> Any:
+        """Get the Memory Manager component"""
+        if not self.memory_manager:
+            try:
+                from .memory_manager import memory_manager
+                self.memory_manager = memory_manager
+            except ImportError:
+                logger.error("Memory Manager component not available")
+                return None
+        return self.memory_manager
     
     def register_app(self, app_id: str, app_info: Dict[str, Any]) -> bool:
         """

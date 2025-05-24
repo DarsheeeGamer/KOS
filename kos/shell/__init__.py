@@ -8,9 +8,11 @@ command execution, and the interactive shell interface.
 # Import shell components
 from .shell import KaedeShell
 from .commands.text_processing import register_commands as register_text_processing_commands
-from .commands.archive import register_commands as register_archive_commands
-from .commands.sysmon import register_commands as register_sysmon_commands
-from .commands.network import register_commands as register_network_commands
+from .commands.basic_commands import register_commands as register_basic_commands
+from .commands.package_management import register_commands as register_kpm_commands
+from .commands.system_utils import register_commands as register_system_commands
+from .commands.hardware_utils import register_commands as register_hardware_commands
+from .commands.network_utils import register_commands as register_network_commands
 from .commands.package_manager import register_commands as register_package_commands
 from .command_parser import CommandParser
 from .command_dispatcher import CommandDispatcher
@@ -34,15 +36,151 @@ def init_shell():
     # Register all command modules
     register_all(shell)
     register_text_processing_commands(shell)
-    register_archive_commands(shell)
-    register_sysmon_commands(shell)
-    register_network_commands(shell)
     register_package_commands(shell)
+    
+    # Register our new Linux-style utilities
+    try:
+        register_basic_commands(shell)
+        logging.info("Registered basic commands")
+    except Exception as e:
+        logging.warning(f"Basic commands not available: {e}")
+    
+    try:
+        register_kpm_commands(shell)
+        logging.info("Registered KPM commands")
+    except Exception as e:
+        logging.warning(f"KPM commands not available: {e}")
+    
+    # Register system utilities commands
+    try:
+        register_system_commands(shell)
+        logging.info("Registered system utilities commands")
+    except Exception as e:
+        logging.warning(f"System utilities commands not available: {e}")
+    
+    # Register hardware utilities commands
+    try:
+        register_hardware_commands(shell)
+        logging.info("Registered hardware utilities commands")
+    except Exception as e:
+        logging.warning(f"Hardware utilities commands not available: {e}")
+    
+    # Register network utilities commands
+    try:
+        register_network_commands(shell)
+        logging.info("Registered network utilities commands")
+    except Exception as e:
+        logging.warning(f"Network utilities commands not available: {e}")
+    
+    # Register advanced filesystem commands
+    try:
+        from .commands.advanced_fs import register_commands as register_advanced_fs_commands
+        register_advanced_fs_commands(shell)
+        logging.info("Registered advanced filesystem commands")
+    except Exception as e:
+        logging.warning(f"Advanced filesystem commands not available: {e}")
+    
+    # Register Unix-like file utilities
+    try:
+        from .commands.unix_file_utils import register_commands as register_unix_file_commands
+        register_unix_file_commands(shell)
+        logging.info("Registered Unix file utilities")
+    except Exception as e:
+        logging.warning(f"Unix file utilities not available: {e}")
+        
+    # Register Unix-like text utilities
+    try:
+        from .commands.unix_text_utils import register_commands as register_unix_text_commands
+        register_unix_text_commands(shell)
+        logging.info("Registered Unix text utilities")
+    except Exception as e:
+        logging.warning(f"Unix text utilities not available: {e}")
+        
+    # Register Unix-like process utilities
+    try:
+        from .commands.unix_process_utils import register_commands as register_unix_process_commands
+        register_unix_process_commands(shell)
+        logging.info("Registered Unix process utilities")
+    except Exception as e:
+        logging.warning(f"Unix process utilities not available: {e}")
+        
+    # Register Unix-like user utilities
+    try:
+        from .commands.unix_user_utils import register_commands as register_unix_user_commands
+        register_unix_user_commands(shell)
+        logging.info("Registered Unix user utilities")
+    except Exception as e:
+        logging.warning(f"Unix user utilities not available: {e}")
+        
+    # Register Unix-like network utilities
+    try:
+        from .commands.unix_network_utils import register_commands as register_unix_network_commands
+        register_unix_network_commands(shell)
+        logging.info("Registered Unix network utilities")
+    except Exception as e:
+        logging.warning(f"Unix network utilities not available: {e}")
+        
+    # Register Unix-like system utilities
+    try:
+        from .commands.unix_sys_utils import register_commands as register_unix_sys_commands
+        register_unix_sys_commands(shell)
+        logging.info("Registered Unix system utilities")
+    except Exception as e:
+        logging.warning(f"Unix system utilities not available: {e}")
+        
+    # Register Unix-like package utilities
+    try:
+        from .commands.unix_package_utils import register_commands as register_unix_package_commands
+        register_unix_package_commands(shell)
+        logging.info("Registered Unix package utilities")
+    except Exception as e:
+        logging.warning(f"Unix package utilities not available: {e}")
+        
+    # Register Unix-like shell utilities
+    try:
+        from .commands.unix_shell_utils import register_commands as register_unix_shell_commands
+        register_unix_shell_commands(shell)
+        logging.info("Registered Unix shell utilities")
+    except Exception as e:
+        logging.warning(f"Unix shell utilities not available: {e}")
+        
+    # Register Unix-like init system utilities
+    try:
+        from .commands.unix_init_utils import register_commands as register_unix_init_commands
+        register_unix_init_commands(shell)
+        logging.info("Registered Unix init system utilities")
+    except Exception as e:
+        logging.warning(f"Unix init system utilities not available: {e}")
+        
+    # Register container utilities
+    try:
+        from .commands.container_utils import register_commands as register_container_commands
+        register_container_commands(shell)
+        logging.info("Registered container utilities")
+    except Exception as e:
+        logging.warning(f"Container utilities not available: {e}")
+        
+    # Register network management utilities
+    try:
+        from .commands.network_manager import register_commands as register_network_commands
+        register_network_commands(shell)
+        logging.info("Registered network management utilities")
+    except Exception as e:
+        logging.warning(f"Network management utilities not available: {e}")
+        
+    # Register firewall management utilities
+    try:
+        from .commands.firewall_manager import register_commands as register_firewall_commands
+        register_firewall_commands(shell)
+        logging.info("Registered firewall management utilities")
+    except Exception as e:
+        logging.warning(f"Firewall management utilities not available: {e}")
     
     # Register repository management commands
     try:
         from .commands.repo_management import register_commands as register_repo_commands
         register_repo_commands(shell)
+        logging.info("Registered repository management commands")
     except ImportError:
         logging.warning("Repository management commands not available")
     
@@ -50,32 +188,9 @@ def init_shell():
     try:
         from .commands.app_management import register_commands as register_app_commands
         register_app_commands(shell)
+        logging.info("Registered application management commands")
     except ImportError:
         logging.warning("Application management commands not available")
-    
-    # Register Linux-style file system utilities
-    try:
-        from .commands.fs_utils import register_commands as register_fs_utils
-        register_fs_utils(shell)
-        logging.info("Registered Linux-style file system commands")
-    except ImportError:
-        logging.warning("Linux-style file system commands not available")
-    
-    # Register Linux-style process utilities
-    try:
-        from .commands.proc_utils import register_commands as register_proc_utils
-        register_proc_utils(shell)
-        logging.info("Registered Linux-style process commands")
-    except ImportError:
-        logging.warning("Linux-style process commands not available")
-    
-    # Register Linux-style network utilities
-    try:
-        from .commands.net_utils import register_commands as register_net_utils
-        register_net_utils(shell)
-        logging.info("Registered Linux-style network commands")
-    except ImportError:
-        logging.warning("Linux-style network commands not available")
 
     return shell
 
