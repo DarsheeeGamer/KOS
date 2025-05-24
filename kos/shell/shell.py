@@ -35,6 +35,8 @@ from ..user_system import UserSystem
 from .file_commands import touch_file, find_files, grep_text
 from .pip_handler import PipCommandHandler
 from .system_monitor import SystemMonitor
+from .commands.nano import nano as nano_editor
+from .commands.textproc import cut_command, paste_command, tr_command
 
 logger = logging.getLogger('KOS.shell')
 
@@ -77,7 +79,8 @@ class KaedeShell(cmd.Cmd):
                 "ln": "Create links",
                 "grep": "Search file patterns with highlighting",
                 "find": "Search files with advanced criteria",
-                "tree": "Display directory structure"
+                "tree": "Display directory structure",
+                "nano": "Nano-like text editor for file editing"
             },
             "Process Management": {
                 "ps": "Display process information",
@@ -796,6 +799,101 @@ class KaedeShell(cmd.Cmd):
         except Exception as e:
             logger.error(f"Error in rm command: {e}")
             print(f"rm: {str(e)}")
+            
+    def do_nano(self, arg):
+        """Nano-like text editor
+        
+        Usage: nano [options] [filename]
+        
+        Opens the specified file in the nano editor. If the file doesn't exist,
+        it will be created when saved.
+        
+        Options:
+          --help            Show this help message and exit
+          --linenumbers    Enable line numbers (default: enabled)
+          --nolinenumbers  Disable line numbers
+          --autoindent     Enable auto-indentation (default: enabled)
+          --noautoindent   Disable auto-indentation
+          --backup         Create backup files (default: enabled)
+          --nobackup       Disable backup files
+          --autosave       Enable auto-save
+          --noautosave     Disable auto-save (default)
+        
+        Keyboard shortcuts:
+          Navigation: Arrow keys, Home/End, Page Up/Down
+          File: ^O (Save), ^R (Read file), ^X (Exit)
+          Edit: ^K (Cut line), ^U (Paste), ^W (Search), ^F (Find next), ^G (Help)
+          Advanced: Alt+N (Toggle line numbers), Alt+I (Auto-indent), Alt+< & Alt+> (Switch buffers)
+                   Alt+U (Undo), Alt+E (Redo), Alt+B (Backup), Alt+A (Auto-save)
+        """
+        try:
+            args = shlex.split(arg)
+            
+            # Process --help option
+            if not args or '--help' in args:
+                print(self.do_nano.__doc__)
+                return
+            
+            # Parse options and filename
+            options = {}
+            filename = None
+            
+            for arg in args:
+                if arg.startswith('--'):
+                    # Process options
+                    if arg == '--linenumbers':
+                        options['linenumbers'] = True
+                    elif arg == '--nolinenumbers':
+                        options['linenumbers'] = False
+                    elif arg == '--autoindent':
+                        options['autoindent'] = True
+                    elif arg == '--noautoindent':
+                        options['autoindent'] = False
+                    elif arg == '--backup':
+                        options['backup'] = True
+                    elif arg == '--nobackup':
+                        options['backup'] = False
+                    elif arg == '--autosave':
+                        options['autosave'] = True
+                    elif arg == '--noautosave':
+                        options['autosave'] = False
+                else:
+                    # Treat as filename
+                    filename = arg
+            
+            if not filename:
+                print("nano: missing file operand")
+                print("Try 'nano --help' for more information.")
+                return
+            
+            # Resolve the full path
+            path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+            
+            # Check if the parent directory exists
+            parent_dir = os.path.dirname(path)
+            if parent_dir and not self.fs.exists(parent_dir):
+                print(f"nano: cannot open '{filename}': No such file or directory")
+                return
+                
+            # Check if path is a directory
+            if self.fs.exists(path) and self.fs.is_dir(path):
+                print(f"nano: {path}: Is a directory")
+                return
+                
+            # Run the nano editor with options
+            try:
+                nano_editor(self.fs, path, **options)
+            except ImportError as e:
+                print("nano: The 'windows-curses' package is required for the nano editor.")
+                print("Install it with: pip install windows-curses")
+                logger.error("Missing windows-curses package: %s", e)
+            except Exception as e:
+                print(f"nano: An error occurred: {str(e)}")
+                logger.exception("Error in nano editor")
+                
+        except Exception as e:
+            print(f"nano: {str(e)}")
+            logger.error("Error in nano command: %s", e)
             
     def do_touch(self, arg):
         """Create a new empty file or update file timestamp"""
@@ -1691,3 +1789,1030 @@ class KaedeShell(cmd.Cmd):
         except Exception as e:
             logger.error(f"Error in sysinfo command: {e}")
             print(f"sysinfo: {str(e)}")
+    
+    def do_head(self, arg):
+        """Output the first part of files
+        
+        Usage: head [OPTION]... [FILE]...
+        Print the first 10 lines of each FILE to standard output.
+        
+        Options:
+          -n, --lines=N    Print the first N lines instead of the first 10
+          -q, --quiet      Never print headers giving file names
+          -v, --verbose    Always print headers giving file names
+        
+        With more than one FILE, precede each with a header giving the file name.
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("head: missing file operand")
+                print("Try 'head --help' for more information.")
+                return
+                
+            # Parse options
+            lines = 10  # Default number of lines
+            quiet = False
+            verbose = False
+            files = []
+            
+            i = 0
+            while i < len(args):
+                if args[i] in ['-h', '--help']:
+                    print(self.do_head.__doc__)
+                    return
+                elif args[i] in ['-n', '--lines']:
+                    if i + 1 < len(args):
+                        try:
+                            lines = int(args[i + 1])
+                            i += 2
+                            continue
+                        except ValueError:
+                            print(f"head: invalid number of lines: '{args[i + 1]}'")
+                            return
+                    else:
+                        print("head: option requires an argument -- 'n'")
+                        return
+                elif args[i].startswith('--lines='):
+                    try:
+                        lines = int(args[i].split('=')[1])
+                    except (ValueError, IndexError):
+                        print(f"head: invalid number of lines: '{args[i].split('=')[1]}'")
+                        return
+                elif args[i] in ['-q', '--quiet']:
+                    quiet = True
+                elif args[i] in ['-v', '--verbose']:
+                    verbose = True
+                else:
+                    files.append(args[i])
+                i += 1
+                
+            if not files:
+                print("head: missing file operand")
+                return
+                
+            # Process each file
+            show_headers = (len(files) > 1 or verbose) and not quiet
+            
+            for idx, filename in enumerate(files):
+                # Resolve path
+                path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+                
+                # Check if file exists
+                if not self.fs.exists(path):
+                    print(f"head: cannot open '{filename}' for reading: No such file or directory")
+                    continue
+                    
+                # Check if it's a directory
+                if self.fs.is_dir(path):
+                    print(f"head: error reading '{filename}': Is a directory")
+                    continue
+                    
+                # Read file content
+                try:
+                    content = self.fs.read_file(path)
+                    file_lines = content.split('\n')
+                    
+                    # Display header if needed
+                    if show_headers:
+                        if idx > 0:
+                            print("")
+                        print(f"==> {filename} <==")
+                    
+                    # Display the first n lines
+                    for i in range(min(lines, len(file_lines))):
+                        print(file_lines[i])
+                        
+                except Exception as e:
+                    print(f"head: error reading '{filename}': {str(e)}")
+                    
+        except Exception as e:
+            logger.error(f"Error in head command: {e}")
+            print(f"head: {str(e)}")
+    
+    def do_tail(self, arg):
+        """Output the last part of files
+        
+        Usage: tail [OPTION]... [FILE]...
+        Print the last 10 lines of each FILE to standard output.
+        
+        Options:
+          -n, --lines=N    Print the last N lines instead of the last 10
+          -f, --follow     Output appended data as the file grows
+          -q, --quiet      Never print headers giving file names
+          -v, --verbose    Always print headers giving file names
+        
+        With more than one FILE, precede each with a header giving the file name.
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("tail: missing file operand")
+                print("Try 'tail --help' for more information.")
+                return
+                
+            # Parse options
+            lines = 10  # Default number of lines
+            follow = False
+            quiet = False
+            verbose = False
+            files = []
+            
+            i = 0
+            while i < len(args):
+                if args[i] in ['-h', '--help']:
+                    print(self.do_tail.__doc__)
+                    return
+                elif args[i] in ['-n', '--lines']:
+                    if i + 1 < len(args):
+                        try:
+                            lines = int(args[i + 1])
+                            i += 2
+                            continue
+                        except ValueError:
+                            print(f"tail: invalid number of lines: '{args[i + 1]}'")
+                            return
+                    else:
+                        print("tail: option requires an argument -- 'n'")
+                        return
+                elif args[i].startswith('--lines='):
+                    try:
+                        lines = int(args[i].split('=')[1])
+                    except (ValueError, IndexError):
+                        print(f"tail: invalid number of lines: '{args[i].split('=')[1]}'")
+                        return
+                elif args[i] in ['-f', '--follow']:
+                    follow = True
+                elif args[i] in ['-q', '--quiet']:
+                    quiet = True
+                elif args[i] in ['-v', '--verbose']:
+                    verbose = True
+                else:
+                    files.append(args[i])
+                i += 1
+                
+            if not files:
+                print("tail: missing file operand")
+                return
+                
+            # Process each file
+            show_headers = (len(files) > 1 or verbose) and not quiet
+            
+            for idx, filename in enumerate(files):
+                # Resolve path
+                path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+                
+                # Check if file exists
+                if not self.fs.exists(path):
+                    print(f"tail: cannot open '{filename}' for reading: No such file or directory")
+                    continue
+                    
+                # Check if it's a directory
+                if self.fs.is_dir(path):
+                    print(f"tail: error reading '{filename}': Is a directory")
+                    continue
+                    
+                # Read file content
+                try:
+                    content = self.fs.read_file(path)
+                    file_lines = content.split('\n')
+                    
+                    # Display header if needed
+                    if show_headers:
+                        if idx > 0:
+                            print("")
+                        print(f"==> {filename} <==")
+                    
+                    # Display the last n lines
+                    start_line = max(0, len(file_lines) - lines)
+                    for i in range(start_line, len(file_lines)):
+                        print(file_lines[i])
+                    
+                    # Follow mode (not fully implemented, would need file watching)
+                    if follow:
+                        print(f"\ntail: --follow not fully implemented for {filename}")
+                        print("Press Ctrl+C to exit follow mode")
+                        
+                        # Simple implementation of follow - just wait for user to cancel
+                        try:
+                            while True:
+                                # Re-read the file every second
+                                time.sleep(1)
+                                new_content = self.fs.read_file(path)
+                                new_lines = new_content.split('\n')
+                                
+                                # Check if there are new lines
+                                if len(new_lines) > len(file_lines):
+                                    # Display only the new lines
+                                    for i in range(len(file_lines), len(new_lines)):
+                                        print(new_lines[i])
+                                    file_lines = new_lines
+                        except KeyboardInterrupt:
+                            print("\nFollow mode terminated.")
+                        
+                except Exception as e:
+                    print(f"tail: error reading '{filename}': {str(e)}")
+                    
+        except Exception as e:
+            logger.error(f"Error in tail command: {e}")
+            print(f"tail: {str(e)}")
+    
+    def do_wc(self, arg):
+        """Print newline, word, and byte counts for each file
+        
+        Usage: wc [OPTION]... [FILE]...
+        Print newline, word, and byte counts for each FILE, and a total line if
+        more than one FILE is specified.
+        
+        Options:
+          -c, --bytes       Print the byte counts
+          -m, --chars       Print the character counts
+          -l, --lines       Print the newline counts
+          -w, --words       Print the word counts
+        
+        If no FILE is specified, or when FILE is -, read standard input.
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("wc: missing file operand")
+                print("Try 'wc --help' for more information.")
+                return
+                
+            # Parse options
+            count_bytes = True   # By default, show all counts
+            count_chars = False  # Characters only shown when explicitly requested
+            count_lines = True
+            count_words = True
+            files = []
+            
+            # Check for explicit options
+            explicit_options = False
+            
+            i = 0
+            while i < len(args):
+                if args[i] in ['-h', '--help']:
+                    print(self.do_wc.__doc__)
+                    return
+                elif args[i] in ['-c', '--bytes']:
+                    count_bytes = True
+                    explicit_options = True
+                elif args[i] in ['-m', '--chars']:
+                    count_chars = True
+                    explicit_options = True
+                elif args[i] in ['-l', '--lines']:
+                    count_lines = True
+                    explicit_options = True
+                elif args[i] in ['-w', '--words']:
+                    count_words = True
+                    explicit_options = True
+                else:
+                    files.append(args[i])
+                i += 1
+                
+            # If explicit options are given, only show those requested
+            if explicit_options:
+                count_bytes = '-c' in args or '--bytes' in args
+                count_lines = '-l' in args or '--lines' in args
+                count_words = '-w' in args or '--words' in args
+                # Characters are only shown when explicitly requested
+                
+            if not files:
+                print("wc: missing file operand")
+                return
+                
+            # Process each file
+            total_lines = 0
+            total_words = 0
+            total_bytes = 0
+            total_chars = 0
+            
+            # Format for output
+            line_width = 7  # Default width for count columns
+            
+            results = []
+            
+            for filename in files:
+                # Resolve path
+                path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+                
+                # Check if file exists
+                if not self.fs.exists(path):
+                    print(f"wc: cannot open '{filename}' for reading: No such file or directory")
+                    continue
+                    
+                # Check if it's a directory
+                if self.fs.is_dir(path):
+                    print(f"wc: {filename}: Is a directory")
+                    continue
+                    
+                # Read file content
+                try:
+                    content = self.fs.read_file(path)
+                    
+                    # Count metrics
+                    lines = content.count('\n') + (1 if content and not content.endswith('\n') else 0)
+                    words = len(content.split())
+                    bytes_count = len(content.encode('utf-8'))  # Get actual byte count
+                    chars_count = len(content)  # Character count
+                    
+                    # Add to totals
+                    total_lines += lines
+                    total_words += words
+                    total_bytes += bytes_count
+                    total_chars += chars_count
+                    
+                    # Store result
+                    results.append((filename, lines, words, bytes_count, chars_count))
+                        
+                except Exception as e:
+                    print(f"wc: {filename}: {str(e)}")
+                    
+            # Display results with proper formatting
+            for filename, lines, words, bytes_count, chars_count in results:
+                output_parts = []
+                
+                if count_lines:
+                    output_parts.append(f"{lines:{line_width}}")
+                if count_words:
+                    output_parts.append(f"{words:{line_width}}")
+                if count_bytes:
+                    output_parts.append(f"{bytes_count:{line_width}}")
+                if count_chars:
+                    output_parts.append(f"{chars_count:{line_width}}")
+                    
+                output_parts.append(filename)
+                print(" ".join(output_parts))
+                
+            # Print totals if more than one file
+            if len(results) > 1:
+                output_parts = []
+                
+                if count_lines:
+                    output_parts.append(f"{total_lines:{line_width}}")
+                if count_words:
+                    output_parts.append(f"{total_words:{line_width}}")
+                if count_bytes:
+                    output_parts.append(f"{total_bytes:{line_width}}")
+                if count_chars:
+                    output_parts.append(f"{total_chars:{line_width}}")
+                    
+                output_parts.append("total")
+                print(" ".join(output_parts))
+                
+        except Exception as e:
+            logger.error(f"Error in wc command: {e}")
+            print(f"wc: {str(e)}")
+            
+    def do_sort(self, arg):
+        """Sort lines of text files
+        
+        Usage: sort [OPTION]... [FILE]...
+        Write sorted concatenation of all FILE(s) to standard output.
+        
+        Options:
+          -b, --ignore-leading-blanks  Ignore leading blanks
+          -f, --ignore-case            Fold lower case to upper case characters
+          -n, --numeric-sort           Compare according to string numerical value
+          -r, --reverse                Reverse the result of comparisons
+          -u, --unique                 Output only the first of an equal run
+          -o, --output=FILE            Write result to FILE instead of standard output
+        
+        If no FILE is specified, read standard input.
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("sort: missing file operand")
+                print("Try 'sort --help' for more information.")
+                return
+                
+            # Parse options
+            ignore_blanks = False
+            ignore_case = False
+            numeric_sort = False
+            reverse_sort = False
+            unique_lines = False
+            output_file = None
+            files = []
+            
+            i = 0
+            while i < len(args):
+                if args[i] in ['-h', '--help']:
+                    print(self.do_sort.__doc__)
+                    return
+                elif args[i] in ['-b', '--ignore-leading-blanks']:
+                    ignore_blanks = True
+                elif args[i] in ['-f', '--ignore-case']:
+                    ignore_case = True
+                elif args[i] in ['-n', '--numeric-sort']:
+                    numeric_sort = True
+                elif args[i] in ['-r', '--reverse']:
+                    reverse_sort = True
+                elif args[i] in ['-u', '--unique']:
+                    unique_lines = True
+                elif args[i] in ['-o', '--output']:
+                    if i + 1 < len(args):
+                        output_file = args[i + 1]
+                        i += 2
+                        continue
+                    else:
+                        print("sort: option requires an argument -- 'o'")
+                        return
+                elif args[i].startswith('--output='):
+                    try:
+                        output_file = args[i].split('=')[1]
+                    except IndexError:
+                        print("sort: option '--output=' requires an argument")
+                        return
+                else:
+                    files.append(args[i])
+                i += 1
+                
+            # Collect all lines from all files
+            all_lines = []
+            
+            for filename in files:
+                # Resolve path
+                path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+                
+                # Check if file exists
+                if not self.fs.exists(path):
+                    print(f"sort: cannot open '{filename}' for reading: No such file or directory")
+                    continue
+                    
+                # Check if it's a directory
+                if self.fs.is_dir(path):
+                    print(f"sort: {filename}: Is a directory")
+                    continue
+                    
+                # Read file content
+                try:
+                    content = self.fs.read_file(path)
+                    file_lines = content.split('\n')
+                    all_lines.extend(file_lines)
+                        
+                except Exception as e:
+                    print(f"sort: {filename}: {str(e)}")
+            
+            # Define sort key based on options
+            def get_sort_key(line):
+                if ignore_blanks:
+                    line = line.lstrip()
+                if ignore_case:
+                    line = line.lower()
+                if numeric_sort:
+                    # Try to extract numeric prefix for sorting
+                    match = re.match(r'^\s*([+-]?\d+(?:\.\d+)?)', line)
+                    if match:
+                        try:
+                            return float(match.group(1)), line
+                        except ValueError:
+                            pass
+                    return 0, line
+                return line
+            
+            # Sort the lines
+            sorted_lines = sorted(all_lines, key=get_sort_key, reverse=reverse_sort)
+            
+            # Apply uniqueness if requested
+            if unique_lines:
+                unique_sorted_lines = []
+                prev_line = None
+                for line in sorted_lines:
+                    if line != prev_line:
+                        unique_sorted_lines.append(line)
+                        prev_line = line
+                sorted_lines = unique_sorted_lines
+            
+            # Output the result
+            output = '\n'.join(sorted_lines)
+            
+            if output_file:
+                # Resolve output path
+                output_path = os.path.join(self.fs.cwd, output_file) if not os.path.isabs(output_file) else output_file
+                
+                # Check if parent directory exists
+                parent_dir = os.path.dirname(output_path)
+                if parent_dir and not self.fs.exists(parent_dir):
+                    print(f"sort: cannot open '{output_file}' for writing: No such directory")
+                    return
+                    
+                # Write to the output file
+                try:
+                    self.fs.write_file(output_path, output)
+                except Exception as e:
+                    print(f"sort: cannot write to '{output_file}': {str(e)}")
+            else:
+                # Print to standard output
+                print(output)
+                
+        except Exception as e:
+            logger.error(f"Error in sort command: {e}")
+            print(f"sort: {str(e)}")
+            
+    def do_grep(self, arg):
+        """Print lines matching a pattern
+        
+        Usage: grep [OPTION]... PATTERN [FILE]...
+        Search for PATTERN in each FILE or standard input.
+        PATTERN is a regular expression by default.
+        
+        Options:
+          -i, --ignore-case         Ignore case distinctions in patterns and data
+          -v, --invert-match        Select non-matching lines
+          -c, --count              Print only a count of matching lines per FILE
+          -n, --line-number        Print line number with output lines
+          -H, --with-filename      Print the file name for each match
+          -h, --no-filename        Suppress the file name prefix on output
+          -r, --recursive          Read all files under each directory, recursively
+          -E, --extended-regexp    PATTERN is an extended regular expression
+          -F, --fixed-strings      PATTERN is a set of newline-separated strings
+        
+        Examples:
+          grep -i 'hello world' menu.h main.c     # Search for "hello world" in menu.h and main.c
+          grep -r 'function' --include="*.py" .   # Search for "function" in all Python files
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                print("grep: missing pattern operand")
+                print("Try 'grep --help' for more information.")
+                return
+                
+            # Parse options
+            ignore_case = False
+            invert_match = False
+            count_only = False
+            line_numbers = False
+            with_filename = False
+            no_filename = False
+            recursive = False
+            extended_regexp = False
+            fixed_strings = False
+            pattern = None
+            files = []
+            
+            i = 0
+            while i < len(args):
+                if args[i] in ['-h', '--help']:
+                    print(self.do_grep.__doc__)
+                    return
+                elif args[i] in ['-i', '--ignore-case']:
+                    ignore_case = True
+                elif args[i] in ['-v', '--invert-match']:
+                    invert_match = True
+                elif args[i] in ['-c', '--count']:
+                    count_only = True
+                elif args[i] in ['-n', '--line-number']:
+                    line_numbers = True
+                elif args[i] in ['-H', '--with-filename']:
+                    with_filename = True
+                    no_filename = False
+                elif args[i] in ['-h', '--no-filename']:
+                    no_filename = True
+                    with_filename = False
+                elif args[i] in ['-r', '--recursive']:
+                    recursive = True
+                elif args[i] in ['-E', '--extended-regexp']:
+                    extended_regexp = True
+                elif args[i] in ['-F', '--fixed-strings']:
+                    fixed_strings = True
+                elif pattern is None and not args[i].startswith('-'):
+                    # First non-option argument is the pattern
+                    pattern = args[i]
+                else:
+                    # All other non-option arguments are file names
+                    files.append(args[i])
+                i += 1
+                
+            if pattern is None:
+                print("grep: missing pattern operand")
+                return
+                
+            if not files:
+                print("grep: missing file operand")
+                return
+                
+            # Determine if we should show filenames in output
+            show_filename = (len(files) > 1 or with_filename) and not no_filename
+            
+            # Process files
+            total_matches = 0
+            processed_files = 0
+            
+            # Compile the pattern based on options
+            if fixed_strings:
+                # For fixed strings, escape the pattern to match it literally
+                pattern_obj = re.compile(re.escape(pattern), re.IGNORECASE if ignore_case else 0)
+            else:
+                # For regular expressions
+                try:
+                    if ignore_case:
+                        pattern_obj = re.compile(pattern, re.IGNORECASE)
+                    else:
+                        pattern_obj = re.compile(pattern)
+                except re.error as e:
+                    print(f"grep: invalid regular expression: {str(e)}")
+                    return
+                    
+            # Function to process a single file
+            def process_file(filename, path):
+                nonlocal total_matches, processed_files
+                
+                try:
+                    if self.fs.is_dir(path):
+                        if recursive:
+                            # Process directory recursively
+                            for child in self.fs.list_dir(path):
+                                child_path = os.path.join(path, child)
+                                child_name = os.path.join(filename, child)
+                                process_file(child_name, child_path)
+                        else:
+                            print(f"grep: {filename}: Is a directory")
+                        return
+                        
+                    # Read and process the file
+                    content = self.fs.read_file(path)
+                    lines = content.split('\n')
+                    matches = 0
+                    
+                    for line_num, line in enumerate(lines, 1):
+                        is_match = bool(pattern_obj.search(line))
+                        if invert_match:
+                            is_match = not is_match
+                            
+                        if is_match:
+                            matches += 1
+                            if not count_only:
+                                output_parts = []
+                                if show_filename:
+                                    output_parts.append(f"{filename}:")
+                                if line_numbers:
+                                    output_parts.append(f"{line_num}:")
+                                output_parts.append(line)
+                                print("".join(output_parts))
+                                
+                    if count_only:
+                        if show_filename:
+                            print(f"{filename}:{matches}")
+                        else:
+                            print(matches)
+                            
+                    total_matches += matches
+                    processed_files += 1
+                    
+                except Exception as e:
+                    print(f"grep: {filename}: {str(e)}")
+                    
+            # Process each file
+            for filename in files:
+                # Resolve path
+                path = os.path.join(self.fs.cwd, filename) if not os.path.isabs(filename) else filename
+                
+                # Check if file exists
+                if not self.fs.exists(path):
+                    print(f"grep: {filename}: No such file or directory")
+                    continue
+                    
+                process_file(filename, path)
+                
+            # Return status code (0 if matches were found, 1 otherwise)
+            return 0 if total_matches > 0 else 1
+                
+        except Exception as e:
+            logger.error(f"Error in grep command: {e}")
+            print(f"grep: {str(e)}")
+            
+    def do_find(self, arg):
+        """Search for files in a directory hierarchy
+        
+        Usage: find [PATH...] [EXPRESSION]
+        Search for files in the specified PATHs (default is current directory) based on the given expression.
+        
+        Options:
+          -name PATTERN       File name matches PATTERN (wildcard * and ? supported)
+          -type TYPE          File is of type TYPE (f: regular file, d: directory)
+          -size N[cwbkMG]     File uses N units of space (c: bytes, w: 2-byte words, b: 512-byte blocks,
+                              k: kilobytes, M: megabytes, G: gigabytes)
+          -empty              File is empty and is either a regular file or a directory
+          -executable         File is executable
+          -readable           File is readable
+          -writable           File is writable
+          -maxdepth LEVELS    Descend at most LEVELS of directories below the start points
+          -mindepth LEVELS    Do not apply any tests or actions at levels less than LEVELS
+        
+        Examples:
+          find . -name "*.txt"         # Find all .txt files in current directory and subdirectories
+          find /home -type d -empty    # Find all empty directories under /home
+        """
+        try:
+            args = shlex.split(arg)
+            if not args:
+                # Default to current directory if no path specified
+                paths = ['.']
+                expressions = []
+            else:
+                # Parse arguments to separate paths from expressions
+                paths = []
+                expressions = []
+                i = 0
+                while i < len(args):
+                    if args[i] in ['-h', '--help']:
+                        print(self.do_find.__doc__)
+                        return
+                    elif args[i].startswith('-'):
+                        # This is the start of expressions
+                        expressions = args[i:]
+                        break
+                    else:
+                        # This is a path
+                        paths.append(args[i])
+                    i += 1
+                    
+                # If no paths were specified, use current directory
+                if not paths:
+                    paths = ['.']
+                    
+            # Parse expressions
+            name_pattern = None
+            file_type = None
+            size_expr = None
+            is_empty = False
+            is_executable = None
+            is_readable = None
+            is_writable = None
+            max_depth = float('inf')
+            min_depth = 0
+            
+            i = 0
+            while i < len(expressions):
+                if expressions[i] == '-name':
+                    if i + 1 < len(expressions):
+                        name_pattern = expressions[i + 1]
+                        # Convert glob pattern to regex
+                        name_pattern = name_pattern.replace('.', '\\.')
+                        name_pattern = name_pattern.replace('*', '.*')
+                        name_pattern = name_pattern.replace('?', '.')
+                        name_pattern = f'^{name_pattern}$'
+                        i += 2
+                    else:
+                        print("find: missing argument to '-name'")
+                        return
+                elif expressions[i] == '-type':
+                    if i + 1 < len(expressions):
+                        file_type = expressions[i + 1]
+                        if file_type not in ['f', 'd']:
+                            print(f"find: Unknown argument to -type: {file_type}")
+                            print("Valid arguments are 'f' (regular file) and 'd' (directory)")
+                            return
+                        i += 2
+                    else:
+                        print("find: missing argument to '-type'")
+                        return
+                elif expressions[i] == '-size':
+                    if i + 1 < len(expressions):
+                        size_expr = expressions[i + 1]
+                        # Size parsing will be done during evaluation
+                        i += 2
+                    else:
+                        print("find: missing argument to '-size'")
+                        return
+                elif expressions[i] == '-empty':
+                    is_empty = True
+                    i += 1
+                elif expressions[i] == '-executable':
+                    is_executable = True
+                    i += 1
+                elif expressions[i] == '-readable':
+                    is_readable = True
+                    i += 1
+                elif expressions[i] == '-writable':
+                    is_writable = True
+                    i += 1
+                elif expressions[i] == '-maxdepth':
+                    if i + 1 < len(expressions):
+                        try:
+                            max_depth = int(expressions[i + 1])
+                            if max_depth < 0:
+                                print("find: Invalid argument to -maxdepth: must be non-negative")
+                                return
+                            i += 2
+                        except ValueError:
+                            print(f"find: Invalid argument to -maxdepth: {expressions[i + 1]}")
+                            return
+                    else:
+                        print("find: missing argument to '-maxdepth'")
+                        return
+                elif expressions[i] == '-mindepth':
+                    if i + 1 < len(expressions):
+                        try:
+                            min_depth = int(expressions[i + 1])
+                            if min_depth < 0:
+                                print("find: Invalid argument to -mindepth: must be non-negative")
+                                return
+                            i += 2
+                        except ValueError:
+                            print(f"find: Invalid argument to -mindepth: {expressions[i + 1]}")
+                            return
+                    else:
+                        print("find: missing argument to '-mindepth'")
+                        return
+                else:
+                    print(f"find: unknown predicate '{expressions[i]}'")
+                    i += 1
+                    
+            # Compile name pattern regex if provided
+            name_regex = re.compile(name_pattern) if name_pattern else None
+            
+            # Parse size expression if provided
+            size_value = None
+            size_unit = None
+            if size_expr:
+                match = re.match(r'^([+-]?)([0-9]+)([cwbkMG]?)$', size_expr)
+                if match:
+                    sign, value, unit = match.groups()
+                    try:
+                        size_value = int(value)
+                        if sign == '-':
+                            size_value = -size_value
+                        size_unit = unit if unit else 'b'  # Default to 512-byte blocks
+                    except ValueError:
+                        print(f"find: Invalid size value: {size_expr}")
+                        return
+                else:
+                    print(f"find: Invalid size format: {size_expr}")
+                    return
+                    
+            # Function to process a directory recursively
+            def process_directory(path, rel_path, depth=0):
+                if depth > max_depth:
+                    return
+                    
+                try:
+                    # List directory contents
+                    contents = self.fs.list_dir(path)
+                    
+                    # Process each item
+                    for item in contents:
+                        item_path = os.path.join(path, item)
+                        item_rel_path = os.path.join(rel_path, item) if rel_path != '.' else item
+                        
+                        # Check if the item is a directory
+                        is_dir = self.fs.is_dir(item_path)
+                        
+                        # Apply filters only if we're at or above min_depth
+                        if depth >= min_depth:
+                            # Check file type
+                            if file_type:
+                                if file_type == 'f' and is_dir:
+                                    continue
+                                if file_type == 'd' and not is_dir:
+                                    continue
+                                    
+                            # Check name pattern
+                            if name_regex and not name_regex.match(item):
+                                continue
+                                
+                            # Check emptiness
+                            if is_empty:
+                                if is_dir:
+                                    # For directories, check if it has any contents
+                                    if self.fs.list_dir(item_path):
+                                        continue
+                                else:
+                                    # For files, check if it has zero size
+                                    if len(self.fs.read_file(item_path)) > 0:
+                                        continue
+                                        
+                            # Check size if specified
+                            if size_value is not None:
+                                item_size = len(self.fs.read_file(item_path)) if not is_dir else 0
+                                
+                                # Convert size based on unit
+                                if size_unit == 'c':
+                                    # Bytes (no conversion needed)
+                                    pass
+                                elif size_unit == 'w':
+                                    # 2-byte words
+                                    item_size = item_size // 2
+                                elif size_unit == 'b':
+                                    # 512-byte blocks
+                                    item_size = (item_size + 511) // 512
+                                elif size_unit == 'k':
+                                    # Kilobytes
+                                    item_size = (item_size + 1023) // 1024
+                                elif size_unit == 'M':
+                                    # Megabytes
+                                    item_size = (item_size + 1048575) // 1048576
+                                elif size_unit == 'G':
+                                    # Gigabytes
+                                    item_size = (item_size + 1073741823) // 1073741824
+                                    
+                                # Check if size matches the criteria
+                                if size_value > 0 and item_size != size_value:
+                                    continue
+                                elif size_value < 0 and item_size >= -size_value:
+                                    continue
+                                elif size_value == 0 and item_size != 0:
+                                    continue
+                                    
+                            # Print the matching item
+                            print(item_rel_path)
+                            
+                        # Recursively process subdirectories
+                        if is_dir and depth < max_depth:
+                            process_directory(item_path, item_rel_path, depth + 1)
+                            
+                except Exception as e:
+                    print(f"find: '{rel_path}': {str(e)}")
+                    
+            # Process each specified path
+            for path_arg in paths:
+                # Resolve path
+                path = os.path.join(self.fs.cwd, path_arg) if not os.path.isabs(path_arg) else path_arg
+                
+                # Check if path exists
+                if not self.fs.exists(path):
+                    print(f"find: '{path_arg}': No such file or directory")
+                    continue
+                    
+                # Check if it's a file or directory
+                if self.fs.is_dir(path):
+                    # If it's a directory, process it recursively
+                    if min_depth == 0:
+                        # Print the root directory if it matches criteria
+                        matches_criteria = True
+                        
+                        # Check file type
+                        if file_type and file_type != 'd':
+                            matches_criteria = False
+                            
+                        # Check name pattern
+                        if name_regex and not name_regex.match(os.path.basename(path)):
+                            matches_criteria = False
+                            
+                        # Check emptiness
+                        if is_empty and self.fs.list_dir(path):
+                            matches_criteria = False
+                            
+                        if matches_criteria:
+                            print(path_arg)
+                            
+                    # Process the directory contents
+                    process_directory(path, path_arg)
+                else:
+                    # If it's a file, check if it meets the criteria at depth 0
+                    if min_depth <= 0:
+                        matches_criteria = True
+                        
+                        # Check file type
+                        if file_type and file_type != 'f':
+                            matches_criteria = False
+                            
+                        # Check name pattern
+                        if name_regex and not name_regex.match(os.path.basename(path)):
+                            matches_criteria = False
+                            
+                        # Check emptiness
+                        if is_empty and len(self.fs.read_file(path)) > 0:
+                            matches_criteria = False
+                            
+                        # Check size if specified
+                        if size_value is not None:
+                            item_size = len(self.fs.read_file(path))
+                            
+                            # Convert size based on unit
+                            if size_unit == 'c':
+                                # Bytes (no conversion needed)
+                                pass
+                            elif size_unit == 'w':
+                                # 2-byte words
+                                item_size = item_size // 2
+                            elif size_unit == 'b':
+                                # 512-byte blocks
+                                item_size = (item_size + 511) // 512
+                            elif size_unit == 'k':
+                                # Kilobytes
+                                item_size = (item_size + 1023) // 1024
+                            elif size_unit == 'M':
+                                # Megabytes
+                                item_size = (item_size + 1048575) // 1048576
+                            elif size_unit == 'G':
+                                # Gigabytes
+                                item_size = (item_size + 1073741823) // 1073741824
+                                
+                            # Check if size matches the criteria
+                            if size_value > 0 and item_size != size_value:
+                                matches_criteria = False
+                            elif size_value < 0 and item_size >= -size_value:
+                                matches_criteria = False
+                            elif size_value == 0 and item_size != 0:
+                                matches_criteria = False
+                                
+                        if matches_criteria:
+                            print(path_arg)
+                            
+        except Exception as e:
+            logger.error(f"Error in find command: {e}")
+            print(f"find: {str(e)}")
