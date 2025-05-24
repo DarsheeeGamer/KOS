@@ -175,6 +175,46 @@ def init_shell():
         logging.info("Registered firewall management utilities")
     except Exception as e:
         logging.warning(f"Firewall management utilities not available: {e}")
+        
+    # Register service management utilities
+    try:
+        from .commands.service_manager import register_commands as register_service_commands
+        register_service_commands(shell)
+        logging.info("Registered service management utilities")
+    except Exception as e:
+        logging.warning(f"Service management utilities not available: {e}")
+        
+    # Register service monitoring utilities
+    try:
+        from .commands.service_monitor_utils import register_commands as register_service_monitor_commands
+        register_service_monitor_commands(shell)
+        logging.info("Registered service monitoring utilities")
+    except Exception as e:
+        logging.warning(f"Service monitoring utilities not available: {e}")
+        
+    # Register scheduler utilities
+    try:
+        from .commands.scheduler_utils import register_commands as register_scheduler_commands
+        register_scheduler_commands(shell)
+        logging.info("Registered scheduler utilities")
+    except Exception as e:
+        logging.warning(f"Scheduler utilities not available: {e}")
+        
+    # Register user management utilities
+    try:
+        from .commands.user_management import register_commands as register_user_commands
+        register_user_commands(shell)
+        logging.info("Registered user management utilities")
+    except Exception as e:
+        logging.warning(f"User management utilities not available: {e}")
+        
+    # Register authentication utilities
+    try:
+        from .commands.auth_utils import register_commands as register_auth_commands
+        register_auth_commands(shell)
+        logging.info("Registered authentication utilities")
+    except Exception as e:
+        logging.warning(f"Authentication utilities not available: {e}")
     
     # Register repository management commands
     try:

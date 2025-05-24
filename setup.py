@@ -11,7 +11,7 @@ setup(
     name="kos-shell",
     version="1.0.0",
     author="DarsheeeGamer",
-    author_email="info@kosshell.com",
+    author_email="cleaverdeath@gmail.com",
     description="A Python-based operating system simulation with advanced system utilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
