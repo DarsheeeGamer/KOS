@@ -215,6 +215,22 @@ def init_shell():
         logging.info("Registered authentication utilities")
     except Exception as e:
         logging.warning(f"Authentication utilities not available: {e}")
+        
+    # Register job control utilities
+    try:
+        from .commands.job_control import register_commands as register_job_commands
+        register_job_commands(shell)
+        logging.info("Registered job control utilities")
+    except Exception as e:
+        logging.warning(f"Job control utilities not available: {e}")
+        
+    # Register accounting utilities
+    try:
+        from .commands.accounting_utils import register_commands as register_accounting_commands
+        register_accounting_commands(shell)
+        logging.info("Registered accounting utilities")
+    except Exception as e:
+        logging.warning(f"Accounting utilities not available: {e}")
     
     # Register repository management commands
     try:

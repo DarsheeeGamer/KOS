@@ -599,10 +599,11 @@ class HardwareManager:
             device: Device object
         """
         # Create event data
+        import time
         event_data = {
             "event_type": event_type,
             "device": device.to_dict(),
-            "timestamp": import time; time.time()
+            "timestamp": time.time()
         }
         
         # Call event callbacks
