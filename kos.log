@@ -625,3 +625,12 @@
 2025-05-22 21:39:11,233 - KOS.package.app_index - INFO - Loaded 3 applications from index
 2025-05-22 21:39:11,234 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
 2025-05-22 21:39:11,234 - KOS - INFO - Package Manager initialized
+2025-05-25 06:23:27,359 - KOS.internal - INFO - KOS system started
+2025-05-25 06:23:27,360 - KOS - INFO - Initializing KOS components...
+2025-05-25 06:23:27,360 - KOS - INFO - Basic directory structure created
+2025-05-25 06:23:27,360 - KOS - INFO - FileSystem initialized
+2025-05-25 06:23:27,360 - KOS - INFO - Authentication Manager initialized
+2025-05-25 06:23:27,373 - KOS - INFO - User System initialized
+2025-05-25 06:23:27,400 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-25 06:23:27,410 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-25 06:23:27,426 - KOS - INFO - Package Manager initialized
