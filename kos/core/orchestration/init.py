@@ -25,6 +25,11 @@ from kos.core.orchestration.quota import start_quota_controller
 from kos.core.orchestration.volume import start_volume_controller
 from kos.core.orchestration.controllers.job import start_job_controller, stop_job_controller
 from kos.core.orchestration.controllers.cronjob import start_cronjob_controller, stop_cronjob_controller
+from kos.core.orchestration.node import NodeManager
+from kos.core.orchestration.events import EventRecorder
+from kos.core.orchestration.configmap import ConfigMapManager
+from kos.core.orchestration.secret import SecretManager
+from kos.core.orchestration.rbac import RBACManager
 from kos.core.monitoring.metrics import MetricsCollector
 
 # Configuration paths
@@ -97,7 +102,12 @@ class OrchestrationInit:
                 "quota_controller": True,
                 "volume_controller": True,
                 "job_controller": True,
-                "cronjob_controller": True
+                "cronjob_controller": True,
+                "node_manager": True,
+                "event_recorder": True,
+                "configmap_manager": True,
+                "secret_manager": True,
+                "rbac_manager": True
             },
             "healthcheck_interval": 60
         }
@@ -140,8 +150,30 @@ class OrchestrationInit:
         self._start_component("webhook_manager", self._start_webhook_manager)
         self._start_component("service_discovery", self._start_service_discovery)
         self._start_component("network_policy_controller", self._start_network_policy_controller)
-        self._start_component("scheduler", self._start_scheduler)
-        self._start_component("controller_manager", self._start_controller_manager)
+        
+        # Start node manager
+        if self._config.get("components", {}).get("node_manager", True):
+            self._start_component("node_manager", self._start_node_manager)
+            
+        # Start event recorder
+        if self._config.get("components", {}).get("event_recorder", True):
+            self._start_component("event_recorder", self._start_event_recorder)
+            
+        # Start RBAC manager
+        if self._config.get("components", {}).get("rbac_manager", True):
+            self._start_component("rbac_manager", self._start_rbac_manager)
+            
+        # Start ConfigMap manager
+        if self._config.get("components", {}).get("configmap_manager", True):
+            self._start_component("configmap_manager", self._start_configmap_manager)
+            
+        # Start Secret manager
+        if self._config.get("components", {}).get("secret_manager", True):
+            self._start_component("secret_manager", self._start_secret_manager)
+            
+        # Start controller manager
+        if self._config.get("components", {}).get("controller_manager", True):
+            self._start_component("controller_manager", self._start_controller_manager)
         self._start_component("autoscaler_controller", self._start_autoscaler_controller)
         self._start_component("quota_controller", self._start_quota_controller)
         self._start_component("volume_controller", self._start_volume_controller)
@@ -169,8 +201,29 @@ class OrchestrationInit:
         self._stop_component("job_controller", self._stop_job_controller)
         self._stop_component("volume_controller", self._stop_volume_controller)
         self._stop_component("quota_controller", self._stop_quota_controller)
-        self._stop_component("autoscaler_controller", self._stop_autoscaler_controller)
-        self._stop_component("controller_manager", self._stop_controller_manager)
+        # Stop Secret manager
+        if "secret_manager" in self._components:
+            self._stop_component("secret_manager", self._stop_secret_manager)
+            
+        # Stop ConfigMap manager
+        if "configmap_manager" in self._components:
+            self._stop_component("configmap_manager", self._stop_configmap_manager)
+            
+        # Stop RBAC manager
+        if "rbac_manager" in self._components:
+            self._stop_component("rbac_manager", self._stop_rbac_manager)
+            
+        # Stop event recorder
+        if "event_recorder" in self._components:
+            self._stop_component("event_recorder", self._stop_event_recorder)
+            
+        # Stop node manager
+        if "node_manager" in self._components:
+            self._stop_component("node_manager", self._stop_node_manager)
+            
+        # Stop controller manager
+        if "controller_manager" in self._components:
+            self._stop_component("controller_manager", self._stop_controller_manager)
         self._stop_component("scheduler", self._stop_scheduler)
         self._stop_component("network_policy_controller", self._stop_network_policy_controller)
         self._stop_component("service_discovery", self._stop_service_discovery)
@@ -667,6 +720,156 @@ class OrchestrationInit:
         """
         stop_cronjob_controller()
         return start_cronjob_controller()
+        
+    def _start_node_manager(self) -> bool:
+        """
+        Start the node manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            NodeManager.instance()
+            logger.info("Node manager started")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start node manager: {e}")
+            return False
+    
+    def _stop_node_manager(self) -> bool:
+        """
+        Stop the node manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            NodeManager.instance().stop()
+            logger.info("Node manager stopped")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to stop node manager: {e}")
+            return False
+    
+    def _start_event_recorder(self) -> bool:
+        """
+        Start the event recorder.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            EventRecorder.instance()
+            logger.info("Event recorder started")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start event recorder: {e}")
+            return False
+    
+    def _stop_event_recorder(self) -> bool:
+        """
+        Stop the event recorder.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            EventRecorder.instance().stop()
+            logger.info("Event recorder stopped")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to stop event recorder: {e}")
+            return False
+    
+    def _start_configmap_manager(self) -> bool:
+        """
+        Start the configmap manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            ConfigMapManager.instance()
+            logger.info("ConfigMap manager started")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start ConfigMap manager: {e}")
+            return False
+    
+    def _stop_configmap_manager(self) -> bool:
+        """
+        Stop the configmap manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            ConfigMapManager.instance().stop()
+            logger.info("ConfigMap manager stopped")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to stop ConfigMap manager: {e}")
+            return False
+    
+    def _start_secret_manager(self) -> bool:
+        """
+        Start the secret manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            SecretManager.instance()
+            logger.info("Secret manager started")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start Secret manager: {e}")
+            return False
+    
+    def _stop_secret_manager(self) -> bool:
+        """
+        Stop the secret manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            SecretManager.instance().stop()
+            logger.info("Secret manager stopped")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to stop Secret manager: {e}")
+            return False
+            
+    def _start_rbac_manager(self) -> bool:
+        """
+        Start the RBAC manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            RBACManager.instance()
+            logger.info("RBAC manager started")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to start RBAC manager: {e}")
+            return False
+    
+    def _stop_rbac_manager(self) -> bool:
+        """
+        Stop the RBAC manager.
+        
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            RBACManager.instance().stop()
+            logger.info("RBAC manager stopped")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to stop RBAC manager: {e}")
+            return False
     
     def get_status(self) -> Dict[str, Any]:
         """

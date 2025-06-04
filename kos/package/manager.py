@@ -182,3 +182,130 @@ class PackageDatabase:
     def clear_cache(self):
         """Clear the dependency resolution cache"""
         self.resolve_dependencies.cache_clear()
+
+
+class PackageManager:
+    """Enhanced package manager with advanced features"""
+    
+    def __init__(self, packages_dir: str = None, cache_dir: str = None):
+        self.packages_dir = packages_dir or os.path.expanduser("~/.kos/packages")
+        self.cache_dir = cache_dir or os.path.expanduser("~/.kos/cache")
+        
+        # Ensure directories exist
+        os.makedirs(self.packages_dir, exist_ok=True)
+        os.makedirs(self.cache_dir, exist_ok=True)
+        
+        self.database = PackageDatabase()
+        self.repositories = {}
+        
+        # Load existing packages
+        self._load_packages()
+    
+    def _load_packages(self):
+        """Load packages from disk"""
+        packages_file = os.path.join(self.packages_dir, "packages.json")
+        if os.path.exists(packages_file):
+            try:
+                with open(packages_file, 'r') as f:
+                    data = json.load(f)
+                
+                for pkg_data in data:
+                    package = Package.from_dict(pkg_data)
+                    self.database.add_package(package)
+                    
+                logger.info(f"Loaded {len(data)} packages")
+                
+            except Exception as e:
+                logger.error(f"Error loading packages: {e}")
+    
+    def _save_packages(self):
+        """Save packages to disk"""
+        packages_file = os.path.join(self.packages_dir, "packages.json")
+        try:
+            data = [pkg.to_dict() for pkg in self.database.packages.values()]
+            with open(packages_file, 'w') as f:
+                json.dump(data, f, indent=2)
+                
+        except Exception as e:
+            logger.error(f"Error saving packages: {e}")
+    
+    def install_package(self, name: str, version: str = "latest") -> bool:
+        """Install a package"""
+        try:
+            # Check if already installed
+            existing = self.database.get_package(name)
+            if existing and existing.installed:
+                logger.info(f"Package {name} already installed")
+                return True
+            
+            # Create a dummy package for now
+            package = Package(
+                name=name,
+                version=version,
+                description=f"Package {name}",
+                author="unknown",
+                dependencies=[],
+                install_date=datetime.now(),
+                installed=True
+            )
+            
+            self.database.add_package(package)
+            self._save_packages()
+            
+            logger.info(f"Installed package: {name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error installing package {name}: {e}")
+            return False
+    
+    def remove_package(self, name: str) -> bool:
+        """Remove a package"""
+        try:
+            package = self.database.get_package(name)
+            if not package or not package.installed:
+                logger.warning(f"Package {name} not installed")
+                return False
+            
+            package.installed = False
+            package.install_date = None
+            
+            self._save_packages()
+            
+            logger.info(f"Removed package: {name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error removing package {name}: {e}")
+            return False
+    
+    def list_packages(self) -> List[Package]:
+        """List all packages"""
+        return list(self.database.packages.values())
+    
+    def search_packages(self, query: str) -> List[Package]:
+        """Search for packages"""
+        query = query.lower()
+        results = []
+        
+        for package in self.database.packages.values():
+            if (query in package.name.lower() or 
+                query in package.description.lower() or
+                any(query in tag.lower() for tag in package.tags)):
+                results.append(package)
+        
+        return results
+    
+    def update_repositories(self) -> bool:
+        """Update package repositories"""
+        try:
+            # Placeholder for repository update logic
+            logger.info("Updated repositories")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error updating repositories: {e}")
+            return False
+
+# Export classes
+__all__ = ['Package', 'PackageDependency', 'PackageDatabase', 'PackageManager']

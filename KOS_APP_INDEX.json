@@ -7,7 +7,7 @@
       "app_path": "kos_apps\\cal",
       "cli_aliases": [],
       "cli_function": "",
-      "description": "a simple calender app",
+      "description": "A simple calender app for the KOS.",
       "author": "InZane84",
       "repository": "main",
       "tags": []
@@ -20,18 +20,6 @@
       "cli_aliases": [],
       "cli_function": "",
       "description": "Simple calculator application",
-      "author": "KOS",
-      "repository": "main",
-      "tags": []
-    },
-    "qotd": {
-      "name": "qotd",
-      "version": "1.0.0",
-      "entry_point": "qotd.py",
-      "app_path": "kos_apps\\qotd",
-      "cli_aliases": [],
-      "cli_function": "",
-      "description": "Quote of the Day - Get and manage daily inspirational quotes",
       "author": "KOS",
       "repository": "main",
       "tags": []

@@ -1,0 +1,175 @@
+{
+  "timestamp": 1748997161.5751832,
+  "summary": {
+    "total_tests": 37,
+    "passed": 34,
+    "failed": 3,
+    "success_rate": 91.8918918918919
+  },
+  "results": {
+    "core": {
+      "base": {
+        "success": true,
+        "message": "Successfully imported kos.base"
+      },
+      "filesystem": {
+        "success": true,
+        "message": "Successfully imported kos.filesystem"
+      },
+      "filesystem_ops": {
+        "success": true,
+        "message": "FileSystem initialized successfully"
+      },
+      "process_manager": {
+        "success": true,
+        "message": "Successfully imported kos.process.manager"
+      },
+      "process_manager_ops": {
+        "success": true,
+        "message": "ProcessManager initialized"
+      },
+      "user_system": {
+        "success": true,
+        "message": "Successfully imported kos.user_system"
+      },
+      "user_system_ops": {
+        "success": true,
+        "message": "UserSystem accessible"
+      },
+      "package_manager": {
+        "success": true,
+        "message": "Successfully imported kos.package_manager"
+      },
+      "package_manager_ops": {
+        "success": true,
+        "message": "Package manager initialized"
+      }
+    },
+    "kaede": {
+      "core": {
+        "success": true,
+        "message": "Successfully imported kos.kaede"
+      },
+      "lexer": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.lexer"
+      },
+      "lexer_ops": {
+        "success": true,
+        "message": "Lexer working - tokenized 5 tokens"
+      },
+      "parser": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.parser"
+      },
+      "parser_ops": {
+        "success": true,
+        "message": "Parser initialized"
+      },
+      "stdlib": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.stdlib"
+      },
+      "stdlib_ops": {
+        "success": true,
+        "message": "Standard library working - 13 modules"
+      },
+      "compiler": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.compiler"
+      },
+      "compiler_ops": {
+        "success": true,
+        "message": "Compiler working - stats: {'modules_compiled': 0, 'functions_compiled': 0, 'optimizations_applied': 0, 'jit_compilations': 0, 'cache_hits': 0}"
+      },
+      "runtime": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.runtime"
+      },
+      "runtime_ops": {
+        "success": true,
+        "message": "Runtime initialized"
+      },
+      "memory_manager": {
+        "success": true,
+        "message": "Successfully imported kos.kaede.memory_manager"
+      },
+      "memory_manager_ops": {
+        "success": true,
+        "message": "Memory manager working - stats: {'managed_objects': 0, 'arenas': 1, 'arena_usage': [0], 'pool_stats': {8: {'utilization': 0.0, 'is_full': False}, 16: {'utilization': 0.0, 'is_full': False}, 32: {'utilization': 0.0, 'is_full': False}, 64: {'utilization': 0.0, 'is_full': False}, 128: {'utilization': 0.0, 'is_full': False}, 256: {'utilization': 0.0, 'is_full': False}, 512: {'utilization': 0.0, 'is_full': False}, 1024: {'utilization': 0.0, 'is_full': False}}, 'gc_enabled': True, 'allocation_count': 0, 'current_usage': 0, 'peak_usage': 0, 'active_allocations': 0, 'total_allocations': 0, 'leaked_blocks': 0}"
+      }
+    },
+    "layer": {
+      "klayer": {
+        "success": true,
+        "message": "Successfully imported kos.layer"
+      },
+      "klayer_ops": {
+        "success": true,
+        "message": "KLayer working - stats available"
+      }
+    },
+    "advlayer": {
+      "kadvlayer": {
+        "success": true,
+        "message": "Successfully imported kos.advlayer"
+      },
+      "kadvlayer_ops": {
+        "success": true,
+        "message": "KADVLayer working - health: unknown"
+      }
+    },
+    "shell": {
+      "main_shell": {
+        "success": false,
+        "message": "Error importing kos.shell: unterminated triple-quoted string literal (detected at line 2089) (package_manager.py, line 2079)"
+      },
+      "commands": {
+        "success": true,
+        "message": "Successfully imported kos.commands"
+      },
+      "shell_instance": {
+        "success": false,
+        "message": "Shell instance error: KaedeShell.__init__() takes 4 positional arguments but 5 were given"
+      },
+      "shell_utils": {
+        "success": false,
+        "message": "Error importing kos.shell.commands: unterminated triple-quoted string literal (detected at line 2089) (package_manager.py, line 2079)"
+      }
+    },
+    "security": {
+      "main": {
+        "success": true,
+        "message": "Successfully imported kos.security"
+      },
+      "auth": {
+        "success": true,
+        "message": "Successfully imported kos.auth_manager"
+      },
+      "auth_ops": {
+        "success": true,
+        "message": "Authentication manager initialized"
+      }
+    },
+    "networking": {
+      "main": {
+        "success": true,
+        "message": "Successfully imported kos.network"
+      }
+    },
+    "package_mgmt": {
+      "repo_config": {
+        "success": true,
+        "message": "Successfully imported kos.repo_config"
+      },
+      "repo_manager_ops": {
+        "success": true,
+        "message": "Repository manager working - 1 repos"
+      },
+      "package_db": {
+        "success": true,
+        "message": "Successfully imported kos.package"
+      }
+    }
+  }
+}

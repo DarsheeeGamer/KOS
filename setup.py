@@ -1,11 +1,34 @@
 #!/usr/bin/env python
 """
-KOS - Python-based Operating System Simulation with Advanced System Utilities
+KOS - Kaede OS: A Python-based Operating System Simulation with Advanced System Utilities
 """
 from setuptools import setup, find_packages
+import os
+import sys
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+    
+# Define required packages
+required_packages = [
+    "pydantic>=2.0.0",  # For data validation and settings management
+    "psutil>=5.9.0",    # For system monitoring and resource tracking
+    "requests>=2.28.0", # For network operations and API interactions
+    "colorama>=0.4.5",  # For terminal color support
+    "prompt_toolkit>=3.0.30", # For enhanced command-line interface
+    "pyyaml>=6.0",      # For configuration file support
+    "tabulate>=0.9.0",  # For formatted table output
+    "tqdm>=4.64.0",     # For progress bars
+    "watchdog>=2.1.9",  # For filesystem monitoring
+    "rich>=13.5.0",     # For rich terminal output
+    "cachetools>=5.5.2", # For caching functionality
+    "cryptography>=44.0.2", # For security features
+    "typing-extensions>=4.5.0", # For enhanced type hints
+]
+
+# Platform-specific dependencies
+if sys.platform == 'win32':
+    required_packages.append("pyreadline3>=3.4.1")  # Windows readline support
 
 setup(
     name="kos-shell",
@@ -17,6 +40,14 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/DarsheeeGamer/KOS",
     packages=find_packages(),
+    python_requires=">=3.8",
+    install_requires=required_packages,
+    entry_points={
+        'console_scripts': [
+            'kos=kos.main:main',
+        ],
+    },
+    include_package_data=True,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

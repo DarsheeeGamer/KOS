@@ -23,6 +23,14 @@ from .docs import ManualSystem
 from .filesystem import FileSystem
 from .user_system import UserSystem
 
+# Import Kaede integration
+try:
+    from .kaede.shell_integration import KaedeShellCommands
+    KAEDE_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Kaede language not available: {e}")
+    KAEDE_AVAILABLE = False
+
 class CommandContext:
     """Context for command execution"""
     def __init__(self, original_user: str, is_sudo: bool = False):
@@ -41,6 +49,16 @@ class KaedeShell(cmd.Cmd):
         self.console = Console() if Console else None
         self.prompt = self.us.get_prompt()
 
+        # Initialize Kaede integration
+        self.kaede_commands = None
+        if KAEDE_AVAILABLE:
+            try:
+                self.kaede_commands = KaedeShellCommands(self)
+                print("✓ Kaede programming language loaded")
+            except Exception as e:
+                print(f"✗ Failed to load Kaede language: {e}")
+                logger.error(f"Kaede initialization failed: {e}", exc_info=True)
+
         self.env_vars = {
             "PATH": "/bin:/usr/bin",
             "HOME": self.us.get_user_info().get("home", "/home/user"),
@@ -55,7 +73,8 @@ class KaedeShell(cmd.Cmd):
             "File Operations": ["ls", "cd", "pwd", "mkdir", "touch", "cat", "rm", "cp", "mv"],
             "System Operations": ["whoami", "hostname", "su", "useradd", "userdel", "kudo"],
             "Package Management": ["kpm"],
-            "Network Tools": ["ping", "netstat", "wget", "curl"]
+            "Network Tools": ["ping", "netstat", "wget", "curl"],
+            "Programming": ["kaede", "kaedeinfo", "kaedeproject"] if KAEDE_AVAILABLE else []
         }
 
         # Initialize manual system
@@ -69,7 +88,10 @@ class KaedeShell(cmd.Cmd):
         self.aliases = {
             'll': 'ls -l',
             'la': 'ls -a',
-            'l': 'ls -CF'
+            'l': 'ls -CF',
+            'kd': 'kaede',  # Short alias for Kaede
+            'kinfo': 'kaedeinfo',
+            'kproj': 'kaedeproject'
         }
         
     def emptyline(self):
@@ -2651,443 +2673,24 @@ class KaedeShell(cmd.Cmd):
         """
         self.console.clear()
 
-    def do_whoami(self, arg):
-        """Print effective user name
-        Usage: whoami
-        """
-        print(self.us.current_user)
-
-    def do_hostname(self, arg):
-        """Show or set system hostname
-        Usage: hostname [new-hostname]
-        """
-        try:
-            args = shlex.split(arg)
-            if not args:
-                print(self.us.hostname)
-                return
-
-            if not self.us.current_user_is_root():
-                print("Permission denied: only root can set hostname")
-                return
-
-            self.us.set_hostname(args[0])
-            self.prompt = self.us.get_prompt()
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_su(self, arg):
-        """Switch user
-        Usage: su [username]
-        """
-        try:
-            args = shlex.split(arg)
-            username = args[0] if args else "kaede"
-
-            if username == self.us.current_user:
-                return
-
-            if not self.us.current_user_is_root():
-                password = getpass.getpass()
-                if not self.us.switch_user(username, password):
-                    print("Authentication failed")
-                    return
-            else:
-                if not self.us.switch_user(username):
-                    print(f"User {username} does not exist")
-                    return
-
-            self.prompt = self.us.get_prompt()
-            self.env_vars["USER"] = username
-            self.env_vars["HOME"] = self.us.get_user_info().get("home", f"/home/{username}")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_useradd(self, arg):
-        """Create a new user
-        Usage: useradd [-G groups] username
-        """
-        try:
-            if not self.us.current_user_is_root():
-                print("Permission denied: only root can add users")
-                return
-
-            args = shlex.split(arg)
-            if not args:
-                print("Error: Username required")
-                return
-
-            groups = []
-            username = args[-1]
-
-            if "-G" in args:
-                idx = args.index("-G")
-                if idx + 1 < len(args):
-                    groups = args[idx + 1].split(',')
-
-            password = getpass.getpass("Enter password: ")
-            verify = getpass.getpass("Verify password: ")
-
-            if password != verify:
-                print("Passwords do not match")
-                return
-
-            self.us.add_user(username, password, groups)
-            print(f"User {username} created successfully")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_userdel(self, arg):
-        """Delete a user
-        Usage: userdel [-r] username
-        """
-        try:
-            if not self.us.current_user_is_root():
-                print("Permission denied: only root can delete users")
-                return
-
-            args = shlex.split(arg)
-            if not args:
-                print("Error: Username required")
-                return
-
-            remove_home = "-r" in args
-            username = args[-1]
-
-            self.us.delete_user(username, remove_home)
-            print(f"User {username} deleted successfully")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_groups(self, arg):
-        """Print group memberships
-        Usage: groups [username]
-        """
-        try:
-            args = shlex.split(arg)
-            username = args[0] if args else self.us.current_user
-
-            groups = self.us.get_groups(username)
-            print(f"{username} : {' '.join(groups)}")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_id(self, arg):
-        """Print user and group information
-        Usage: id [username]
-        """
-        try:
-            args = shlex.split(arg)
-            username = args[0] if args else self.us.current_user
-
-            info = self.us.get_user_info(username)
-            print(f"uid={info['uid']}({username}) gid={info['gid']}({info['groups'][0]}) groups={','.join(info['groups'])}")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_cd(self, arg):
-        """Change directory
-        Usage: cd [directory]
-        """
-        try:
-            if not arg:
-                # Change to home directory if no argument
-                arg = self.env_vars["HOME"]
-            self.fs.cd(arg)
-            self.prompt = self.us.get_prompt()  # Update prompt with new path
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_pwd(self, arg):
-        """Print working directory
-        Usage: pwd
-        """
-        print(self.fs.pwd())
-
-    def do_mkdir(self, arg):
-        """Create directory
-        Usage: mkdir [-p] directory
-        -p: create parent directories as needed
-        """
-        try:
-            args = shlex.split(arg)
-            if not args:
-                print("Error: Directory name required")
-                return
-
-            create_parents = '-p' in args
-            dirs = [d for d in args if not d.startswith('-')]
-
-            for dir_name in dirs:
-                self.fs.mkdir(dir_name, create_parents)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_touch(self, arg):
-        """Create empty file
-        Usage: touch file [file2 ...]
-        """
-        try:
-            args = shlex.split(arg)
-            if not args:
-                print("Error: File name required")
-                return
-
-            for file in args:
-                self.fs.touch(file)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_cat(self, arg):
-        """Print file contents
-        Usage: cat file [file2 ...]
-        """
-        try:
-            args = shlex.split(arg)
-            if not args:
-                print("Error: File name required")
-                return
-
-            for file in args:
-                content = self.fs.read_file(file)
-                print(content)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_cp(self, arg):
-        """Copy files
-        Usage: cp [-r] source destination
-        -r: copy directories recursively
-        """
-        try:
-            args = shlex.split(arg)
-            if len(args) < 2:
-                print("Error: Source and destination required")
-                return
-
-            recursive = '-r' in args
-            files = [f for f in args if not f.startswith('-')]
-
-            if len(files) != 2:
-                print("Error: Need exactly two paths")
-                return
-
-            source, dest = files
-            self.fs.cp(source, dest, recursive)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_mv(self, arg):
-        """Move/rename files
-        Usage: mv source destination
-        """
-        try:
-            args = shlex.split(arg)
-            if len(args) != 2:
-                print("Error: Source and destination required")
-                return
-
-            source, dest = args
-            self.fs.mv(source, dest)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_rm(self, arg):
-        """Remove files or directories
-        Usage: rm [-r] [-f] file [file2 ...]
-        -r: remove directories and their contents recursively
-        -f: force removal without confirmation
-        """
-        try:
-            args = shlex.split(arg)
-            if not args:
-                print("Error: File name required")
-                return
-
-            recursive = '-r' in args or '-rf' in args
-            force = '-f' in args or '-rf' in args
-            files = [f for f in args if not f.startswith('-')]
-
-            for file in files:
-                if not force and self.fs.exists(file):
-                    response = input(f"Remove {file}? [y/N] ")
-                    if response.lower() != 'y':
-                        continue
-                self.fs.rm(file, recursive)
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def default(self, line):
-        """Handle unknown commands by checking if they're installed apps"""
-        try:
-            # Split command and arguments
-            parts = shlex.split(line)
-            if not parts:
-                return False
-
-            cmd = parts[0]
-            args = parts[1:] if len(parts) > 1 else []
-
-            # Check if it's an installed app
-            if self.km.run_program(cmd, args):
-                return True
-
-            # Not an app, show error
-            print(f"kos: command not found: {cmd}")
-            return False
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            return False
-
-    def get_names(self):
-        """Get list of command names - overridden to include installed apps"""
-        base_commands = super().get_names()
-
-        # Add installed apps to command list
-        installed_apps = [pkg.name for pkg in self.km.package_db.list_installed()]
-
-        return base_commands + installed_apps
-
-    def complete_default(self, text, line, begidx, endidx):
-        """Provide completion for installed apps"""
-        apps = [pkg.name for pkg in self.km.package_db.list_installed()]
-        return [app for app in apps if app.startswith(text)]
-
-    def do_kudo(self, arg):
-        """Execute a command with root privileges
-        Usage: kudo command
-        """
-        try:
-            if not arg:
-                print("Error: Command required")
-                return
-
-            if not self.us.can_sudo(self.us.current_user):
-                print("User is not in the sudoers file")
-                return
-
-            # Get user's password
-            password = getpass.getpass("[kudo] password for %s: " % self.us.current_user)
-            if not self.us.verify_sudo_password(self.us.current_user, password):
-                print("Sorry, try again.")
-                return
-
-            # Save current user
-            original_user = self.us.current_user
-
-            try:
-                # Temporarily switch to root
-                self.us.current_user = "kaede"
-
-                # Execute the command
-                line = arg.strip()
-                if ' ' in line:
-                    cmd, args = line.split(' ', 1)
-                else:
-                    cmd, args = line, ''
-
-                func = getattr(self, f'do_{cmd}', None)
-                if func:
-                    func(args)
-                else:
-                    self.default(line)
-
-            finally:
-                # Restore original user
-                self.us.current_user = original_user
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_help(self, arg):
-        """List available commands"""
-        if arg:
-            # Get help for specific command
-            super().do_help(arg)
-            return
-
-        print("KOS Command Reference\n")
-        for category, cmds in self.command_categories.items():
-            print(f"\n{category}:")
-            for cmd in cmds:
-                # Get the first line of the command's docstring
-                doc = getattr(self, f"do_{cmd}").__doc__ or ""
-                brief = doc.split('\n')[0]
-                print(f"  {cmd:<12} {brief}")
-
-        print("\nFor detailed help:\n  help <command>  Show detailed help for a command")
-        print("  man <topic>    Show manual page for a topic")
-
-    def precmd(self, line):
-        """Pre-command hook for history and alias handling"""
-        if line:
-            # Handle aliases
-            parts = line.split()
-            if parts and parts[0] in self.aliases:
-                line = self.aliases[parts[0]] + ' ' + ' '.join(parts[1:])
-
-            # Add to history
-            if len(self.cmd_history) >= self.history_limit:
-                self.cmd_history.pop(0)
-            self.cmd_history.append(line)
-
-        return line
-
-    def do_history(self, arg):
-        """Display command history
-        Usage: history [n]
-        n: number of commands to show (default: all)
-        """
-        try:
-            args = shlex.split(arg)
-            n = int(args[0]) if args else len(self.cmd_history)
-
-            for i, cmd in enumerate(self.cmd_history[-n:], 1):
-                print(f"{i:5d}  {cmd}")
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_alias(self, arg):
-        """Define or display aliases
-        Usage: alias [name[=value]]
-        """
-        try:
-            if not arg:
-                for name, value in self.aliases.items():
-                    print(f"alias {name}='{value}'")
-                return
-
-            if '=' in arg:
-                name, value = arg.split('=', 1)
-                name = name.strip()
-                value = value.strip().strip("'\"")
-                self.aliases[name] = value
-                print(f"Alias '{name}' set to '{value}'")
-            else:
-                name = arg.strip()
-                if name in self.aliases:
-                    print(f"alias {name}='{self.aliases[name]}'")
-                else:
-                    print(f"No alias named '{name}'")
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-    def do_clear(self, arg):
-        """Clear the terminal screen
-        Usage: clear
-        """
-        self.console.clear()
+    # Kaede language commands
+    def do_kaede(self, arg):
+        """Execute Kaede code or enter Kaede REPL"""
+        if self.kaede_commands:
+            return self.kaede_commands.do_kaede(arg)
+        else:
+            print("Kaede language not available")
+
+    def do_kaedeinfo(self, arg):
+        """Show information about Kaede language and runtime"""
+        if self.kaede_commands:
+            return self.kaede_commands.do_kaedeinfo(arg)
+        else:
+            print("Kaede language not available")
+
+    def do_kaedeproject(self, arg):
+        """Manage Kaede projects"""
+        if self.kaede_commands:
+            return self.kaede_commands.do_kaedeproject(arg)
+        else:
+            print("Kaede language not available")

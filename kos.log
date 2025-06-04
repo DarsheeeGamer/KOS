@@ -634,3 +634,221 @@
 2025-05-25 06:23:27,400 - KOS.package.app_index - INFO - Loaded 3 applications from index
 2025-05-25 06:23:27,410 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
 2025-05-25 06:23:27,426 - KOS - INFO - Package Manager initialized
+2025-05-26 06:31:40,564 - KOS.internal - INFO - KOS system started
+2025-05-26 06:31:40,564 - KOS - INFO - Initializing KOS components...
+2025-05-26 06:31:40,564 - KOS - INFO - Basic directory structure created
+2025-05-26 06:31:40,564 - KOS - INFO - FileSystem initialized
+2025-05-26 06:31:40,564 - KOS - INFO - Authentication Manager initialized
+2025-05-26 06:31:40,566 - KOS - INFO - User System initialized
+2025-05-26 06:31:40,567 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 06:31:40,568 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 06:31:40,571 - KOS - INFO - Package Manager initialized
+2025-05-26 06:32:06,443 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 07:08:17,809 - KOS.internal - INFO - KOS system started
+2025-05-26 07:08:17,809 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:08:17,809 - KOS - INFO - Basic directory structure created
+2025-05-26 07:08:17,809 - KOS - INFO - FileSystem initialized
+2025-05-26 07:08:17,809 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:08:17,809 - KOS - INFO - User System initialized
+2025-05-26 07:08:17,811 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:08:17,812 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:08:17,813 - KOS - INFO - Package Manager initialized
+2025-05-26 07:12:27,661 - KOS.internal - INFO - KOS system started
+2025-05-26 07:12:27,661 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:12:27,661 - KOS - INFO - Basic directory structure created
+2025-05-26 07:12:27,661 - KOS - INFO - FileSystem initialized
+2025-05-26 07:12:27,662 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:12:27,662 - KOS - INFO - User System initialized
+2025-05-26 07:12:27,662 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:12:27,664 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:12:27,665 - KOS - INFO - Package Manager initialized
+2025-05-26 07:12:36,391 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 07:21:21,479 - KOS.internal - INFO - KOS system started
+2025-05-26 07:21:21,479 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:21:21,479 - KOS - INFO - Basic directory structure created
+2025-05-26 07:21:21,479 - KOS - INFO - FileSystem initialized
+2025-05-26 07:21:21,479 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:21:21,490 - KOS - INFO - User System initialized
+2025-05-26 07:21:21,508 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:21:21,515 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:21:21,525 - KOS - INFO - Package Manager initialized
+2025-05-26 07:22:10,334 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 07:53:06,468 - KOS.internal - INFO - KOS system started
+2025-05-26 07:53:06,468 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:53:06,468 - KOS - INFO - Basic directory structure created
+2025-05-26 07:53:06,468 - KOS - INFO - FileSystem initialized
+2025-05-26 07:53:06,468 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:53:06,470 - KOS - INFO - User System initialized
+2025-05-26 07:53:06,471 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:53:06,471 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:53:06,473 - KOS - INFO - Package Manager initialized
+2025-05-26 07:54:51,869 - KOS.internal - INFO - KOS system started
+2025-05-26 07:54:51,869 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:54:51,869 - KOS - INFO - Basic directory structure created
+2025-05-26 07:54:51,869 - KOS - INFO - FileSystem initialized
+2025-05-26 07:54:51,869 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:54:51,870 - KOS - INFO - User System initialized
+2025-05-26 07:54:51,870 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:54:51,871 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:54:51,872 - KOS - INFO - Package Manager initialized
+2025-05-26 07:56:36,985 - KOS.internal - INFO - KOS system started
+2025-05-26 07:56:36,985 - KOS - INFO - Initializing KOS components...
+2025-05-26 07:56:36,985 - KOS - INFO - Basic directory structure created
+2025-05-26 07:56:36,985 - KOS - INFO - FileSystem initialized
+2025-05-26 07:56:36,985 - KOS - INFO - Authentication Manager initialized
+2025-05-26 07:56:36,987 - KOS - INFO - User System initialized
+2025-05-26 07:56:36,987 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 07:56:36,989 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 07:56:36,990 - KOS - INFO - Package Manager initialized
+2025-05-26 07:56:47,831 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 15:43:13,945 - KOS.internal - INFO - KOS system started
+2025-05-26 15:43:13,946 - KOS - INFO - Initializing KOS components...
+2025-05-26 15:43:13,946 - KOS - INFO - Basic directory structure created
+2025-05-26 15:43:13,946 - KOS - INFO - FileSystem initialized
+2025-05-26 15:43:13,946 - KOS - INFO - Authentication Manager initialized
+2025-05-26 15:43:13,960 - KOS - INFO - User System initialized
+2025-05-26 15:43:13,982 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 15:43:13,994 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 15:43:14,014 - KOS - INFO - Package Manager initialized
+2025-05-26 16:09:31,456 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 16:09:31,881 - KOS.package.app_index - INFO - Added application 'qotd' to index
+2025-05-26 16:17:37,480 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 16:21:51,919 - KOS.internal - INFO - KOS system started
+2025-05-26 16:21:51,920 - KOS - INFO - Initializing KOS components...
+2025-05-26 16:21:51,920 - KOS - INFO - Basic directory structure created
+2025-05-26 16:21:51,920 - KOS - INFO - FileSystem initialized
+2025-05-26 16:21:51,920 - KOS - INFO - Authentication Manager initialized
+2025-05-26 16:21:51,923 - KOS - INFO - User System initialized
+2025-05-26 16:21:51,923 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 16:21:51,925 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 16:21:51,927 - KOS - INFO - Package Manager initialized
+2025-05-26 16:28:04,171 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 16:28:04,871 - KOS.package.app_index - INFO - Added application 'qotd' to index
+2025-05-26 16:28:07,806 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 16:28:14,850 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 16:28:14,937 - KOS.package.app_index - INFO - Added application 'qotd' to index
+2025-05-26 16:29:44,737 - KOS.internal - INFO - KOS system started
+2025-05-26 16:29:44,737 - KOS - INFO - Initializing KOS components...
+2025-05-26 16:29:44,737 - KOS - INFO - Basic directory structure created
+2025-05-26 16:29:44,737 - KOS - INFO - FileSystem initialized
+2025-05-26 16:29:44,737 - KOS - INFO - Authentication Manager initialized
+2025-05-26 16:29:44,738 - KOS - INFO - User System initialized
+2025-05-26 16:29:44,738 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 16:29:44,739 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 16:29:44,741 - KOS - INFO - Package Manager initialized
+2025-05-26 16:29:57,921 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 16:30:31,247 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 16:30:31,650 - KOS.package.app_index - INFO - Added application 'cal' to index
+2025-05-26 16:30:37,231 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 18:43:04,322 - KOS.internal - INFO - KOS system started
+2025-05-26 18:43:04,324 - KOS - INFO - Initializing KOS components...
+2025-05-26 18:43:04,324 - KOS - INFO - Basic directory structure created
+2025-05-26 18:43:04,324 - KOS - INFO - FileSystem initialized
+2025-05-26 18:43:04,324 - KOS - INFO - Authentication Manager initialized
+2025-05-26 18:43:04,325 - KOS - INFO - User System initialized
+2025-05-26 18:43:04,325 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 18:43:04,326 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 18:43:04,328 - KOS - INFO - Package Manager initialized
+2025-05-26 18:43:37,302 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 18:45:37,617 - KOS.internal - INFO - KOS system started
+2025-05-26 18:45:37,618 - KOS - INFO - Initializing KOS components...
+2025-05-26 18:45:37,618 - KOS - INFO - Basic directory structure created
+2025-05-26 18:45:37,618 - KOS - INFO - FileSystem initialized
+2025-05-26 18:45:37,618 - KOS - INFO - Authentication Manager initialized
+2025-05-26 18:45:37,620 - KOS - INFO - User System initialized
+2025-05-26 18:45:37,622 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 18:45:37,623 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 18:45:37,625 - KOS - INFO - Package Manager initialized
+2025-05-26 20:01:00,882 - KOS.package_manager - ERROR - Application 'lol' not found
+2025-05-26 20:21:30,295 - KOS.internal - INFO - KOS system started
+2025-05-26 20:21:30,295 - KOS - INFO - Initializing KOS components...
+2025-05-26 20:21:30,296 - KOS - INFO - Basic directory structure created
+2025-05-26 20:21:30,296 - KOS - INFO - FileSystem initialized
+2025-05-26 20:21:30,296 - KOS - INFO - Authentication Manager initialized
+2025-05-26 20:21:30,299 - KOS - INFO - User System initialized
+2025-05-26 20:21:30,325 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 20:21:30,340 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 20:21:30,341 - KOS - INFO - Package Manager initialized
+2025-05-26 20:23:02,948 - KOS.internal - INFO - KOS system started
+2025-05-26 20:23:02,948 - KOS - INFO - Initializing KOS components...
+2025-05-26 20:23:02,948 - KOS - INFO - Basic directory structure created
+2025-05-26 20:23:02,948 - KOS - INFO - FileSystem initialized
+2025-05-26 20:23:02,948 - KOS - INFO - Authentication Manager initialized
+2025-05-26 20:23:02,949 - KOS - INFO - User System initialized
+2025-05-26 20:23:02,950 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 20:23:02,950 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 20:23:02,951 - KOS - INFO - Package Manager initialized
+2025-05-26 20:24:04,208 - KOS.package.app_index - INFO - Loaded 3 applications from index
+2025-05-26 20:24:04,209 - KOS.package.app_index - INFO - Resolved app path for 'qotd': C:\Users\cleav\Downloads\KOS\kos_apps\qotd
+2025-05-26 20:24:04,212 - KOS.package.app_index - INFO - Deleted application files for 'qotd' from C:\Users\cleav\Downloads\KOS\kos_apps\qotd
+2025-05-26 20:24:04,213 - KOS.package.app_index - INFO - Removed application 'qotd' from index
+2025-05-26 20:24:25,178 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 20:24:37,224 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 20:24:43,694 - KOS.package_manager - ERROR - Entry point qotd.py not found at C:\Users\cleav\Downloads\KOS\kos_apps\qotd\qotd.py
+2025-05-26 20:24:48,439 - KOS.package_manager - ERROR - Entry point qotd.py not found at C:\Users\cleav\Downloads\KOS\kos_apps\qotd\qotd.py
+2025-05-26 20:28:41,144 - KOS.internal - INFO - KOS system started
+2025-05-26 20:28:41,144 - KOS - INFO - Initializing KOS components...
+2025-05-26 20:28:41,144 - KOS - INFO - Basic directory structure created
+2025-05-26 20:28:41,144 - KOS - INFO - FileSystem initialized
+2025-05-26 20:28:41,144 - KOS - INFO - Authentication Manager initialized
+2025-05-26 20:28:41,146 - KOS - INFO - User System initialized
+2025-05-26 20:28:41,146 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 20:28:41,147 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 20:28:41,148 - KOS - INFO - Package Manager initialized
+2025-05-26 20:28:48,464 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-05-26 20:29:06,888 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 20:29:23,846 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 20:29:23,868 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 20:29:28,753 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 20:34:19,482 - KOS.internal - INFO - KOS system started
+2025-05-26 20:34:19,482 - KOS - INFO - Initializing KOS components...
+2025-05-26 20:34:19,482 - KOS - INFO - Basic directory structure created
+2025-05-26 20:34:19,482 - KOS - INFO - FileSystem initialized
+2025-05-26 20:34:19,482 - KOS - INFO - Authentication Manager initialized
+2025-05-26 20:34:19,483 - KOS - INFO - User System initialized
+2025-05-26 20:34:19,484 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 20:34:19,484 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 20:34:19,485 - KOS - INFO - Package Manager initialized
+2025-05-26 20:43:47,812 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 20:43:51,959 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages
+2025-05-26 20:44:01,836 - KOS.package_manager - INFO - Running application 'qotd' in a separate interpreter
+2025-05-26 20:44:01,844 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-26 20:44:07,358 - KOS.package_manager - INFO - Running application 'qotd' in a separate interpreter
+2025-05-26 20:44:07,361 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-26 20:44:22,090 - KOS.package_manager - ERROR - Application 'qoute' not found
+2025-05-26 20:44:26,031 - KOS.package_manager - ERROR - Application 'quote' not found
+2025-05-26 20:44:31,103 - KOS.package_manager - INFO - Running application 'qotd' in a separate interpreter
+2025-05-26 20:44:31,104 - KOS.package_manager - INFO - Application 'qotd' completed successfully
+2025-05-26 21:03:56,659 - KOS.internal - INFO - KOS system started
+2025-05-26 21:03:56,659 - KOS - INFO - Initializing KOS components...
+2025-05-26 21:03:56,659 - KOS - INFO - Basic directory structure created
+2025-05-26 21:03:56,659 - KOS - INFO - FileSystem initialized
+2025-05-26 21:03:56,659 - KOS - INFO - Authentication Manager initialized
+2025-05-26 21:03:56,661 - KOS - INFO - User System initialized
+2025-05-26 21:03:56,662 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-26 21:03:56,662 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-26 21:03:56,664 - KOS - INFO - Package Manager initialized
+2025-05-27 22:33:09,815 - KOS.internal - INFO - KOS system started
+2025-05-27 22:33:09,815 - KOS - INFO - Initializing KOS components...
+2025-05-27 22:33:09,815 - KOS - INFO - Basic directory structure created
+2025-05-27 22:33:09,815 - KOS - INFO - FileSystem initialized
+2025-05-27 22:33:09,816 - KOS - INFO - Authentication Manager initialized
+2025-05-27 22:33:09,816 - KOS - INFO - User System initialized
+2025-05-27 22:33:09,817 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-05-27 22:33:09,817 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-05-27 22:33:09,819 - KOS - INFO - Package Manager initialized
+2025-05-27 22:33:19,679 - kos.filesystem - ERROR - Error changing directory to 'c:\Users\cleav\Downloads\KOS': Directory not found: 'c:\Users\cleav\Downloads\KOS'
+2025-06-04 04:25:56,543 - KOS.internal - INFO - KOS system started
+2025-06-04 04:25:56,544 - KOS - INFO - Initializing KOS components...
+2025-06-04 04:25:56,545 - KOS - INFO - Basic directory structure created
+2025-06-04 04:25:56,545 - KOS - INFO - FileSystem initialized
+2025-06-04 04:25:56,546 - KOS - INFO - Authentication Manager initialized
+2025-06-04 04:25:56,549 - KOS - INFO - User System initialized
+2025-06-04 04:25:56,552 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-06-04 04:25:56,556 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-06-04 04:25:56,563 - KOS.package.app_index - INFO - Loaded 2 applications from index
+2025-06-04 04:25:56,564 - KOS.package.repo_index - INFO - Loaded 1 repositories from index
+2025-06-04 04:25:56,588 - KOS - INFO - Package Manager initialized
+2025-06-04 05:03:34,167 - root - ERROR - Required dependency qotd latest not found
+2025-06-04 05:03:34,169 - KOS.package_manager - WARNING - Dependency resolution failed, falling back to direct installation: Required dependency qotd latest not found
+2025-06-04 05:03:34,685 - KOS.package.repo_index - INFO - Updated repository 'main' with 3 packages

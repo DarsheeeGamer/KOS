@@ -1,0 +1,19 @@
+# KOS - Kaede OS Core Dependencies
+# Version 1.0.0
+
+# Core system dependencies
+psutil>=5.9.0        # For system monitoring and resource tracking
+requests>=2.28.0     # For network operations and API interactions
+colorama>=0.4.5      # For terminal color support
+prompt_toolkit>=3.0.30  # For enhanced command-line interface
+pyyaml>=6.0          # For configuration file support
+tabulate>=0.9.0      # For formatted table output
+tqdm>=4.64.0         # For progress bars
+watchdog>=2.1.9      # For filesystem monitoring
+
+# Optional dependencies
+# Uncomment as needed for specific features
+# matplotlib>=3.5.2   # For graphical system monitoring
+# numpy>=1.23.0       # Required for matplotlib and data processing
+# rich>=12.5.1        # For rich terminal output
+# pyreadline3>=3.4.1  # For Windows readline support

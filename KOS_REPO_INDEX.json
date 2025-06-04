@@ -4,23 +4,23 @@
       "name": "main",
       "url": "https://raw.githubusercontent.com/DarsheeeGamer/kos-repo/refs/heads/main",
       "active": true,
-      "last_update": "2025-05-22T21:35:27.901525",
+      "last_update": "2025-06-04T05:03:34.683985",
       "packages": {
         "calculator": {
           "name": "calculator",
           "version": "1.0.0",
-          "description": "Simple calculator application",
-          "author": "KOS",
+          "description": "A simple calculator APP for the KOS.",
+          "author": "Kaede Dev Kento Hinode",
           "dependencies": [],
           "entry_point": "calculator.py",
-          "tags": [],
+          "tags": "UTILITY",
           "repository": "main"
         },
         "qotd": {
           "name": "qotd",
           "version": "1.0.0",
           "description": "Quote of the Day - Get and manage daily inspirational quotes",
-          "author": "KOS",
+          "author": "Kaede Dev Kento Hinode",
           "dependencies": [],
           "entry_point": "qotd.py",
           "tags": [],
@@ -29,7 +29,7 @@
         "cal": {
           "name": "cal",
           "version": "0.1.0",
-          "description": "a simple calender app",
+          "description": "A simple calender app for the KOS.",
           "author": "InZane84",
           "dependencies": [],
           "entry_point": "cal.py",

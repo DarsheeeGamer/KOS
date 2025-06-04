@@ -240,3 +240,18 @@ class RepoIndexManager:
                     query in ' '.join(pkg.tags).lower()):
                     results.append(pkg)
         return results
+        
+    def get_repo_packages(self, repo_name: str) -> Dict[str, Any]:
+        """Get all packages from a specific repository
+        
+        Args:
+            repo_name: The name of the repository
+            
+        Returns:
+            Dictionary of package name to package info
+        """
+        repo = self.get_repository(repo_name)
+        if repo:
+            # Convert RepositoryPackage objects to dictionaries
+            return {name: pkg.to_dict() for name, pkg in repo.packages.items()}
+        return {}

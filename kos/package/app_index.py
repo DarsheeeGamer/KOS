@@ -90,17 +90,49 @@ class AppIndexManager:
             # Create an empty index in case of error
             self._save_index()
             
-    def _save_index(self) -> None:
-        """Save application index to file"""
+    def _save_index(self) -> bool:
+        """Save the application index to disk"""
         try:
-            data = {
-                "apps": {name: app.to_dict() for name, app in self.apps.items()}
-            }
+            # Convert objects to dictionaries for proper JSON serialization
+            index_data = {'apps': {}}
+            for name, app in self.apps.items():
+                # Make sure we use the to_dict method for proper serialization
+                if hasattr(app, 'to_dict') and callable(app.to_dict):
+                    index_data['apps'][name] = app.to_dict()
+                else:
+                    # Fallback for direct dictionary conversion
+                    app_dict = {}
+                    for attr, value in app.__dict__.items():
+                        # Convert any non-serializable objects to strings
+                        if isinstance(value, (str, int, float, bool, type(None))):
+                            app_dict[attr] = value
+                        elif isinstance(value, (list, tuple)):
+                            # Handle lists of basic types
+                            app_dict[attr] = [str(item) if not isinstance(item, (str, int, float, bool, type(None))) else item for item in value]
+                        else:
+                            app_dict[attr] = str(value)
+                    index_data['apps'][name] = app_dict
+                
+            # Ensure the directory exists
+            index_dir = os.path.dirname(self.index_file)
+            os.makedirs(index_dir, exist_ok=True)
+            
+            # Write to disk with robust error handling
             with open(self.index_file, 'w') as f:
-                json.dump(data, f, indent=2)
-            logger.debug(f"Saved {len(self.apps)} applications to index")
+                try:
+                    json.dump(index_data, f, indent=2, default=str)
+                    f.flush()
+                    os.fsync(f.fileno())
+                except TypeError as json_err:
+                    logger.error(f"JSON serialization error: {json_err}")
+                    # Try again with a simpler approach that forces string conversion
+                    json.dump(index_data, f, indent=2, default=str)
+                
+            logger.debug(f"Saved application index to {self.index_file}")
+            return True
         except Exception as e:
-            logger.error(f"Error saving app index: {e}")
+            logger.error(f"Error saving application index: {e}")
+            return False
             
     def add_app(self, app: AppIndexEntry) -> bool:
         """Add an application to the index"""
@@ -114,11 +146,45 @@ class AppIndexManager:
             return False
             
     def remove_app(self, app_name: str) -> bool:
-        """Remove an application from the index"""
+        """Remove an application from the index and filesystem"""
         try:
             if app_name in self.apps:
+                # Get the app information before removing it
+                app = self.apps[app_name]
+                app_path = app.app_path
+                
+                # Properly resolve the app path relative to the KOS root
+                full_app_path = app_path
+                if not os.path.isabs(full_app_path):
+                    # Try to locate the application relative to current directory
+                    current_dir = os.getcwd()
+                    # Check if path exists relative to current directory
+                    if os.path.exists(os.path.join(current_dir, app_path)):
+                        full_app_path = os.path.join(current_dir, app_path)
+                    else:
+                        # Use a default KOS apps directory
+                        kos_apps_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'kos_apps')
+                        full_app_path = os.path.join(kos_apps_dir, os.path.basename(app_path))
+                    
+                logger.info(f"Resolved app path for '{app_name}': {full_app_path}")
+                
+                # Remove from index
                 del self.apps[app_name]
                 self._save_index()
+                
+                # Delete application files from filesystem if they exist
+                if os.path.exists(full_app_path) and os.path.isdir(full_app_path):
+                    try:
+                        import shutil
+                        shutil.rmtree(full_app_path)
+                        logger.info(f"Deleted application files for '{app_name}' from {full_app_path}")
+                    except Exception as file_err:
+                        logger.warning(f"Could not delete application files for '{app_name}': {file_err}")
+                        # Continue anyway - we've removed from index which is the most important part
+                else:
+                    logger.warning(f"App directory not found at {full_app_path}, but removed from index")
+                
+                print(f"Successfully removed application '{app_name}'")
                 logger.info(f"Removed application '{app_name}' from index")
                 return True
             return False
@@ -140,6 +206,42 @@ class AppIndexManager:
     def list_apps(self) -> List[AppIndexEntry]:
         """List all applications in the index"""
         return list(self.apps.values())
+        
+    def is_app_installed(self, app_name: str) -> bool:
+        """Check if an application is installed
+        
+        Args:
+            app_name: Application name to check
+            
+        Returns:
+            bool: True if the application is installed
+        """
+        # Check if app exists in index
+        is_in_index = app_name in self.apps
+        
+        # Also verify the app directory exists (for more robustness)
+        app_path = None
+        if is_in_index:
+            app = self.apps[app_name]
+            app_path = app.app_path
+        
+        if app_path and os.path.exists(app_path) and os.path.isdir(app_path):
+            return True
+            
+        # If we're here but the app is in index, it means the directory doesn't exist
+        # This is an inconsistency, log a warning
+        if is_in_index:
+            logger.warning(f"Application '{app_name}' is in index but directory doesn't exist")
+            
+        return False
+        
+    def list_installed_apps(self) -> List[AppIndexEntry]:
+        """List all actually installed applications
+        
+        Returns:
+            List[AppIndexEntry]: List of installed applications
+        """
+        return [app for name, app in self.apps.items() if self.is_app_installed(name)]
         
     def get_app_entry_point(self, app_name: str) -> Optional[str]:
         """Get the full path to an app's entry point"""

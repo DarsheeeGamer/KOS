@@ -19,7 +19,7 @@
         "qotd": {
           "name": "qotd",
           "version": "1.0.0",
-          "description": "Quote of the Day - Get and manage daily inspirational quotes",
+          "description": "Quote of the Day - Get and manage daily inspirational quote",
           "author": "KOS",
           "entry_point": "qotd.py",
           "files": [

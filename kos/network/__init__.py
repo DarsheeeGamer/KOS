@@ -466,3 +466,19 @@ def initialize():
 
 # Initialize on import
 initialize()
+
+"""
+KOS Network Module
+=================
+
+Network utilities and services for KOS including:
+- SSH/SCP management
+- Firewall configuration
+- Network monitoring
+- Protocol implementations
+- Security management
+"""
+
+from .ssh_manager import get_ssh_manager, SSHManager
+
+__all__ = ['get_ssh_manager', 'SSHManager']

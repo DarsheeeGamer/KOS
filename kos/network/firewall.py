@@ -1,9 +1,18 @@
 """
 KOS Firewall System
 
-This module provides a firewall implementation for KOS, allowing for packet
-filtering, network address translation (NAT), and port forwarding - similar
-to iptables in Linux.
+This module provides a comprehensive firewall implementation for KOS, allowing for packet
+filtering, network address translation (NAT), port forwarding, and application-specific
+rules. It serves as a security layer for KOS applications and services.
+
+Key features:
+- Rule-based packet filtering
+- Network address translation (NAT)
+- Port forwarding
+- Application-specific firewall rules
+- Integration with package management system
+- IPv4 and IPv6 support
+- Stateful inspection
 """
 
 import os
@@ -13,10 +22,37 @@ import logging
 import threading
 import uuid
 import json
-from typing import Dict, List, Any, Optional, Union, Tuple
+import ipaddress
+import socket
+import subprocess
+import platform
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, List, Any, Optional, Union, Tuple, Set
+
+# Try to import Pydantic models if available
+try:
+    from pydantic import BaseModel, Field, validator
+    from typing import Literal
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    PYDANTIC_AVAILABLE = False
+    BaseModel = object
+    Field = lambda *args, **kwargs: None
+    def validator(*args, **kwargs): return lambda func: func
+    Literal = Union
 
 # Set up logging
 logger = logging.getLogger('KOS.network.firewall')
+
+# Constants
+FIREWALL_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.kos', 'firewall')
+DEFAULT_CONFIG_FILE = os.path.join(FIREWALL_CONFIG_PATH, 'firewall.json')
+RULE_BACKUP_DIR = os.path.join(FIREWALL_CONFIG_PATH, 'backups')
+
+# Ensure directories exist
+os.makedirs(FIREWALL_CONFIG_PATH, exist_ok=True)
+os.makedirs(RULE_BACKUP_DIR, exist_ok=True)
 
 # Firewall rule tables
 TABLES = {
@@ -25,6 +61,11 @@ TABLES = {
             'INPUT': [],
             'FORWARD': [],
             'OUTPUT': []
+        },
+        'default_policy': {
+            'INPUT': 'ACCEPT',
+            'FORWARD': 'DROP',
+            'OUTPUT': 'ACCEPT'
         }
     },
     'nat': {
@@ -47,32 +88,153 @@ TABLES = {
 
 FIREWALL_LOCK = threading.Lock()
 
+# Define Pydantic models if available
+if PYDANTIC_AVAILABLE:
+    class FirewallRuleModel(BaseModel):
+        """Pydantic model for firewall rules"""
+        id: str = Field(default_factory=lambda: str(uuid.uuid4())[:8])
+        chain: str
+        table: str
+        protocol: Optional[str] = None
+        source: Optional[str] = None
+        destination: Optional[str] = None
+        source_port: Optional[str] = None
+        destination_port: Optional[str] = None
+        interface_in: Optional[str] = None
+        interface_out: Optional[str] = None
+        action: str = "ACCEPT"
+        comment: Optional[str] = None
+        created_at: datetime = Field(default_factory=datetime.now)
+        app_id: Optional[str] = None  # Associated application ID
+        priority: int = 0  # Rule priority (higher numbers = higher priority)
+        enabled: bool = True  # Whether the rule is active
+        hits: int = 0  # Number of times the rule has been matched
+        last_hit: Optional[datetime] = None  # Last time the rule was matched
+        
+        @validator('source', 'destination', pre=True)
+        def validate_ip_address(cls, v):
+            if v is None:
+                return v
+            try:
+                if '/' in v:  # CIDR notation
+                    ipaddress.ip_network(v)
+                else:
+                    ipaddress.ip_address(v)
+                return v
+            except ValueError:
+                # If not IP, check if it's a valid hostname
+                try:
+                    socket.gethostbyname(v)
+                    return v
+                except:
+                    raise ValueError(f"Invalid IP address or hostname: {v}")
+        
+        @validator('protocol')
+        def validate_protocol(cls, v):
+            if v is None:
+                return v
+            valid_protocols = ["tcp", "udp", "icmp", "all"]
+            if v.lower() not in valid_protocols:
+                raise ValueError(f"Protocol must be one of {valid_protocols}")
+            return v.lower()
+        
+        @validator('action')
+        def validate_action(cls, v):
+            valid_actions = ["ACCEPT", "DROP", "REJECT", "LOG"]
+            if v not in valid_actions:
+                raise ValueError(f"Action must be one of {valid_actions}")
+            return v
+        
+        @validator('source_port', 'destination_port')
+        def validate_port(cls, v):
+            if v is None:
+                return v
+            
+            # Check if it's a port range (e.g. 80:90)
+            if ':' in v:
+                start, end = v.split(':')
+                try:
+                    start_port = int(start)
+                    end_port = int(end)
+                    if not (0 <= start_port <= 65535 and 0 <= end_port <= 65535):
+                        raise ValueError()
+                    if start_port > end_port:
+                        raise ValueError()
+                    return v
+                except ValueError:
+                    raise ValueError(f"Invalid port range: {v}")
+            
+            # Check if it's a single port
+            try:
+                port = int(v)
+                if not (0 <= port <= 65535):
+                    raise ValueError()
+                return v
+            except ValueError:
+                raise ValueError(f"Invalid port: {v}")
+
+
 class FirewallRule:
-    """Firewall rule class representing a single firewall rule"""
+    """Firewall rule class representing a single firewall rule
     
+    This class is designed to work with or without Pydantic, providing
+    basic validation in either case. When Pydantic is available, it uses
+    the FirewallRuleModel for enhanced validation.
+    """
     def __init__(self, chain: str, table: str, protocol: str = None, 
                 source: str = None, destination: str = None, 
                 source_port: str = None, destination_port: str = None, 
                 interface_in: str = None, interface_out: str = None,
-                action: str = "ACCEPT", comment: str = None):
+                action: str = "ACCEPT", comment: str = None,
+                app_id: str = None, priority: int = 0, enabled: bool = True):
         """Initialize a new firewall rule"""
-        self.id = str(uuid.uuid4())[:8]
-        self.chain = chain
-        self.table = table
-        self.protocol = protocol
-        self.source = source
-        self.destination = destination
-        self.source_port = source_port
-        self.destination_port = destination_port
-        self.interface_in = interface_in
-        self.interface_out = interface_out
-        self.action = action
-        self.comment = comment
-        self.created_at = time.time()
+        
+        if PYDANTIC_AVAILABLE:
+            # Use Pydantic model for validation
+            model = FirewallRuleModel(
+                chain=chain,
+                table=table,
+                protocol=protocol,
+                source=source,
+                destination=destination,
+                source_port=source_port,
+                destination_port=destination_port,
+                interface_in=interface_in,
+                interface_out=interface_out,
+                action=action,
+                comment=comment,
+                app_id=app_id,
+                priority=priority,
+                enabled=enabled
+            )
+            
+            # Copy validated values to self
+            for key, value in model.dict().items():
+                setattr(self, key, value)
+        else:
+            # Basic initialization without Pydantic validation
+            self.id = str(uuid.uuid4())[:8]
+            self.chain = chain
+            self.table = table
+            self.protocol = protocol.lower() if protocol else None
+            self.source = source
+            self.destination = destination
+            self.source_port = source_port
+            self.destination_port = destination_port
+            self.interface_in = interface_in
+            self.interface_out = interface_out
+            self.action = action
+            self.comment = comment
+            self.created_at = datetime.now()
+            self.app_id = app_id
+            self.priority = priority
+            self.enabled = enabled
+            self.hits = 0
+            self.last_hit = None
     
     def to_dict(self):
         """Convert rule to dictionary representation"""
-        return {
+        result = {
             "id": self.id,
             "chain": self.chain,
             "table": self.table,
@@ -85,27 +247,74 @@ class FirewallRule:
             "interface_out": self.interface_out,
             "action": self.action,
             "comment": self.comment,
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "enabled": self.enabled,
+            "priority": self.priority,
+            "hits": getattr(self, 'hits', 0)
         }
+        
+        # Add app_id if it exists
+        if hasattr(self, 'app_id') and self.app_id:
+            result["app_id"] = self.app_id
+            
+        # Add last_hit if it exists
+        if hasattr(self, 'last_hit') and self.last_hit:
+            result["last_hit"] = self.last_hit
+            
+        return result
     
     @classmethod
     def from_dict(cls, data):
         """Create rule from dictionary"""
-        rule = cls(
-            chain=data["chain"],
-            table=data["table"],
-            protocol=data["protocol"],
-            source=data["source"],
-            destination=data["destination"],
-            source_port=data["source_port"],
-            destination_port=data["destination_port"],
-            interface_in=data["interface_in"],
-            interface_out=data["interface_out"],
-            action=data["action"],
-            comment=data["comment"]
-        )
-        rule.id = data["id"]
-        rule.created_at = data["created_at"]
+        # Extract base parameters
+        base_params = {
+            "chain": data["chain"],
+            "table": data["table"],
+            "protocol": data.get("protocol"),
+            "source": data.get("source"),
+            "destination": data.get("destination"),
+            "source_port": data.get("source_port"),
+            "destination_port": data.get("destination_port"),
+            "interface_in": data.get("interface_in"),
+            "interface_out": data.get("interface_out"),
+            "action": data.get("action", "ACCEPT"),
+            "comment": data.get("comment"),
+            "app_id": data.get("app_id"),
+            "priority": data.get("priority", 0),
+            "enabled": data.get("enabled", True)
+        }
+        
+        # Create rule
+        rule = cls(**base_params)
+        
+        # Set additional attributes
+        if "id" in data:
+            rule.id = data["id"]
+        if "created_at" in data:
+            if isinstance(data["created_at"], (int, float)):
+                # Convert from timestamp to datetime if needed
+                rule.created_at = datetime.fromtimestamp(data["created_at"])
+            elif isinstance(data["created_at"], str):
+                # Parse ISO format datetime string
+                try:
+                    rule.created_at = datetime.fromisoformat(data["created_at"])
+                except ValueError:
+                    rule.created_at = datetime.now()
+            else:
+                rule.created_at = data["created_at"]
+        if "hits" in data:
+            rule.hits = data["hits"]
+        if "last_hit" in data:
+            if isinstance(data["last_hit"], (int, float)):
+                rule.last_hit = datetime.fromtimestamp(data["last_hit"])
+            elif isinstance(data["last_hit"], str):
+                try:
+                    rule.last_hit = datetime.fromisoformat(data["last_hit"])
+                except ValueError:
+                    rule.last_hit = None
+            else:
+                rule.last_hit = data["last_hit"]
+        
         return rule
     
     def __str__(self):

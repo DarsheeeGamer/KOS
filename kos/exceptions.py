@@ -2,6 +2,9 @@ class KaedeOSError(Exception):
     """Base exception for Kaede OS"""
     pass
 
+# Alias for backwards compatibility and consistency
+KOSError = KaedeOSError
+
 class FileSystemError(KaedeOSError):
     """Base exception for filesystem operations"""
     pass

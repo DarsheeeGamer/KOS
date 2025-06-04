@@ -549,76 +549,141 @@ class PackageManagementCommands:
         elif command == "index-search":
             return PackageManagementCommands._kpm_index_search(fs, cwd, subargs)
         
+    else:
+        return f"Unknown command: {command}\n{PackageManagementCommands.do_kpm.__doc__}"
+    
+@staticmethod
+def _kpm_remove(fs, cwd, args):
+    """Remove a package (which may also be an application)
+        
+    In KOS, an application is simply a special type of package with
+    executable capabilities. This command handles removal of both
+    standard packages and application packages in a unified way.
+    """
+    if not args:
+        return "Usage: kpm remove [package_name]"
+        
+    name = args[0]
+    removed_something = False
+        
+    # Initialize managers for both package DB and app index
+    from kos.package_manager import KpmManager
+    from kos.package.app_index import AppIndexManager
+        
+    package_manager = KpmManager()
+    app_manager = AppIndexManager()
+        
+    # Step 1: Check if it's in the application index
+    app_in_index = name in app_manager.apps
+    if app_in_index:
+        print(f"Found '{name}' in application index, removing...")
+        try:
+            # First remove from application index
+            app_removed = app_manager.remove_app(name)
+            if app_removed:
+                removed_something = True
+                print(f"Removed '{name}' from application index")
+        except Exception as app_err:
+            logger.error(f"Error removing from application index: {app_err}")
+        
+    # Step 2: Check if it's in the package database
+    pkg_in_db = package_manager.package_db.has_package(name)
+    if pkg_in_db:
+        print(f"Found '{name}' in package database, removing...")
+        try:
+            # Now remove from package database
+            pkg_removed = package_manager.package_db.remove_package(name)
+            if pkg_removed:
+                removed_something = True
+                print(f"Removed '{name}' from package database")
+        except Exception as pkg_err:
+            logger.error(f"Error removing from package database: {pkg_err}")
+        
+    # Report results
+    if removed_something:
+        return f"Successfully removed '{name}'"
+    else:
+        return f"Package '{name}' not found or could not be removed"
+
+@staticmethod
+def _kpm_install(fs, cwd, args):
+    """Install a package or application
+        
+    In KOS, an application is a special type of package with executable capabilities.
+    This command handles installation of both standard packages and application packages.
+    """
+    if not args:
+        return "Usage: kpm install [package_name]"
+        
+    package_name = args[0]
+    version = "latest"  # Default to latest version
+        
+        if not package_manager:
+            return "Package management modules not available"
+    
+    # Check for version specification
+    if len(args) > 1 and '=' not in args[1]:
+        version = args[1]
+    
+    # Process any additional options
+    options = {}
+    for arg in args[1:]:
+        if '=' in arg:
+            key, value = arg.split('=', 1)
+            options[key.strip()] = value.strip()
+    
+    # Get package manager
+    from kos.package_manager import KpmManager
+    package_manager = KpmManager() if PACKAGE_MODULES_AVAILABLE else None
+    if not package_manager:
+        return "Package management modules not available"
+    
+    # First check if the package is already installed
+    if package_name in package_manager.package_db.packages:
+        pkg = package_manager.package_db.packages[package_name]
+        if pkg.installed:
+            return f"Package '{package_name}' (version {pkg.version}) is already installed"
+    
+    print(f"Installing package '{package_name}'...")
+    
+    # Install the package
+    if package_manager.install(package_name, version):
+        # Get the installed package info
+        pkg = package_manager.package_db.get_package(package_name)
+        if pkg:
+            return f"Successfully installed {package_name} (version {pkg.version})"
         else:
-            return f"Unknown command: {command}\n{PackageManagementCommands.do_kpm.__doc__}"
+            return f"Successfully installed {package_name}"
+    else:
+        return f"Failed to install {package_name}"
     
-    @staticmethod
-    def _kpm_install(fs, cwd, args):
-        """Install a package"""
-        if not args:
-            return "Usage: kpm install [package]"
-        
-        package_name = args[0]
-        force = "--force" in args
-        
-        db = PackageManagementCommands._ensure_package_db()
-        repo_manager = PackageManagementCommands._ensure_repo_manager()
-        
-        # Check if package is already installed
-        existing_pkg = db.get_package(package_name)
-        if existing_pkg and existing_pkg.installed and not force:
-            return f"Package '{package_name}' is already installed. Use --force to reinstall."
-        
-        # Find package in repositories
-        pkg_candidates = repo_manager.find_package(package_name)
-        if not pkg_candidates:
-            return f"Package '{package_name}' not found in any repository."
-        
-        # Use the first match (could be enhanced to select best version)
-        repo_pkg = pkg_candidates[0]
-        
-        # Create a Package from RepositoryPackage
-        pkg = Package(
-            name=repo_pkg.name,
-            version=repo_pkg.version,
-            description=repo_pkg.description,
-            author=repo_pkg.author,
-            dependencies=[PackageDependency(dep, "*") for dep in repo_pkg.dependencies],
-            install_date=datetime.now(),
-            repository=repo_pkg.repository,
-            entry_point=repo_pkg.entry_point,
-            tags=repo_pkg.tags,
-            installed=True
-        )
-        
-        # Install package (in a real implementation, we would download and install files)
-        db.add_package(pkg)
-        
-        return f"Successfully installed {package_name} (version {pkg.version})"
-    
+    # Note: When a package is installed, the package manager will automatically
+    # register it as an application if it has an entry point, maintaining our
+    # unified design where applications are just packages with entry points.
+
     @staticmethod
     def _kpm_remove(fs, cwd, args):
-        """Remove a package"""
-        if not args:
-            return "Usage: kpm remove [package]"
+        """Remove a package (which may also be an application)
+            if app_removed:
+                removed_something = True
+                print(f"Removed '{name}' from application index")
+        except Exception as app_err:
+            logger.error(f"Error removing from application index: {app_err}")
+    
+    if result:
+        return f"Successfully removed {name}"
+    else:
+        return f"Failed to remove {name}"
+                        print(f"Removed '{name}' from package database")
+                except Exception as pkg_err:
+                    logger.error(f"Error removing from package database: {pkg_err}")
         
-        package_name = args[0]
-        db = PackageManagementCommands._ensure_package_db()
-        
-        # Check if package is installed
-        existing_pkg = db.get_package(package_name)
-        if not existing_pkg or not existing_pkg.installed:
-            return f"Package '{package_name}' is not installed."
-        
-        # Check for dependencies (packages that depend on this one)
-        # This would be implemented in a real system
-        
-        # Remove package
-        success = db.remove_package(package_name)
-        if success:
-            return f"Successfully removed {package_name}"
+        # Report results
+        if removed_something:
+            return f"Successfully removed '{name}'"
         else:
-            return f"Failed to remove {package_name}"
+            return f"Package '{name}' not found or could not be removed"
+
     
     @staticmethod
     def _kpm_list(fs, cwd, args):
@@ -1521,40 +1586,30 @@ class PackageManagementCommands:
             return "Usage: kpm app-remove [app]"
         
         app_name = args[0]
-        app_manager = PackageManagementCommands._ensure_app_manager()
         
-        # Check if app is installed
-        if not app_manager.is_app_installed(app_name):
-            return f"Application '{app_name}' is not installed."
-        
-        # Remove app
-        success = app_manager.remove_app(app_name)
-        if success:
-            return f"Successfully removed application '{app_name}'"
-        else:
-            return f"Failed to remove application '{app_name}'"
+        # Use the unified package removal approach
+        return PackageManagementCommands._kpm_remove(fs, cwd, [app_name])
     
     @staticmethod
     def _kpm_app_list(fs, cwd, args):
         """List installed applications"""
         app_manager = PackageManagementCommands._ensure_app_manager()
-        installed_apps = app_manager.list_installed_apps()
+        installed_apps = app_manager.list_installed_apps() if hasattr(app_manager, 'list_installed_apps') else list(app_manager.apps.values())
         
         if not installed_apps:
             return "No applications installed."
         
         # Format output
         result = ["Installed applications:"]
-        result.append("NAME               VERSION      CATEGORY    DESCRIPTION")
-        result.append("------------------ ------------ ----------- ---------------------")
+        result.append("NAME               VERSION      DESCRIPTION")
+        result.append("------------------ ------------ ---------------------")
         
         for app in installed_apps:
             name_col = app.name[:18].ljust(18)
             version_col = app.version[:12].ljust(12)
-            category_col = app.category[:11].ljust(11)
             desc = app.description[:50] + "..." if len(app.description) > 50 else app.description
             
-            result.append(f"{name_col} {version_col} {category_col} {desc}")
+            result.append(f"{name_col} {version_col} {desc}")
         
         return "\n".join(result)
     
@@ -1568,23 +1623,22 @@ class PackageManagementCommands:
         app_manager = PackageManagementCommands._ensure_app_manager()
         
         # Search for applications
-        results = app_manager.search_apps(query)
+        results = app_manager.search_apps(query) if hasattr(app_manager, 'search_apps') else []
         
         if not results:
             return f"No applications found matching '{query}'."
         
         # Format output
         output = [f"Search results for '{query}':"]
-        output.append("NAME               VERSION      CATEGORY    DESCRIPTION")
-        output.append("------------------ ------------ ----------- ---------------------")
+        output.append("NAME               VERSION      DESCRIPTION")
+        output.append("------------------ ------------ ---------------------")
         
         for app in results:
             name_col = app.name[:18].ljust(18)
             version_col = app.version[:12].ljust(12)
-            category_col = app.category[:11].ljust(11)
             desc = app.description[:50] + "..." if len(app.description) > 50 else app.description
             
-            output.append(f"{name_col} {version_col} {category_col} {desc}")
+            output.append(f"{name_col} {version_col} {desc}")
         
         return "\n".join(output)
 
