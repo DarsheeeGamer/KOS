@@ -741,56 +741,56 @@ def register_commands(shell):
     # Register the fsinfo command
     def do_fsinfo(self, arg):
         """Display filesystem information"""
-        result = FilesystemCommands.do_fsinfo(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_fsinfo(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the mount command
     def do_mount(self, arg):
         """Mount a filesystem"""
-        result = FilesystemCommands.do_mount(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_mount(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the umount command
     def do_umount(self, arg):
         """Unmount a filesystem"""
-        result = FilesystemCommands.do_umount(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_umount(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the mkdir command
     def do_mkdir(self, arg):
         """Create a directory"""
-        result = FilesystemCommands.do_mkdir(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_mkdir(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the rmdir command
     def do_rmdir(self, arg):
         """Remove empty directories"""
-        result = FilesystemCommands.do_rmdir(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_rmdir(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the touch command
     def do_touch(self, arg):
         """Update file access and modification times"""
-        result = FilesystemCommands.do_touch(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_touch(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the cat command
     def do_cat(self, arg):
         """Concatenate and display file contents"""
-        result = FilesystemCommands.do_cat(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_cat(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     
     # Register the rm command
     def do_rm(self, arg):
         """Remove files or directories"""
-        result = FilesystemCommands.do_rm(self.fs, self.cwd, arg)
+        result = FilesystemCommands.do_rm(self.fs, self.fs.current_path, arg)
         if result:
             print(result)
     

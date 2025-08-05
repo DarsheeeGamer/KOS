@@ -763,12 +763,14 @@ class SecurityMonitor:
             logger.error(f"Network monitoring error: {e}")
     
     def _check_file_integrity(self):
-        """Check integrity of critical system files"""
+        """Check integrity of critical KOS system files"""
+        # Monitor KOS's own critical files, not host system files
+        kos_base_path = os.path.dirname(os.path.dirname(__file__))
         critical_files = [
-            "/etc/passwd",
-            "/etc/shadow",
-            "/etc/sudoers",
-            "/etc/hosts"
+            os.path.join(kos_base_path, "config.json"),
+            os.path.join(kos_base_path, "__init__.py"),
+            os.path.join(kos_base_path, "main.py"),
+            os.path.join(kos_base_path, "user_system.py"),
         ]
         
         for file_path in critical_files:
@@ -825,7 +827,17 @@ class SecurityMonitor:
         )
         
         self.security_events.append(event)
-        logger.warning(f"Security event: {event_type} - {description}")
+        
+        # Use different log levels based on severity and event type
+        if event_type == "network_connection":
+            # Network connections are only logged in debug mode
+            logger.debug(f"Security event: {event_type} - {description}")
+        elif severity == "high":
+            logger.error(f"Security event: {event_type} - {description}")
+        elif severity == "medium":
+            logger.warning(f"Security event: {event_type} - {description}")
+        else:
+            logger.info(f"Security event: {event_type} - {description}")
     
     def get_security_events(self, count: int = 100) -> List[SecurityEvent]:
         """Get recent security events"""
@@ -939,3 +951,14 @@ def get_kadvlayer(monitoring_level: MonitoringLevel = MonitoringLevel.STANDARD) 
     if _kadvlayer_instance is None:
         _kadvlayer_instance = KADVLayer(monitoring_level)
     return _kadvlayer_instance
+
+# Create a global instance for convenience
+kadvlayer = get_kadvlayer()
+
+# Export the main components
+__all__ = [
+    'KADVLayer', 'get_kadvlayer', 'kadvlayer',
+    'SystemMetrics', 'ProcessMetrics', 'NetworkMetrics', 'SecurityEvent',
+    'MonitoringLevel', 'SystemEvent',
+    'RealTimeMonitor', 'HardwareAbstraction', 'HighPerformanceComputing', 'SecurityMonitor'
+]

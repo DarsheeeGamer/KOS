@@ -277,6 +277,16 @@ class UserSystem:
         self.sudoers.discard(username)
         return True
 
+    def save_users(self):
+        """Save users to file"""
+        try:
+            import json
+            with open(self.users_file, 'w') as f:
+                json.dump(self.users, f, indent=2)
+            logger.debug(f"Users saved to {self.users_file}")
+        except Exception as e:
+            logger.error(f"Failed to save users: {e}")
+
     def _get_node(self, path):
         if self.filesystem:
             return self.filesystem.exists(path)

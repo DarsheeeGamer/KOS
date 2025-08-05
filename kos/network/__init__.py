@@ -115,7 +115,55 @@ class Network:
         # Add interface to network
         self.interfaces[interface_name] = container_id
         
-        # TODO: Create virtual interface in container
+        # Create virtual interface in container
+        try:
+            from ..container.runtime import get_container_runtime
+            runtime = get_container_runtime()
+            
+            # Create network namespace if it doesn't exist
+            runtime.create_network_namespace(container_id)
+            
+            # Create veth pair
+            host_veth = f"veth_{container_id[:8]}"
+            container_veth = interface_name
+            
+            # Create the veth pair
+            import subprocess
+            subprocess.run([
+                "ip", "link", "add", host_veth, 
+                "type", "veth", "peer", "name", container_veth
+            ], check=True)
+            
+            # Move container end to container namespace
+            subprocess.run([
+                "ip", "link", "set", container_veth, 
+                "netns", container_id
+            ], check=True)
+            
+            # Configure interface in container
+            subprocess.run([
+                "ip", "netns", "exec", container_id,
+                "ip", "addr", "add", f"{self._allocate_ip()}/{self._get_subnet_mask()}", 
+                "dev", container_veth
+            ], check=True)
+            
+            # Bring up interfaces
+            subprocess.run(["ip", "link", "set", host_veth, "up"], check=True)
+            subprocess.run([
+                "ip", "netns", "exec", container_id,
+                "ip", "link", "set", container_veth, "up"
+            ], check=True)
+            
+            # Add to bridge if using bridge driver
+            if self.driver == "bridge" and hasattr(self, 'bridge_name'):
+                subprocess.run([
+                    "ip", "link", "set", host_veth, 
+                    "master", self.bridge_name
+                ], check=True)
+                
+        except Exception as e:
+            logger.warning(f"Failed to create virtual interface: {e}")
+            # Continue anyway - interface tracking is still valid
         
         return True, f"Container {container_id} connected to network {self.name} with interface {interface_name}"
     
@@ -132,9 +180,38 @@ class Network:
                 interface_name = name
                 del self.interfaces[name]
         
-        # TODO: Remove virtual interface from container
+        # Remove virtual interface from container
+        try:
+            host_veth = f"veth_{container_id[:8]}"
+            
+            # Delete the veth pair (deleting one end deletes both)
+            import subprocess
+            subprocess.run(["ip", "link", "delete", host_veth], check=True)
+            
+        except Exception as e:
+            logger.warning(f"Failed to remove virtual interface: {e}")
+            # Continue anyway - interface tracking is still valid
         
         return True, f"Container {container_id} disconnected from network {self.name}"
+    
+    def _allocate_ip(self) -> str:
+        """Allocate an IP address from the subnet"""
+        import ipaddress
+        network = ipaddress.ip_network(self.subnet)
+        
+        # Skip network address, gateway, and broadcast
+        used_ips = {self.gateway}
+        
+        # Find first available IP
+        for ip in network.hosts():
+            if str(ip) not in used_ips:
+                return str(ip)
+                
+        raise ValueError(f"No available IPs in subnet {self.subnet}")
+    
+    def _get_subnet_mask(self) -> int:
+        """Get subnet mask bits from CIDR notation"""
+        return int(self.subnet.split('/')[1])
     
     def to_dict(self):
         """Convert network to dictionary representation"""

@@ -12,8 +12,11 @@ import logging
 import threading
 import importlib
 import platform
-import psutil
 from typing import Dict, List, Any, Optional, Tuple, Set, Callable
+
+# Import KOS kernel components
+from ..kernel.kernel_wrapper import get_kernel
+from ..kernel.resource_monitor_wrapper import get_kernel_monitor
 
 # Set up logging
 logger = logging.getLogger('KOS.core.hal')
@@ -180,6 +183,16 @@ class CPUDriver(DeviceDriver):
         """
         super().__init__(device_info)
         self._last_cpu_times = None
+        self._kernel_monitor = None
+        
+    def _get_kernel_monitor(self):
+        """Get kernel monitor instance"""
+        if not self._kernel_monitor:
+            try:
+                self._kernel_monitor = get_kernel_monitor()
+            except Exception as e:
+                logger.debug(f"Failed to get kernel monitor: {e}")
+        return self._kernel_monitor
     
     def get_status(self):
         """
@@ -190,8 +203,39 @@ class CPUDriver(DeviceDriver):
         """
         status = super().get_status()
         
-        # Add CPU-specific status
+        # Try to use kernel monitor first
+        monitor = self._get_kernel_monitor()
+        if monitor:
+            try:
+                cpu_info = monitor.get_cpu_info()
+                status.update({
+                    'percent': cpu_info.get('cpu_percent', 0),
+                    'times': {
+                        'user': cpu_info.get('user_time', 0),
+                        'system': cpu_info.get('system_time', 0),
+                        'idle': cpu_info.get('idle_time', 0)
+                    },
+                    'stats': {
+                        'ctx_switches': cpu_info.get('context_switches', 0),
+                        'interrupts': cpu_info.get('interrupts', 0),
+                        'soft_interrupts': cpu_info.get('soft_interrupts', 0),
+                        'syscalls': cpu_info.get('syscalls', 0)
+                    },
+                    'freq': {
+                        'current': cpu_info.get('frequency_current', 0),
+                        'min': cpu_info.get('frequency_min', 0),
+                        'max': cpu_info.get('frequency_max', 0)
+                    },
+                    'count': cpu_info.get('cpu_count', 0),
+                    'count_logical': cpu_info.get('cpu_count_logical', 0)
+                })
+                return status
+            except Exception as e:
+                logger.debug(f"Failed to get CPU info from kernel: {e}")
+        
+        # Fallback to psutil if kernel monitor not available
         try:
+            import psutil
             cpu_percent = psutil.cpu_percent(interval=0.1)
             cpu_times = psutil.cpu_times()
             cpu_stats = psutil.cpu_stats()
@@ -233,6 +277,16 @@ class MemoryDriver(DeviceDriver):
             device_info: Device info
         """
         super().__init__(device_info)
+        self._kernel_monitor = None
+        
+    def _get_kernel_monitor(self):
+        """Get kernel monitor instance"""
+        if not self._kernel_monitor:
+            try:
+                self._kernel_monitor = get_kernel_monitor()
+            except Exception as e:
+                logger.debug(f"Failed to get kernel monitor: {e}")
+        return self._kernel_monitor
     
     def get_status(self):
         """
@@ -243,8 +297,36 @@ class MemoryDriver(DeviceDriver):
         """
         status = super().get_status()
         
-        # Add memory-specific status
+        # Try to use kernel monitor first
+        monitor = self._get_kernel_monitor()
+        if monitor:
+            try:
+                mem_info = monitor.get_memory_info()
+                status.update({
+                    'virtual': {
+                        'total': mem_info.get('total', 0),
+                        'available': mem_info.get('available', 0),
+                        'used': mem_info.get('used', 0),
+                        'free': mem_info.get('free', 0),
+                        'percent': mem_info.get('percent', 0)
+                    },
+                    'swap': {
+                        'total': mem_info.get('swap_total', 0),
+                        'used': mem_info.get('swap_used', 0),
+                        'free': mem_info.get('swap_free', 0),
+                        'percent': mem_info.get('swap_percent', 0)
+                    },
+                    'buffers': mem_info.get('buffers', 0),
+                    'cached': mem_info.get('cached', 0),
+                    'shared': mem_info.get('shared', 0)
+                })
+                return status
+            except Exception as e:
+                logger.debug(f"Failed to get memory info from kernel: {e}")
+        
+        # Fallback to psutil if kernel monitor not available
         try:
+            import psutil
             memory = psutil.virtual_memory()
             swap = psutil.swap_memory()
             
@@ -290,9 +372,38 @@ class StorageDriver(DeviceDriver):
             Storage status
         """
         status = super().get_status()
+        monitor = None
         
-        # Add storage-specific status
+        # Try to get kernel monitor
         try:
+            monitor = get_kernel_monitor()
+        except Exception:
+            pass
+            
+        # Try to use kernel monitor first for disk stats
+        if monitor and self._path:
+            try:
+                disk_info = monitor.get_disk_info()
+                for disk in disk_info:
+                    if disk.get('mountpoint') == self._path:
+                        status.update({
+                            'path': self._path,
+                            'usage': {
+                                'total': disk.get('total', 0),
+                                'used': disk.get('used', 0),
+                                'free': disk.get('free', 0),
+                                'percent': disk.get('percent', 0)
+                            },
+                            'device': disk.get('device', ''),
+                            'fstype': disk.get('fstype', '')
+                        })
+                        return status
+            except Exception as e:
+                logger.debug(f"Failed to get disk info from kernel: {e}")
+        
+        # Fallback to psutil
+        try:
+            import psutil
             if self._path and os.path.exists(self._path):
                 disk_usage = psutil.disk_usage(self._path)
                 
@@ -396,9 +507,47 @@ class NetworkDriver(DeviceDriver):
             Network status
         """
         status = super().get_status()
+        monitor = None
         
-        # Add network-specific status
+        # Try to get kernel monitor
         try:
+            monitor = get_kernel_monitor()
+        except Exception:
+            pass
+            
+        # Try to use kernel monitor first
+        if monitor and self._interface:
+            try:
+                net_info = monitor.get_network_info()
+                for iface in net_info:
+                    if iface.get('interface') == self._interface:
+                        status.update({
+                            'interface': self._interface,
+                            'io': {
+                                'bytes_sent': iface.get('bytes_sent', 0),
+                                'bytes_recv': iface.get('bytes_recv', 0),
+                                'packets_sent': iface.get('packets_sent', 0),
+                                'packets_recv': iface.get('packets_recv', 0),
+                                'errin': iface.get('errin', 0),
+                                'errout': iface.get('errout', 0),
+                                'dropin': iface.get('dropin', 0),
+                                'dropout': iface.get('dropout', 0)
+                            },
+                            'addresses': iface.get('addresses', []),
+                            'stats': {
+                                'isup': iface.get('is_up', False),
+                                'duplex': iface.get('duplex', 0),
+                                'speed': iface.get('speed', 0),
+                                'mtu': iface.get('mtu', 1500)
+                            }
+                        })
+                        return status
+            except Exception as e:
+                logger.debug(f"Failed to get network info from kernel: {e}")
+        
+        # Fallback to psutil
+        try:
+            import psutil
             if self._interface:
                 net_io = psutil.net_io_counters(pernic=True)
                 net_addrs = psutil.net_if_addrs()
@@ -728,6 +877,13 @@ def detect_hardware() -> Dict[str, Any]:
         Hardware information
     """
     hardware_info = {}
+    monitor = None
+    
+    # Try to get kernel monitor
+    try:
+        monitor = get_kernel_monitor()
+    except Exception:
+        pass
     
     # Detect system information
     hardware_info['system'] = {
@@ -740,108 +896,181 @@ def detect_hardware() -> Dict[str, Any]:
     }
     
     # Detect CPU
-    try:
-        cpu_info = {
-            'count_physical': psutil.cpu_count(logical=False),
-            'count_logical': psutil.cpu_count(logical=True),
-            'architecture': platform.architecture()[0],
-            'model': platform.processor()
-        }
-        
-        hardware_info['cpu'] = cpu_info
-    except Exception as e:
-        logger.warning(f"Error detecting CPU: {e}")
+    if monitor:
+        try:
+            cpu_info = monitor.get_cpu_info()
+            hardware_info['cpu'] = {
+                'count_physical': cpu_info.get('cpu_count', 1),
+                'count_logical': cpu_info.get('cpu_count_logical', 1),
+                'architecture': platform.architecture()[0],
+                'model': platform.processor(),
+                'frequency_current': cpu_info.get('frequency_current', 0),
+                'frequency_min': cpu_info.get('frequency_min', 0),
+                'frequency_max': cpu_info.get('frequency_max', 0)
+            }
+        except Exception as e:
+            logger.debug(f"Failed to get CPU info from kernel: {e}")
+    
+    # Fallback CPU detection
+    if 'cpu' not in hardware_info:
+        try:
+            import psutil
+            cpu_info = {
+                'count_physical': psutil.cpu_count(logical=False),
+                'count_logical': psutil.cpu_count(logical=True),
+                'architecture': platform.architecture()[0],
+                'model': platform.processor()
+            }
+            hardware_info['cpu'] = cpu_info
+        except Exception as e:
+            logger.warning(f"Error detecting CPU: {e}")
     
     # Detect memory
-    try:
-        memory = psutil.virtual_memory()
-        swap = psutil.swap_memory()
-        
-        memory_info = {
-            'physical': {
-                'total': memory.total,
-                'available': memory.available
-            },
-            'swap': {
-                'total': swap.total,
-                'free': swap.free
+    if monitor:
+        try:
+            mem_info = monitor.get_memory_info()
+            hardware_info['memory'] = {
+                'physical': {
+                    'total': mem_info.get('total', 0),
+                    'available': mem_info.get('available', 0)
+                },
+                'swap': {
+                    'total': mem_info.get('swap_total', 0),
+                    'free': mem_info.get('swap_free', 0)
+                }
             }
-        }
-        
-        hardware_info['memory'] = memory_info
-    except Exception as e:
-        logger.warning(f"Error detecting memory: {e}")
+        except Exception as e:
+            logger.debug(f"Failed to get memory info from kernel: {e}")
+    
+    # Fallback memory detection
+    if 'memory' not in hardware_info:
+        try:
+            import psutil
+            memory = psutil.virtual_memory()
+            swap = psutil.swap_memory()
+            
+            memory_info = {
+                'physical': {
+                    'total': memory.total,
+                    'available': memory.available
+                },
+                'swap': {
+                    'total': swap.total,
+                    'free': swap.free
+                }
+            }
+            hardware_info['memory'] = memory_info
+        except Exception as e:
+            logger.warning(f"Error detecting memory: {e}")
     
     # Detect storage
-    try:
-        disks = []
-        
-        for partition in psutil.disk_partitions():
-            try:
-                usage = psutil.disk_usage(partition.mountpoint)
-                
-                disk_info = {
-                    'device': partition.device,
-                    'mountpoint': partition.mountpoint,
-                    'fstype': partition.fstype,
-                    'total': usage.total,
-                    'used': usage.used,
-                    'free': usage.free
-                }
-                
-                disks.append(disk_info)
-            except Exception as e:
-                logger.debug(f"Error getting disk usage for {partition.mountpoint}: {e}")
-        
-        hardware_info['storage'] = {
-            'disks': disks
-        }
-    except Exception as e:
-        logger.warning(f"Error detecting storage: {e}")
+    if monitor:
+        try:
+            disk_info = monitor.get_disk_info()
+            hardware_info['storage'] = {
+                'disks': disk_info
+            }
+        except Exception as e:
+            logger.debug(f"Failed to get disk info from kernel: {e}")
+    
+    # Fallback storage detection
+    if 'storage' not in hardware_info:
+        try:
+            import psutil
+            disks = []
+            
+            for partition in psutil.disk_partitions():
+                try:
+                    usage = psutil.disk_usage(partition.mountpoint)
+                    
+                    disk_info = {
+                        'device': partition.device,
+                        'mountpoint': partition.mountpoint,
+                        'fstype': partition.fstype,
+                        'total': usage.total,
+                        'used': usage.used,
+                        'free': usage.free
+                    }
+                    
+                    disks.append(disk_info)
+                except Exception as e:
+                    logger.debug(f"Error getting disk usage for {partition.mountpoint}: {e}")
+            
+            hardware_info['storage'] = {
+                'disks': disks
+            }
+        except Exception as e:
+            logger.warning(f"Error detecting storage: {e}")
     
     # Detect network interfaces
-    try:
-        interfaces = []
-        
-        for iface, addrs in psutil.net_if_addrs().items():
-            addresses = []
-            
-            for addr in addrs:
-                addr_info = {
-                    'family': str(addr.family),
-                    'address': addr.address
+    if monitor:
+        try:
+            net_info = monitor.get_network_info()
+            interfaces = []
+            for iface in net_info:
+                iface_info = {
+                    'name': iface.get('interface'),
+                    'addresses': iface.get('addresses', []),
+                    'stats': {
+                        'isup': iface.get('is_up', False),
+                        'duplex': iface.get('duplex', 0),
+                        'speed': iface.get('speed', 0),
+                        'mtu': iface.get('mtu', 1500)
+                    }
                 }
-                
-                if addr.netmask:
-                    addr_info['netmask'] = addr.netmask
-                
-                if addr.broadcast:
-                    addr_info['broadcast'] = addr.broadcast
-                
-                addresses.append(addr_info)
+                interfaces.append(iface_info)
             
-            iface_info = {
-                'name': iface,
-                'addresses': addresses
+            hardware_info['network'] = {
+                'interfaces': interfaces
             }
+        except Exception as e:
+            logger.debug(f"Failed to get network info from kernel: {e}")
+    
+    # Fallback network detection
+    if 'network' not in hardware_info:
+        try:
+            import psutil
+            interfaces = []
             
-            # Add interface statistics if available
-            if iface in psutil.net_if_stats():
-                stats = psutil.net_if_stats()[iface]
-                iface_info['stats'] = {
-                    'isup': stats.isup,
-                    'duplex': stats.duplex,
-                    'speed': stats.speed,
-                    'mtu': stats.mtu
+            for iface, addrs in psutil.net_if_addrs().items():
+                addresses = []
+                
+                for addr in addrs:
+                    addr_info = {
+                        'family': str(addr.family),
+                        'address': addr.address
+                    }
+                    
+                    if addr.netmask:
+                        addr_info['netmask'] = addr.netmask
+                    
+                    if addr.broadcast:
+                        addr_info['broadcast'] = addr.broadcast
+                    
+                    addresses.append(addr_info)
+                
+                iface_info = {
+                    'name': iface,
+                    'addresses': addresses
                 }
+                
+                # Add interface statistics if available
+                if iface in psutil.net_if_stats():
+                    stats = psutil.net_if_stats()[iface]
+                    iface_info['stats'] = {
+                        'isup': stats.isup,
+                        'duplex': stats.duplex,
+                        'speed': stats.speed,
+                        'mtu': stats.mtu
+                    }
+                
+                interfaces.append(iface_info)
             
-            interfaces.append(iface_info)
-        
-        hardware_info['network'] = {
-            'interfaces': interfaces
-        }
-    except Exception as e:
-        logger.warning(f"Error detecting network interfaces: {e}")
+            hardware_info['network'] = {
+                'interfaces': interfaces
+            }
+        except Exception as e:
+            logger.warning(f"Error detecting network interfaces: {e}")
     
     return hardware_info
 
@@ -938,3 +1167,14 @@ def initialize() -> bool:
         logger.info("HAL initialized")
         
         return True
+
+# Export devices for external access
+devices = _hal_state['devices']
+
+# Export main functions and classes
+__all__ = [
+    'DeviceType', 'DeviceInfo', 'HardwareDriver', 'CPUDriver', 'MemoryDriver', 
+    'StorageDriver', 'NetworkDriver', 'TimerDriver', 'devices',
+    'initialize_hal', 'register_device', 'get_device', 'list_devices',
+    'read_device', 'write_device', 'initialize_devices'
+]

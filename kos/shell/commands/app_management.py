@@ -17,19 +17,36 @@ from datetime import datetime
 
 logger = logging.getLogger('KOS.shell.app_management')
 
+# Try to use VFS if available, fallback to host filesystem
+try:
+    from ...vfs.vfs_wrapper import get_vfs, VFS_O_RDONLY, VFS_O_WRONLY, VFS_O_CREAT, VFS_O_APPEND
+    USE_VFS = True
+    logger.info("Using KOS VFS for application management")
+except Exception as e:
+    USE_VFS = False
+    logger.warning(f"VFS not available, using host filesystem: {e}")
+
 # Import package management modules
 try:
     from ...package.app_index import AppIndexManager, AppInfo
     from ...package.manager import PackageManager, PackageDatabase
-    from ..commands.package_manager import kpm_lock, KPM_ROOT_DIR
+    from .package_manager import kpm_lock, KPM_ROOT_DIR
     MODULES_AVAILABLE = True
-except ImportError:
-    logger.warning("Application management modules not available")
+except ImportError as e:
+    logger.debug(f"Application management modules not available: {e}")
     MODULES_AVAILABLE = False
+    # Define fallback values
+    KPM_ROOT_DIR = os.path.expanduser('~/.kos/kpm')
+    
+    # Create simple fallback lock
+    import threading
+    _fallback_lock = threading.Lock()
+    def kpm_lock():
+        return _fallback_lock
 
 # Application configuration constants
-APP_DIR = os.path.join(KPM_ROOT_DIR, 'apps') if 'KPM_ROOT_DIR' in locals() else os.path.expanduser('~/.kos/kpm/apps')
-APP_INDEX_DIR = os.path.join(KPM_ROOT_DIR, 'index') if 'KPM_ROOT_DIR' in locals() else os.path.expanduser('~/.kos/kpm/index')
+APP_DIR = os.path.join(KPM_ROOT_DIR, 'apps')
+APP_INDEX_DIR = os.path.join(KPM_ROOT_DIR, 'index')
 APP_INDEX_FILE = os.path.join(APP_INDEX_DIR, 'app_index.json')
 
 class ApplicationManagementCommands:

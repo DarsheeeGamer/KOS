@@ -454,9 +454,57 @@ def cmd_create(args):
         # Parse YAML
         data = yaml.safe_load(content)
         
-        # TODO: Create resource based on kind
-        print(f"TODO: Create resource from {filename}")
-        print(f"Parsed data: {data}")
+        # Extract resource information
+        kind = data.get('kind', '').lower()
+        metadata = data.get('metadata', {})
+        spec = data.get('spec', {})
+        
+        name = metadata.get('name')
+        namespace = metadata.get('namespace', 'default')
+        
+        if not kind or not name:
+            print("Error: Resource must have 'kind' and 'metadata.name'")
+            return
+        
+        # Create resource based on kind
+        if kind in ["pod", "pods"]:
+            result = pod.create_pod(name, namespace, spec)
+        elif kind in ["service", "services"]:
+            result = service.create_service(name, namespace, spec)
+        elif kind in ["deployment", "deployments"]:
+            result = deployment.create_deployment(name, namespace, spec)
+        elif kind in ["replicaset", "replicasets"]:
+            result = replicaset.create_replicaset(name, namespace, spec)
+        elif kind in ["statefulset", "statefulsets"]:
+            result = statefulset.create_statefulset(name, namespace, spec)
+        elif kind in ["job", "jobs"]:
+            result = job.create_job(name, namespace, spec)
+        elif kind in ["cronjob", "cronjobs"]:
+            result = cronjob.create_cronjob(name, namespace, spec)
+        elif kind in ["configmap", "configmaps"]:
+            result = configmap.create_configmap(name, namespace, data.get('data', {}))
+        elif kind in ["secret", "secrets"]:
+            result = secret.create_secret(name, namespace, data.get('data', {}))
+        elif kind == "role":
+            result = rbac.create_role(name, namespace, spec.get('rules', []))
+        elif kind == "rolebinding":
+            result = rbac.create_role_binding(name, namespace, spec)
+        elif kind == "clusterrole":
+            result = rbac.create_cluster_role(name, spec.get('rules', []))
+        elif kind == "clusterrolebinding":
+            result = rbac.create_cluster_role_binding(name, spec)
+        elif kind in ["persistentvolume", "persistentvolumes"]:
+            result = volume.create_persistent_volume(name, spec)
+        elif kind in ["persistentvolumeclaim", "persistentvolumeclaims"]:
+            result = volume.create_persistent_volume_claim(name, namespace, spec)
+        else:
+            print(f"Error: Unknown resource kind: {kind}")
+            return
+        
+        if result:
+            print(f"{kind} '{name}' created")
+        else:
+            print(f"Error: Failed to create {kind} '{name}'")
     
     except Exception as e:
         print(f"Error: {e}")
@@ -464,7 +512,7 @@ def cmd_create(args):
 
 def cmd_apply(args):
     """
-    Apply a resource.
+    Apply a resource (create or update).
     
     Args:
         args: Command-line arguments
@@ -476,12 +524,82 @@ def cmd_apply(args):
         with open(filename, 'r') as f:
             content = f.read()
         
-        # Parse YAML
-        data = yaml.safe_load(content)
+        # Parse YAML/JSON
+        if filename.endswith('.json'):
+            data = json.loads(content)
+        else:
+            data = yaml.safe_load(content)
         
-        # TODO: Apply resource based on kind
-        print(f"TODO: Apply resource from {filename}")
-        print(f"Parsed data: {data}")
+        # Extract resource information
+        kind = data.get('kind', '').lower()
+        metadata = data.get('metadata', {})
+        spec = data.get('spec', {})
+        
+        name = metadata.get('name')
+        namespace = metadata.get('namespace', 'default')
+        
+        if not kind or not name:
+            print("Error: Resource must have 'kind' and 'metadata.name'")
+            return
+        
+        # Check if resource exists
+        existing = None
+        try:
+            existing = get_resource_instance(kind, name, namespace)
+        except:
+            pass
+        
+        # Apply resource based on kind
+        if existing:
+            # Update existing resource
+            if hasattr(existing, 'update'):
+                result = existing.update(spec)
+                action = "configured"
+            else:
+                print(f"Error: Cannot update {kind} '{name}', no update method")
+                return
+        else:
+            # Create new resource
+            if kind in ["pod", "pods"]:
+                result = pod.create_pod(name, namespace, spec)
+            elif kind in ["service", "services"]:
+                result = service.create_service(name, namespace, spec)
+            elif kind in ["deployment", "deployments"]:
+                result = deployment.create_deployment(name, namespace, spec)
+            elif kind in ["replicaset", "replicasets"]:
+                result = replicaset.create_replicaset(name, namespace, spec)
+            elif kind in ["statefulset", "statefulsets"]:
+                result = statefulset.create_statefulset(name, namespace, spec)
+            elif kind in ["job", "jobs"]:
+                result = job.create_job(name, namespace, spec)
+            elif kind in ["cronjob", "cronjobs"]:
+                result = cronjob.create_cronjob(name, namespace, spec)
+            elif kind in ["configmap", "configmaps"]:
+                result = configmap.create_configmap(name, namespace, data.get('data', {}))
+            elif kind in ["secret", "secrets"]:
+                result = secret.create_secret(name, namespace, data.get('data', {}))
+            elif kind == "role":
+                result = rbac.create_role(name, namespace, spec.get('rules', []))
+            elif kind == "rolebinding":
+                result = rbac.create_role_binding(name, namespace, spec)
+            elif kind == "clusterrole":
+                result = rbac.create_cluster_role(name, spec.get('rules', []))
+            elif kind == "clusterrolebinding":
+                result = rbac.create_cluster_role_binding(name, spec)
+            elif kind in ["persistentvolume", "persistentvolumes"]:
+                result = volume.create_persistent_volume(name, spec)
+            elif kind in ["persistentvolumeclaim", "persistentvolumeclaims"]:
+                result = volume.create_persistent_volume_claim(name, namespace, spec)
+            else:
+                print(f"Error: Unknown resource kind: {kind}")
+                return
+            
+            action = "created"
+        
+        if result:
+            print(f"{kind} '{name}' {action}")
+        else:
+            print(f"Error: Failed to apply {kind} '{name}'")
     
     except Exception as e:
         print(f"Error: {e}")

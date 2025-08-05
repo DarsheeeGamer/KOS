@@ -1,0 +1,16 @@
+{
+  "name": "hello_py",
+  "version": "1.0.0",
+  "language": "python",
+  "source_files": [
+    "src/main.python"
+  ],
+  "include_dirs": [],
+  "libraries": [],
+  "lib_dirs": [],
+  "compiler_flags": [],
+  "linker_flags": [],
+  "output_type": "executable",
+  "output_name": "hello_py",
+  "dependencies": []
+}

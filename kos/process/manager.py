@@ -1,266 +1,392 @@
 """
-Enhanced process management and scheduling system with advanced features
+KOS Process Manager - Manages process creation, termination, and lifecycle
 """
-import os
-import psutil
+
+import threading
 import time
-from typing import Dict, List, Optional, Union, Any, TypedDict
-from dataclasses import dataclass
-from datetime import datetime
-import logging
-from threading import Lock
-from concurrent.futures import ThreadPoolExecutor
-from cachetools import TTLCache
+import signal
+import os
+from typing import Dict, List, Optional, Tuple, Callable, Any
+from collections import defaultdict
 
-logger = logging.getLogger('KOS.process')
+from .process import KOSProcess, ProcessState, ProcessType
+from .pid import PIDManager
+from ..core.performance import ObjectPool, memoize, get_cpu_affinity, BatchProcessor
 
-class ResourceInfo(TypedDict):
-    cpu: Dict[str, Union[float, int, Dict[str, float]]]
-    memory: Dict[str, Dict[str, Union[float, int]]]
-    disk: Dict[str, Dict[str, Union[float, int]]]
-    network: Dict[str, Union[Dict[str, int], int]]
-
-@dataclass
-class Process:
-    """Enhanced process information structure"""
-    pid: int
-    ppid: int
-    name: str
-    status: str
-    username: str
-    create_time: datetime
-    cpu_percent: float
-    memory_percent: float
-    cmdline: List[str]
-    priority: int = 0
-    nice: int = 0
-    threads: int = 1
-    io_counters: Optional[Dict[str, int]] = None
-    context_switches: Optional[Dict[str, int]] = None
-
-class ProcessManager:
-    """Enhanced process management system with advanced scheduling"""
-    def __init__(self):
-        self.processes: Dict[int, Process] = {}
-        self._lock = Lock()
-        self._process_cache = TTLCache(maxsize=1000, ttl=2)  # Cache process list for 2 seconds
-        self._resource_cache = TTLCache(maxsize=100, ttl=1)  # Cache resource usage for 1 second
-        self._executor = ThreadPoolExecutor(max_workers=4)  # For parallel processing
-        logger.info("Enhanced process manager initialized")
-
-    def refresh_processes(self, force: bool = False) -> None:
-        """Update process list with optimized caching and parallel processing"""
-        current_time = time.time()
-
-        if not force and self.processes in self._process_cache:
-            return self._process_cache[self.processes]
-
-        with self._lock:
-            try:
-                processes = {}
-                futures = []
-
-                # Parallel process information gathering
-                for proc in psutil.process_iter(['pid', 'ppid', 'name', 'username', 'status', 'cmdline']):
-                    futures.append(
-                        self._executor.submit(self._get_process_info, proc)
-                    )
-
-                # Collect results
-                for future in futures:
-                    try:
-                        result = future.result(timeout=1)
-                        if result:
-                            processes[result.pid] = result
-                    except Exception as e:
-                        logger.error(f"Error collecting process info: {e}")
-
-                self.processes = processes
-                self._process_cache[self.processes] = processes
-                logger.debug(f"Refreshed process list, found {len(processes)} processes")
-
-            except Exception as e:
-                logger.error(f"Error refreshing process list: {e}")
-                raise
-
-    def _get_process_info(self, proc: psutil.Process) -> Optional[Process]:
-        """Get detailed process information with error handling"""
-        try:
-            pinfo = proc.info
-            with proc.oneshot():  # Optimize system calls
-                cpu_percent = proc.cpu_percent()
-                memory_percent = proc.memory_percent()
-
-                io_counters = None
-                if hasattr(proc, 'io_counters'):
-                    io = proc.io_counters()
-                    io_counters = {
-                        'read_count': io.read_count,
-                        'write_count': io.write_count,
-                        'read_bytes': io.read_bytes,
-                        'write_bytes': io.write_bytes
-                    }
-
-                ctx_switches = None
-                if hasattr(proc, 'num_ctx_switches'):
-                    ctx = proc.num_ctx_switches()
-                    ctx_switches = {
-                        'voluntary': ctx.voluntary,
-                        'involuntary': ctx.involuntary
-                    }
-
-                threads = proc.num_threads()
-                nice = proc.nice()
-
-            return Process(
-                pid=proc.pid,
-                ppid=pinfo['ppid'],
-                name=pinfo['name'],
-                status=pinfo['status'],
-                username=pinfo['username'],
-                create_time=datetime.fromtimestamp(proc.create_time()),
-                cpu_percent=cpu_percent,
-                memory_percent=memory_percent,
-                cmdline=pinfo['cmdline'] if pinfo['cmdline'] else [],
-                threads=threads,
-                nice=nice,
-                io_counters=io_counters,
-                context_switches=ctx_switches
-            )
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired):
-            return None
-
-    def get_process(self, pid: int) -> Optional[Process]:
-        """Get process information by PID with caching"""
-        self.refresh_processes()
+class KOSProcessManager:
+    """
+    Process manager for KOS
+    Handles process creation, scheduling, and termination
+    """
+    
+    def __init__(self, kernel: 'KOSKernel'):
+        self.kernel = kernel
+        self.processes: Dict[int, KOSProcess] = {}  # pid -> process
+        self.process_tree: Dict[int, List[int]] = defaultdict(list)  # ppid -> [child_pids]
+        
+        # PID management
+        self.pid_manager = PIDManager()
+        
+        # Process synchronization
+        self.lock = threading.RLock()
+        self.process_list_lock = threading.Lock()
+        
+        # Process statistics
+        self.total_processes_created = 0
+        self.total_processes_destroyed = 0
+        self.max_processes = 32768
+        
+        # Process reaper for zombies
+        self.reaper_thread = None
+        self.reaper_running = False
+        
+        # Process groups and sessions
+        self.process_groups: Dict[int, List[int]] = defaultdict(list)  # pgid -> [pids]
+        self.sessions: Dict[int, List[int]] = defaultdict(list)  # sid -> [pids]
+        
+        # Init process (will be created later)
+        self.init_process = None
+        
+        # Performance optimizations
+        self._process_pool = ObjectPool(
+            factory=lambda: KOSProcess(0, 0, "/bin/init", ProcessType.NORMAL),
+            max_size=100
+        )
+        self._cpu_affinity = get_cpu_affinity()
+        
+        # Batch signal processing
+        self._signal_batcher = BatchProcessor(
+            process_func=self._process_signal_batch,
+            batch_size=50,
+            max_wait=0.01  # 10ms
+        )
+        
+        # Start process reaper
+        self._start_process_reaper()
+        
+    def create_kernel_process(self) -> KOSProcess:
+        """Create the kernel process (PID 0)"""
+        with self.lock:
+            kernel_proc = KOSProcess(0, "kernel")
+            kernel_proc.process_type = ProcessType.KERNEL
+            kernel_proc.state = ProcessState.RUNNING
+            kernel_proc.cred.uid = 0
+            kernel_proc.cred.gid = 0
+            
+            self.processes[0] = kernel_proc
+            self.total_processes_created += 1
+            
+            return kernel_proc
+            
+    def create_process(self, name: str, executable: str, args: List[str] = None,
+                      env: Dict[str, str] = None, uid: int = 0, gid: int = 0,
+                      parent_pid: Optional[int] = None, cwd: str = "/") -> Optional[KOSProcess]:
+        """
+        Create a new process
+        """
+        with self.lock:
+            # Check process limits
+            if len(self.processes) >= self.max_processes:
+                return None
+                
+            # Allocate PID
+            pid = self.pid_manager.alloc_pid()
+            if pid is None:
+                return None
+                
+            # Create process object
+            process = KOSProcess(pid, name, executable)
+            process.argv = args or [executable]
+            process.cwd = cwd
+            
+            # Set credentials
+            process.cred.uid = uid
+            process.cred.euid = uid
+            process.cred.gid = gid
+            process.cred.egid = gid
+            
+            # Set environment
+            if env:
+                process.environ.update(env)
+                
+            # Set parent
+            if parent_pid is not None:
+                parent = self.processes.get(parent_pid)
+                if parent:
+                    process.set_parent(parent)
+                    self.process_tree[parent_pid].append(pid)
+                    
+            # Add to process lists
+            self.processes[pid] = process
+            self.process_groups[process.pgid].append(pid)
+            self.sessions[process.sid].append(pid)
+            
+            self.total_processes_created += 1
+            
+            # Special handling for init process
+            if pid == 1:
+                self.init_process = process
+                
+            return process
+            
+    def destroy_process(self, pid: int) -> bool:
+        """
+        Destroy a process and clean up resources
+        """
+        with self.lock:
+            process = self.processes.get(pid)
+            if not process:
+                return False
+                
+            # Can't destroy kernel process
+            if pid == 0:
+                return False
+                
+            # Terminate the process
+            process.terminate()
+            
+            # Reparent children to init
+            if process.children:
+                init_proc = self.processes.get(1)
+                for child in process.children[:]:
+                    if init_proc:
+                        child.set_parent(init_proc)
+                    else:
+                        child.set_parent(None)
+                        
+            # Remove from parent's children
+            if process.parent:
+                process.parent.remove_child(process)
+                
+            # Remove from process tree
+            if process.ppid in self.process_tree:
+                if pid in self.process_tree[process.ppid]:
+                    self.process_tree[process.ppid].remove(pid)
+                    
+            # Remove from process groups and sessions
+            if pid in self.process_groups[process.pgid]:
+                self.process_groups[process.pgid].remove(pid)
+            if pid in self.sessions[process.sid]:
+                self.sessions[process.sid].remove(pid)
+                
+            # Free PID
+            self.pid_manager.free_pid(pid)
+            
+            # Remove from processes dict
+            del self.processes[pid]
+            
+            self.total_processes_destroyed += 1
+            
+            return True
+            
+    def get_process(self, pid: int) -> Optional[KOSProcess]:
+        """Get process by PID"""
         return self.processes.get(pid)
-
-    def list_processes(self, refresh: bool = False) -> List[Process]:
-        """Get list of all processes with optional refresh"""
-        self.refresh_processes(force=refresh)
-        return list(self.processes.values())
-
-    def find_by_name(self, name: str, case_sensitive: bool = False) -> List[Process]:
-        """Enhanced process search by name"""
-        self.refresh_processes()
-        name = name if case_sensitive else name.lower()
-        return [
-            p for p in self.processes.values()
-            if (p.name if case_sensitive else p.name.lower()).find(name) != -1
-        ]
-
-    def get_process_tree(self, pid: Optional[int] = None) -> Dict[int, List[Process]]:
-        """Get process tree with optimized tree building"""
-        self.refresh_processes()
-
-        # Create parent-child relationship map
-        tree: Dict[int, List[Process]] = {}
+        
+    def get_all_processes(self) -> List[KOSProcess]:
+        """Get all processes"""
+        with self.process_list_lock:
+            return list(self.processes.values())
+            
+    def get_processes_by_name(self, name: str) -> List[KOSProcess]:
+        """Get processes by name"""
+        return [p for p in self.processes.values() if p.name == name]
+        
+    def get_processes_by_user(self, uid: int) -> List[KOSProcess]:
+        """Get processes by user ID"""
+        return [p for p in self.processes.values() if p.cred.uid == uid]
+        
+    def get_children(self, pid: int) -> List[KOSProcess]:
+        """Get child processes"""
+        process = self.processes.get(pid)
+        return process.children if process else []
+        
+    def get_process_tree(self) -> Dict[int, List[int]]:
+        """Get process tree structure"""
+        return dict(self.process_tree)
+        
+    def kill_process(self, pid: int, signum: int = signal.SIGTERM) -> bool:
+        """Send signal to process"""
+        process = self.processes.get(pid)
+        if process:
+            process.send_signal(signum)
+            return True
+        return False
+        
+    def kill_process_group(self, pgid: int, signum: int = signal.SIGTERM) -> int:
+        """Send signal to process group"""
+        count = 0
+        for pid in self.process_groups.get(pgid, []):
+            if self.kill_process(pid, signum):
+                count += 1
+        return count
+        
+    def kill_all(self, signum: int = signal.SIGTERM):
+        """Kill all user processes (except init and kernel)"""
+        for pid, process in list(self.processes.items()):
+            if pid > 1 and not process.is_kernel_thread():
+                self.kill_process(pid, signum)
+                
+    def wait_for_process(self, pid: int, timeout: Optional[float] = None) -> Optional[Tuple[int, int]]:
+        """
+        Wait for process to exit
+        Returns (pid, exit_code) or None if timeout
+        """
+        process = self.processes.get(pid)
+        if not process:
+            return None
+            
+        if process.wait_for_exit(timeout):
+            return (pid, process.exit_code)
+        return None
+        
+    def get_process_stats(self) -> Dict[str, int]:
+        """Get process statistics"""
+        stats = {
+            'total': len(self.processes),
+            'running': 0,
+            'sleeping': 0,
+            'stopped': 0,
+            'zombie': 0,
+            'kernel_threads': 0,
+            'user_processes': 0
+        }
+        
         for process in self.processes.values():
-            if process.ppid not in tree:
-                tree[process.ppid] = []
-            tree[process.ppid].append(process)
-
-        if pid is None:
-            return tree
-
-        # Extract subtree for specific PID
-        subtree = {}
-        def extract_subtree(current_pid: int):
-            if current_pid in tree:
-                subtree[current_pid] = tree[current_pid]
-                for child in tree[current_pid]:
-                    extract_subtree(child.pid)
-
-        extract_subtree(pid)
-        return subtree
-
-    def get_system_resources(self) -> ResourceInfo:
-        """Get detailed system resource usage with caching"""
-        if 'resources' in self._resource_cache:
-            return self._resource_cache['resources']
-
+            if process.state == ProcessState.RUNNING:
+                stats['running'] += 1
+            elif process.is_sleeping():
+                stats['sleeping'] += 1
+            elif process.is_stopped():
+                stats['stopped'] += 1
+            elif process.is_zombie():
+                stats['zombie'] += 1
+                
+            if process.is_kernel_thread():
+                stats['kernel_threads'] += 1
+            else:
+                stats['user_processes'] += 1
+                
+        return stats
+        
+    def get_load_average(self) -> Tuple[float, float, float]:
+        """Calculate system load average"""
+        # Simple load calculation based on running processes
+        running_count = sum(1 for p in self.processes.values() 
+                          if p.state == ProcessState.RUNNING)
+        
+        # In real system, this would be exponentially weighted moving average
+        # For simulation, just return current running processes
+        load = float(running_count)
+        return (load, load, load)  # 1min, 5min, 15min
+        
+    def _start_process_reaper(self):
+        """Start background thread to reap zombie processes"""
+        def reaper():
+            self.reaper_running = True
+            while self.reaper_running:
+                time.sleep(1.0)  # Check every second
+                
+                # Find zombie processes
+                zombies = [p for p in self.processes.values() if p.is_zombie()]
+                
+                for zombie in zombies:
+                    # Check if parent is waiting
+                    if zombie.parent:
+                        # In real system, would notify parent
+                        pass
+                    else:
+                        # No parent, reap immediately
+                        self.destroy_process(zombie.pid)
+                        
+        self.reaper_thread = threading.Thread(target=reaper, name="process-reaper", daemon=True)
+        self.reaper_thread.start()
+        
+    def _stop_process_reaper(self):
+        """Stop process reaper thread"""
+        self.reaper_running = False
+        if self.reaper_thread:
+            self.reaper_thread.join(timeout=1.0)
+            
+    def dump_process_info(self) -> Dict[str, Any]:
+        """Dump detailed process information"""
+        info = {
+            'process_count': len(self.processes),
+            'total_created': self.total_processes_created,
+            'total_destroyed': self.total_processes_destroyed,
+            'max_processes': self.max_processes,
+            'pid_manager': self.pid_manager.get_stats(),
+            'load_average': self.get_load_average(),
+            'stats': self.get_process_stats(),
+            'processes': {}
+        }
+        
+        # Add process details
+        for pid, process in self.processes.items():
+            info['processes'][pid] = process.to_dict()
+            
+        return info
+    
+    def _process_signal_batch(self, signals: List[Tuple[int, int]]):
+        """Process batch of signals efficiently"""
+        # Group signals by target process
+        signal_groups = defaultdict(list)
+        for pid, signum in signals:
+            signal_groups[pid].append(signum)
+        
+        # Process each group
+        with self.lock:
+            for pid, signums in signal_groups.items():
+                if pid in self.processes:
+                    process = self.processes[pid]
+                    for signum in signums:
+                        process.send_signal(signum)
+    
+    @memoize(max_size=100, ttl=1.0)
+    def get_process_stats_cached(self) -> Dict[str, Any]:
+        """Get cached process statistics"""
+        return self.get_process_stats()
+    
+    def set_process_affinity(self, pid: int, cpus: List[int]) -> bool:
+        """Set CPU affinity for process"""
+        with self.lock:
+            if pid in self.processes:
+                # Use performance module's CPU affinity
+                try:
+                    self._cpu_affinity.set_thread_affinity(cpus)
+                    return True
+                except Exception:
+                    return False
+        return False
+        
+    def get_system_resources(self) -> Dict[str, Any]:
+        """Get system resource information from KOS kernel"""
+        # Use KOS kernel resource monitor instead of host psutil
+        from ..kernel.resource_monitor_wrapper import get_kernel_monitor
+        
         try:
-            cpu_freq = None
-            if hasattr(psutil, 'cpu_freq'):
-                freq = psutil.cpu_freq()
-                if freq:
-                    cpu_freq = {'current': freq.current, 'min': freq.min, 'max': freq.max}
-
-            disk_io = None
-            if hasattr(psutil, 'disk_io_counters'):
-                io = psutil.disk_io_counters()
-                if io:
-                    disk_io = {
-                        'read_count': io.read_count,
-                        'write_count': io.write_count,
-                        'read_bytes': io.read_bytes,
-                        'write_bytes': io.write_bytes
-                    }
-
-            net_io = None
-            if hasattr(psutil, 'net_io_counters'):
-                io = psutil.net_io_counters()
-                if io:
-                    net_io = {
-                        'bytes_sent': io.bytes_sent,
-                        'bytes_recv': io.bytes_recv,
-                        'packets_sent': io.packets_sent,
-                        'packets_recv': io.packets_recv
-                    }
-
-            resources: ResourceInfo = {
-                'cpu': {
-                    'percent': psutil.cpu_percent(interval=0.1),
-                    'count': psutil.cpu_count(),
-                    'freq': cpu_freq,
-                    'stats': dict(psutil.cpu_stats()._asdict()),
-                    'times': dict(psutil.cpu_times()._asdict())
-                },
+            monitor = get_kernel_monitor()
+            return monitor.get_system_resources()
+        except Exception as e:
+            logger.warning(f"Failed to get kernel resources: {e}")
+            # Fallback to basic implementation
+            return {
+                'cpu': {'percent': 0.0, 'count': 1},
                 'memory': {
-                    'virtual': dict(psutil.virtual_memory()._asdict()),
-                    'swap': dict(psutil.swap_memory()._asdict())
+                    'virtual': {'total': 0, 'available': 0, 'percent': 0.0, 'used': 0, 'free': 0},
+                    'swap': {'total': 0, 'used': 0, 'free': 0, 'percent': 0.0}
                 },
                 'disk': {
-                    'usage': dict(psutil.disk_usage('/')._asdict()),
-                    'io': disk_io
+                    'usage': {'total': 0, 'used': 0, 'free': 0, 'percent': 0.0}
                 },
-                'network': {
-                    'io': net_io,
-                    'connections': len(psutil.net_connections()) if hasattr(psutil, 'net_connections') else 0
-                }
+                'network': {},
+                'boot_time': time.time()
             }
-
-            self._resource_cache['resources'] = resources
-            return resources
-
-        except Exception as e:
-            logger.error(f"Error getting system resources: {e}")
-            # Return a minimal resource info if there's an error
-            return ResourceInfo(
-                cpu={'percent': 0.0, 'count': 1, 'freq': None, 'stats': {}, 'times': {}},
-                memory={'virtual': {}, 'swap': {}},
-                disk={'usage': {}, 'io': None},
-                network={'io': None, 'connections': 0}
-            )
-
-    def set_process_priority(self, pid: int, priority: int) -> bool:
-        """Set process priority (nice value)"""
-        try:
-            process = psutil.Process(pid)
-            process.nice(priority)
-            self.refresh_processes(force=True)
-            return True
-        except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-            logger.error(f"Error setting priority for process {pid}: {e}")
-            return False
-
-    def send_signal(self, pid: int, signal: int) -> bool:
-        """Send signal to process with error handling"""
-        try:
-            process = psutil.Process(pid)
-            process.send_signal(signal)
-            self.refresh_processes(force=True)
-            return True
-        except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-            logger.error(f"Error sending signal to process {pid}: {e}")
-            return False
+            
+    def __del__(self):
+        """Cleanup when manager is destroyed"""
+        self._stop_process_reaper()
+        if hasattr(self, '_signal_batcher'):
+            self._signal_batcher.stop()
+# Alias for compatibility
+ProcessManager = KOSProcessManager

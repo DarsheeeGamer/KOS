@@ -1,0 +1,6 @@
+type=CONFIG_CHANGE msg=audit(1754273062.563:1): pid=21236 uid=1000 gid=1000 comm="test_security" exe="/home/kaededev/KOS/kos/kernel/security/test_security" msg="Audit system initialized"
+type=SYSCALL msg=audit(1754273062.564:2): pid=21236 uid=1000 gid=1000 comm="test_security" exe="/home/kaededev/KOS/kos/kernel/security/test_security" msg="test syscall event"
+type=USER msg=audit(1754273062.564:3): pid=21236 uid=1000 gid=1000 comm="test_security" exe="/home/kaededev/KOS/kos/kernel/security/test_security" msg="test user event"
+type=CONFIG_CHANGE msg=audit(1754273062.564:4): pid=21236 uid=1000 gid=1000 comm="test_security" exe="/home/kaededev/KOS/kos/kernel/security/test_security" msg="Applied restrictive security profile"
+type=CONFIG_CHANGE msg=audit(1754273071.329:1): pid=21297 uid=1000 gid=1000 comm="python3" exe="/usr/bin/python3.12" msg="Audit system initialized"
+type=USER msg=audit(1754273071.329:2): pid=21297 uid=1000 gid=1000 comm="python3" exe="/usr/bin/python3.12" msg="Security framework test completed"

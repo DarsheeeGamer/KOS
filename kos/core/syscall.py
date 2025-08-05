@@ -113,11 +113,28 @@ def syscall(func):
                 error_message=f"Invalid arguments: {str(e)}"
             )
         
-        # Check permissions (TODO: Implement proper permission checking)
-        # For now, we'll just check if the function has a 'requires_permission' attribute
+        # Check permissions using the security system
         if hasattr(func, 'requires_permission'):
             required_permission = getattr(func, 'requires_permission')
-            # TODO: Check if the caller has the required permission
+            
+            # Import here to avoid circular dependencies
+            from ..security.permissions import PermissionManager
+            from ..user_system import get_current_user
+            
+            # Get current user context
+            current_user = get_current_user()
+            if not current_user:
+                # Running as system
+                current_user = 'root'
+            
+            # Check permission
+            perm_mgr = PermissionManager()
+            if not perm_mgr.check_permission(current_user, required_permission):
+                logger.warning(f"Permission denied for {current_user} calling {func.__name__} (requires {required_permission})")
+                return SyscallResult(
+                    error_code=SyscallError.PERMISSION_DENIED,
+                    error_message=f"Permission denied: requires {required_permission}"
+                )
         
         # Update call count
         with _syscall_lock:

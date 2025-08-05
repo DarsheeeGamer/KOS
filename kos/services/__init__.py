@@ -25,6 +25,7 @@ logger = logging.getLogger('KOS.services')
 # Service registry
 SERVICES = {}
 SERVICE_LOCK = threading.Lock()
+_initialized = False
 
 class ServiceState(Enum):
     """Service state enum"""
@@ -441,6 +442,7 @@ class ServiceManager:
                       wants: List[str] = None, requires: List[str] = None,
                       after: List[str] = None, before: List[str] = None) -> Tuple[bool, str, Optional[Service]]:
         """Create a new service"""
+        ensure_initialized()
         # Check if service name already exists
         with SERVICE_LOCK:
             for service in SERVICES.values():
@@ -604,7 +606,12 @@ class ServiceManager:
 # Initialize service system
 def initialize():
     """Initialize the service system"""
+    global _initialized
+    if _initialized:
+        return
+    
     logger.info("Initializing KOS service system")
+    _initialized = True
     
     # Create service directory
     service_dir = os.path.join(os.path.expanduser('~'), '.kos', 'services')
@@ -631,5 +638,11 @@ def initialize():
     
     logger.info("KOS service system initialized")
 
-# Initialize on import
-initialize()
+# Helper function for lazy initialization
+def ensure_initialized():
+    """Ensure service system is initialized"""
+    if not _initialized:
+        initialize()
+
+# Initialize lazily when needed (removed automatic initialization to prevent blocking)
+# Call initialize() manually when service functionality is first used

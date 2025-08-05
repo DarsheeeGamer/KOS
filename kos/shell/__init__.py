@@ -6,17 +6,17 @@ command execution, and the interactive shell interface.
 """
 
 # Import shell components
-from .shell import KaedeShell
+from .shell import KOSShell as KaedeShell  # Keep alias for compatibility
 from .commands.text_processing import register_commands as register_text_processing_commands
-from .commands.basic_commands import register_commands as register_basic_commands
-from .commands.package_management import register_commands as register_kpm_commands
+from .commands.filesystem_cmds import register_commands as register_basic_commands
+from .commands.package_manager import register_commands as register_kpm_commands
 from .commands.system_utils import register_commands as register_system_commands
 from .commands.hardware_utils import register_commands as register_hardware_commands
 from .commands.network_utils import register_commands as register_network_commands
 from .commands.package_manager import register_commands as register_package_commands
-from .command_parser import CommandParser
-from .command_dispatcher import CommandDispatcher
-from .history_manager import HistoryManager
+# from .command_parser import CommandParser
+# from .command_dispatcher import CommandDispatcher
+from .history_manager import HistoryManager, get_history_manager
 
 # Import commands
 from .commands import register_all
@@ -24,14 +24,66 @@ import logging
 
 __all__ = [
     'KaedeShell',
-    'CommandParser',
-    'CommandDispatcher',
-    'HistoryManager',
+    # 'CommandParser',
+    # 'CommandDispatcher',
+    # 'HistoryManager',
 ]
 
 def init_shell():
     """Initialize the KOS shell"""
-    shell = KaedeShell()
+    # Import required components
+    try:
+        from ..filesystem.base import FileSystem
+        from ..package_manager import PackageManager
+        from ..process.manager import ProcessManager
+        from ..user_system import UserSystem
+    except ImportError:
+        # Fallback to basic implementations
+        import os
+        
+        class BasicFileSystem:
+            def __init__(self):
+                self.current_path = os.getcwd()
+            
+            def exists(self, path):
+                return os.path.exists(path)
+            
+            def mkdir(self, path):
+                os.makedirs(path, exist_ok=True)
+                return True
+        
+        class BasicPackageManager:
+            def __init__(self):
+                pass
+        
+        class BasicProcessManager:
+            def __init__(self):
+                pass
+            
+            def get_system_resources(self):
+                return {"cpu": "0%", "memory": "0%"}
+            
+            def hash_password(self, password):
+                # Simple fallback hash implementation
+                import hashlib
+                return hashlib.sha256(password.encode()).hexdigest()
+        
+        class BasicUserSystem:
+            def __init__(self, filesystem=None, process_manager=None):
+                self.current_user = os.getenv('USER', 'user')
+                self.filesystem = filesystem
+                self.process_manager = process_manager
+            
+            def save_users(self):
+                # Fallback implementation - no-op for basic user system
+                pass
+        
+        FileSystem = BasicFileSystem()
+        PackageManager = BasicPackageManager()
+        ProcessManager = BasicProcessManager()
+        UserSystem = BasicUserSystem(FileSystem, ProcessManager)
+    
+    shell = KaedeShell(FileSystem, PackageManager, ProcessManager, UserSystem)
     
     # Register all command modules
     register_all(shell)
@@ -162,8 +214,8 @@ def init_shell():
         
     # Register network management utilities
     try:
-        from .commands.network_manager import register_commands as register_network_commands
-        register_network_commands(shell)
+        from .commands.network_manager import register_commands as register_network_manager_commands
+        register_network_manager_commands(shell)
         logging.info("Registered network management utilities")
     except Exception as e:
         logging.warning(f"Network management utilities not available: {e}")
@@ -194,9 +246,10 @@ def init_shell():
         
     # Register scheduler utilities
     try:
-        from .commands.scheduler_utils import register_commands as register_scheduler_commands
-        register_scheduler_commands(shell)
-        logging.info("Registered scheduler utilities")
+        # Temporarily disabled to fix blocking issue
+        # from .commands.scheduler_utils import register_commands as register_scheduler_commands
+        # register_scheduler_commands(shell)
+        logging.info("Scheduler utilities temporarily disabled")
     except Exception as e:
         logging.warning(f"Scheduler utilities not available: {e}")
         
@@ -216,6 +269,8 @@ def init_shell():
     except Exception as e:
         logging.warning(f"Authentication utilities not available: {e}")
         
+    # APT integration removed per user request
+        
     # Register job control utilities
     try:
         from .commands.job_control import register_commands as register_job_commands
@@ -231,6 +286,38 @@ def init_shell():
         logging.info("Registered accounting utilities")
     except Exception as e:
         logging.warning(f"Accounting utilities not available: {e}")
+    
+    # Register system compatibility commands
+    try:
+        from .commands.system_compatibility import register_commands as register_compatibility_commands
+        register_compatibility_commands(shell)
+        logging.info("Registered system compatibility commands")
+    except Exception as e:
+        logging.warning(f"System compatibility commands not available: {e}")
+    
+    # Register common aliases and shortcuts
+    try:
+        from .commands.common_aliases import register_commands as register_alias_commands
+        register_alias_commands(shell)
+        logging.info("Registered common aliases and shortcuts")
+    except Exception as e:
+        logging.warning(f"Common aliases not available: {e}")
+    
+    # Register enhanced shell emulation commands
+    try:
+        from .commands.shell_emulation import register_commands as register_shell_emulation_commands
+        register_shell_emulation_commands(shell)
+        logging.info("Registered enhanced shell emulation commands")
+    except Exception as e:
+        logging.warning(f"Shell emulation commands not available: {e}")
+    
+    # Register dynamic command loader (always load this one)
+    try:
+        from .commands.dynamic_loader import register_commands as register_dynamic_loader_commands
+        register_dynamic_loader_commands(shell)
+        logging.info("Registered dynamic command loader")
+    except Exception as e:
+        logging.warning(f"Dynamic command loader not available: {e}")
     
     # Register repository management commands
     try:

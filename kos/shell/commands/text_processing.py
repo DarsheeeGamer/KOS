@@ -623,7 +623,7 @@ def register_commands(shell):
           -z, --zero-terminated End lines with 0 byte, not newline
         """
         try:
-            result = TextProcessingCommands.do_uniq(self.fs, self.fs.cwd, arg)
+            result = TextProcessingCommands.do_uniq(self.fs, self.fs.current_path, arg)
             if result:
                 print(result)
         except Exception as e:
@@ -646,7 +646,7 @@ def register_commands(shell):
           --nocheck-order  Do not check that the input is correctly sorted
         """
         try:
-            result = TextProcessingCommands.do_comm(self.fs, self.fs.cwd, arg)
+            result = TextProcessingCommands.do_comm(self.fs, self.fs.current_path, arg)
             if result:
                 print(result)
         except Exception as e:
@@ -666,7 +666,7 @@ def register_commands(shell):
           -t, --tabs=LIST     Use comma separated list of tab positions
         """
         try:
-            result = TextProcessingCommands.do_expand(self.fs, self.fs.cwd, arg)
+            result = TextProcessingCommands.do_expand(self.fs, self.fs.current_path, arg)
             if result:
                 print(result)
         except Exception as e:
@@ -686,7 +686,7 @@ def register_commands(shell):
           -w, --width=WIDTH   Use WIDTH columns instead of 80
         """
         try:
-            result = TextProcessingCommands.do_fold(self.fs, self.fs.cwd, arg)
+            result = TextProcessingCommands.do_fold(self.fs, self.fs.current_path, arg)
             if result:
                 print(result)
         except Exception as e:

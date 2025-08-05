@@ -25,8 +25,8 @@ logger = logging.getLogger('KOS.shell.network')
 
 # Try to import the KADVLayer components for advanced system integration
 try:
-    from ...kadv.layer import KADVLayer
-    from ...kadv.system_info import SystemInfo
+    from ...advlayer import KADVLayer, get_kadvlayer
+    from ...advlayer.system_info import SystemInfo
     KADV_AVAILABLE = True
 except ImportError:
     KADV_AVAILABLE = False

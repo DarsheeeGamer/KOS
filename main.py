@@ -30,7 +30,7 @@ try:
     from kos.process.manager import ProcessManager
     from kos.package_manager import KpmManager
     from kos.user_system import UserSystem
-    from kos.shell import KaedeShell
+    from kos.shell.shell import KOSShell as KaedeShell
     from kos.repo_config import get_repository_manager
     CORE_AVAILABLE = True
 except ImportError as e:
@@ -38,16 +38,9 @@ except ImportError as e:
     print(f"Error: Cannot initialize KOS - {e}")
     CORE_AVAILABLE = False
 
-# Try to import Kaede language components
-try:
-    from kos.kaede.stdlib import get_stdlib
-    from kos.kaede import create_kaede_environment
-    KAEDE_AVAILABLE = True
-    logger.info("Kaede language components loaded successfully")
-except ImportError as e:
-    logger.warning(f"Kaede language not available: {e}")
-    KAEDE_AVAILABLE = False
-    create_kaede_environment = lambda: None
+# SDK components are always available
+SDK_AVAILABLE = True
+logger.info("KOS SDK components loaded successfully")
 
 # Try to import KLayer and KADVLayer
 try:
@@ -95,8 +88,8 @@ class KOSSystem:
         self.klayer = None
         self.kadvlayer = None
         
-        # Kaede environment
-        self.kaede_env = None
+        # SDK environment
+        self.sdk_enabled = SDK_AVAILABLE
         
         # System state
         self.system_state = None
@@ -126,10 +119,6 @@ class KOSSystem:
             # Initialize advanced layers
             if ADVANCED_LAYERS_AVAILABLE:
                 self._init_advanced_layers()
-            
-            # Initialize Kaede environment
-            if KAEDE_AVAILABLE:
-                self._init_kaede_environment()
             
             # Initialize shell
             self._init_shell()
@@ -168,7 +157,10 @@ class KOSSystem:
         
         # Process manager
         try:
-            self.process_manager = ProcessManager()
+            # Create a minimal kernel object for ProcessManager
+            from types import SimpleNamespace
+            kernel = SimpleNamespace()
+            self.process_manager = ProcessManager(kernel)
             logger.debug("ProcessManager initialized")
         except Exception as e:
             logger.error(f"Failed to initialize ProcessManager: {e}")
@@ -177,7 +169,7 @@ class KOSSystem:
         
         # User system
         try:
-            self.user_system = UserSystem(self.filesystem, self.process_manager)
+            self.user_system = UserSystem(self.filesystem)
             logger.debug("UserSystem initialized")
         except Exception as e:
             logger.error(f"Failed to initialize UserSystem: {e}")
@@ -231,22 +223,6 @@ class KOSSystem:
             self.klayer = None
             self.kadvlayer = None
     
-    def _init_kaede_environment(self):
-        """Initialize Kaede programming environment"""
-        try:
-            logger.debug("Initializing Kaede environment...")
-            
-            # Create Kaede environment
-            self.kaede_env = create_kaede_environment()
-            
-            if self.kaede_env:
-                logger.info("Kaede programming environment initialized")
-            else:
-                logger.warning("Kaede environment creation failed")
-                
-        except Exception as e:
-            logger.warning(f"Kaede environment initialization failed: {e}")
-            self.kaede_env = None
     
     def _init_shell(self):
         """Initialize KOS shell"""
@@ -261,6 +237,26 @@ class KOSSystem:
                     process_manager=self.process_manager,
                     user_system=self.user_system
                 )
+                
+                # Register APT integration commands
+                try:
+                    logger.debug("Attempting to register APT integration...")
+                    from kos.shell.commands.apt_integration import register_commands as register_apt_commands
+                    register_apt_commands(self.shell)
+                    logger.info("APT integration registered with main shell")
+                        
+                except Exception as e:
+                    logger.error(f"Failed to register APT integration: {e}")
+                    
+                # Register SDK commands
+                try:
+                    logger.debug("Registering SDK commands...")
+                    from kos.shell.commands.sdk_commands import register_commands as register_sdk_commands
+                    register_sdk_commands(self.shell)
+                    logger.info("SDK commands registered successfully")
+                except Exception as e:
+                    logger.error(f"Failed to register SDK commands: {e}")
+                
                 logger.info("Main shell initialized")
                 return
             except Exception as e:
@@ -331,16 +327,16 @@ class KOSSystem:
                 "shell": self.shell is not None
             },
             "features": {
-                "kaede_available": KAEDE_AVAILABLE,
+                "sdk_available": SDK_AVAILABLE,
                 "advanced_layers": ADVANCED_LAYERS_AVAILABLE,
-                "kaede_env": self.kaede_env is not None,
+                "c_cpp_support": self.sdk_enabled,
                 "klayer": self.klayer is not None,
                 "kadvlayer": self.kadvlayer is not None,
                 "shell_commands": SHELL_COMMANDS_AVAILABLE
             },
             "availability": {
                 "core_components": CORE_AVAILABLE,
-                "kaede_language": KAEDE_AVAILABLE,
+                "development_sdk": SDK_AVAILABLE,
                 "advanced_layers": ADVANCED_LAYERS_AVAILABLE,
                 "shell_commands": SHELL_COMMANDS_AVAILABLE
             }
@@ -426,11 +422,11 @@ def show_version():
     """Show version information"""
     print("KOS (Kaede Operating System) v1.0.0")
     print("A comprehensive Unix-like operating system with advanced features")
-    print("Built around the Kaede programming language")
+    print("Supporting C, C++, and Python application development")
     print()
     print("Components:")
     print(f"  - Core Components: {'Available' if CORE_AVAILABLE else 'Not Available'}")
-    print(f"  - Kaede Language: {'Available' if KAEDE_AVAILABLE else 'Not Available'}")
+    print(f"  - Development SDK: {'Available' if SDK_AVAILABLE else 'Not Available'}")
     print(f"  - Advanced Layers: {'Available' if ADVANCED_LAYERS_AVAILABLE else 'Not Available'}")
     print(f"  - Shell Commands: {'Available' if SHELL_COMMANDS_AVAILABLE else 'Not Available'}")
     print(f"  - Repository System: Available")
@@ -473,6 +469,8 @@ def main():
         print("Failed to initialize KOS system")
         return 1
     
+    logger.info("KOS system initialization complete, proceeding to shell startup...")
+    
     if args.status:
         # Show system status
         status = kos.get_system_status()
@@ -500,6 +498,7 @@ def main():
     
     # Run interactive shell
     try:
+        logger.info("About to start interactive shell...")
         success = kos.run_interactive()
         return 0 if success else 1
     except KeyboardInterrupt:

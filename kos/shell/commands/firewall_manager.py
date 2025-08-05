@@ -15,8 +15,19 @@ import shlex
 from typing import Dict, List, Any, Optional, Union
 
 # Import KOS components
-from kos.layer import klayer
 from kos.network.firewall import FirewallManager, NAT, TABLES
+
+# Lazy import for klayer to avoid circular import issues
+klayer = None
+def get_klayer():
+    global klayer
+    if klayer is None:
+        try:
+            from kos.layer import klayer as _klayer
+            klayer = _klayer
+        except ImportError:
+            klayer = None
+    return klayer
 
 # Set up logging
 logger = logging.getLogger('KOS.shell.commands.firewall_manager')

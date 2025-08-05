@@ -1,0 +1,18 @@
+{
+  "name": "hello_c",
+  "version": "1.0.0",
+  "language": "c",
+  "source_files": [
+    "src/main.c"
+  ],
+  "include_dirs": [
+    "include"
+  ],
+  "libraries": [],
+  "lib_dirs": [],
+  "compiler_flags": [],
+  "linker_flags": [],
+  "output_type": "executable",
+  "output_name": "hello_c",
+  "dependencies": []
+}

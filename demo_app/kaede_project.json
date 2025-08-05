@@ -1,0 +1,16 @@
+{
+  "name": "demo_app",
+  "type": "application",
+  "version": "1.0.0",
+  "source_files": [
+    "main.kaede"
+  ],
+  "dependencies": [],
+  "target_platforms": [
+    "linux",
+    "windows"
+  ],
+  "optimization_level": 2,
+  "output_directory": "build",
+  "metadata": {}
+}

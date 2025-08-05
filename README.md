@@ -7,12 +7,12 @@
 
 ## Overview
 
-**KOS (Kaede Operating System)** is a comprehensive Unix-like operating system built around the Kaede programming language. It combines the power of traditional Unix systems with modern programming language integration, advanced security features, and intelligent package management.
+**KOS (Kaede Operating System)** is a comprehensive Unix-like operating system that provides a modern development environment. It combines the power of traditional Unix systems with support for C, C++, and Python development, advanced security features, and intelligent package management.
 
 ## 🚀 Key Features
 
 ### Core System
-- **Kaede Programming Language Integration** - Native support for the Kaede language with runtime compilation
+- **Multi-Language SDK** - Native support for C, C++, and Python application development
 - **Advanced File System** - Virtual file system with comprehensive permission management
 - **Process Management** - Sophisticated process control with resource monitoring
 - **Memory Management** - Intelligent memory allocation with automatic and manual control
@@ -26,9 +26,9 @@
 - **Shell Environment** - Feature-rich shell with extensive command set
 
 ### Programming Environment
-- **Kaede Runtime** - High-performance runtime with JIT compilation
-- **Standard Library** - Comprehensive standard library with 10+ modules
-- **Development Tools** - Integrated compiler, debugger, and development environment
+- **KOS SDK** - Complete software development kit for C, C++, and Python
+- **Build System** - Advanced build system with project management and compilation
+- **Development Tools** - Integrated compiler support, project templates, and runtime
 - **Package Management** - Intelligent dependency resolution and package installation
 
 ## 📦 Installation

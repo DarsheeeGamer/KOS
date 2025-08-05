@@ -73,6 +73,10 @@ class BaseFileSystem:
             logger.error(f"Error getting node at {path}: {e}")
             return None
 
+    def exists(self, path: str) -> bool:
+        """Check if a file or directory exists at the specified path"""
+        return self._get_node(path) is not None
+
     def _resolve_path(self, path: str) -> str:
         """Resolve relative path to absolute path"""
         try:
@@ -168,6 +172,28 @@ class BaseFileSystem:
         except Exception as e:
             logger.error(f"Error creating directory {path}: {e}")
             raise FileSystemError(f"Failed to create directory: {str(e)}")
+
+    def change_directory(self, path: str) -> str:
+        """Change current directory with validation"""
+        try:
+            abs_path = self._resolve_path(path)
+            
+            # Check if the directory exists
+            node = self._get_node(abs_path)
+            if not node:
+                raise FileNotFound(f"Directory not found: {path}")
+            
+            if node.type != 'directory':
+                raise NotADirectory(f"Not a directory: {path}")
+            
+            # Change current path
+            self.current_path = abs_path
+            logger.debug(f"Changed directory to: {abs_path}")
+            return abs_path
+            
+        except Exception as e:
+            logger.error(f"Error changing directory to {path}: {e}")
+            raise
 
 class FileSystem(BaseFileSystem):
     """Enhanced filesystem implementation"""

@@ -1,0 +1,49 @@
+[Unit]
+Description=KOS Application Interface Manager (KAIM)
+Documentation=file:///usr/share/doc/kos/kaim.html
+After=network.target kos-core.service
+Wants=kos-core.service
+
+[Service]
+Type=notify
+ExecStartPre=/usr/bin/mkdir -p /var/run/kos/runtime/kaim
+ExecStartPre=/usr/bin/chown _kaim:kaim /var/run/kos/runtime/kaim
+ExecStartPre=/sbin/modprobe kaim
+ExecStart=/usr/bin/python3 -m kos.kaim.service
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGTERM
+Restart=on-failure
+RestartSec=5s
+
+# Security settings
+User=_kaim
+Group=kaim
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/run/kos /var/lib/kaim /var/log/kos /dev/kaim
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=false
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+PrivateDevices=false
+DeviceAllow=/dev/kaim rw
+AmbientCapabilities=CAP_SYS_ADMIN CAP_DAC_OVERRIDE
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+MemoryLimit=512M
+CPUQuota=50%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaim
+
+[Install]
+WantedBy=multi-user.target

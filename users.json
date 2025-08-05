@@ -6,7 +6,7 @@
     "fullname": "Kaede Root",
     "home": "/root",
     "shell": "/bin/ksh",
-    "created_at": "2025-05-22T16:11:38.266944",
+    "created_at": "2025-08-04T16:50:02.960374",
     "groups": [
       "root",
       "sudo",

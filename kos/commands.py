@@ -4,10 +4,20 @@ import shlex
 import getpass
 import logging
 from typing import Optional, Dict, List
-from .filesystem import FileNotFound, NotADirectory, FileSystemError
 
 # Configure logger
 logger = logging.getLogger(__name__)
+
+# Import the actual shell from the shell module
+try:
+    from .shell.shell import KOSShell as KaedeShell
+    _SHELL_IMPORTED = True
+except ImportError:
+    # Will define fallback shell below
+    _SHELL_IMPORTED = False
+    logger.warning("Could not import KOSShell from shell module, using basic shell")
+
+# Basic imports for fallback shell
 try:
     from rich.console import Console
     from rich.table import Table
@@ -22,6 +32,7 @@ from .package_manager import KpmManager
 from .docs import ManualSystem 
 from .filesystem import FileSystem
 from .user_system import UserSystem
+from .filesystem import FileNotFound, NotADirectory, FileSystemError
 
 # Import Kaede integration
 try:
@@ -37,9 +48,11 @@ class CommandContext:
         self.original_user = original_user
         self.is_sudo = is_sudo
 
-class KaedeShell(cmd.Cmd):
-    intro = 'Welcome to Kaede OS (KOS) 1.0.0\nType help or ? to list commands.\n'
-    prompt = 'kos$ '
+# Only define KaedeShell if we couldn't import it
+if not _SHELL_IMPORTED:
+    class KaedeShell(cmd.Cmd):
+        intro = 'Welcome to Kaede OS (KOS) 1.0.0\nType help or ? to list commands.\n'
+        prompt = 'kos$ '
 
     def __init__(self, filesystem: FileSystem, kpm_manager: KpmManager, user_system: UserSystem):
         super().__init__()

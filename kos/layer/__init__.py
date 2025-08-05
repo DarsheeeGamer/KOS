@@ -941,3 +941,15 @@ def get_klayer() -> KLayer:
     if _klayer_instance is None:
         _klayer_instance = KLayer.get_instance()
     return _klayer_instance
+
+# Create a global instance for convenience
+klayer = get_klayer()
+
+# Export the main components
+__all__ = [
+    'KLayer', 'get_klayer', 'klayer',
+    'ResourceType', 'PermissionLevel', 'ResourceQuota', 'SystemCall',
+    'KernelInterface', 'ResourceManager', 'SecurityManager',
+    'EventSystem', 'IPCManager', 'DeviceManager', 'TaskScheduler',
+    'PerformanceMonitor', 'SystemStatistics'
+]

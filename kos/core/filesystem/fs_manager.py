@@ -113,63 +113,78 @@ class FilesystemBase:
     # File operations - to be implemented by subclasses
     def create_file(self, path: str) -> bool:
         """Create a new file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement create_file")
+        return False
     
     def delete_file(self, path: str) -> bool:
         """Delete a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement delete_file")
+        return False
     
     def rename_file(self, old_path: str, new_path: str) -> bool:
         """Rename a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement rename_file")
+        return False
     
     def get_file_info(self, path: str) -> FileInfo:
         """Get file information"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement get_file_info")
+        raise FileNotFoundError(f"File not found: {path}")
     
     def set_file_info(self, path: str, info: Dict[str, Any]) -> bool:
         """Set file information"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement set_file_info")
+        return False
     
     def file_exists(self, path: str) -> bool:
         """Check if a file exists"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement file_exists")
+        return False
     
     def open_file(self, path: str, mode: str) -> Any:
         """Open a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement open_file")
+        raise FileNotFoundError(f"File not found: {path}")
     
     def close_file(self, file_handle: Any) -> bool:
         """Close a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement close_file")
+        return False
     
     def read_file(self, file_handle: Any, size: int = -1) -> bytes:
         """Read from a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement read_file")
+        return b''
     
     def write_file(self, file_handle: Any, data: bytes) -> int:
         """Write to a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement write_file")
+        return 0
     
     def seek_file(self, file_handle: Any, offset: int, whence: int = 0) -> int:
         """Seek within a file"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement seek_file")
+        return 0
     
     def flush_file(self, file_handle: Any) -> bool:
         """Flush file buffers"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement flush_file")
+        return True
     
     def list_directory(self, path: str) -> List[FileInfo]:
         """List directory contents"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement list_directory")
+        return []
     
     def create_directory(self, path: str) -> bool:
         """Create a directory"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement create_directory")
+        return False
     
     def delete_directory(self, path: str) -> bool:
         """Delete a directory"""
-        raise NotImplementedError()
+        logger.warning(f"{self.__class__.__name__} does not implement delete_directory")
+        return False
 
 
 class MemoryFilesystem(FilesystemBase):

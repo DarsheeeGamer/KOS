@@ -1,0 +1,46 @@
+[Unit]
+Description=KOS Advanced Device Communication Manager (KADCM)
+Documentation=file:///usr/share/doc/kos/kadcm.html
+After=network.target kos-core.service
+Wants=kos-core.service
+
+[Service]
+Type=notify
+ExecStartPre=/usr/bin/mkdir -p /var/run/kos/runtime/kadcm
+ExecStartPre=/usr/bin/chown kos:kos /var/run/kos/runtime/kadcm
+ExecStart=/usr/bin/python3 -m kos.kadcm.service
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGTERM
+Restart=on-failure
+RestartSec=5s
+
+# Security settings
+User=kos
+Group=kos
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/run/kos /var/lib/kos /var/log/kos
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+PrivateDevices=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+MemoryLimit=512M
+CPUQuota=50%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kadcm
+
+[Install]
+WantedBy=multi-user.target

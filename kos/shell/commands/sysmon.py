@@ -19,11 +19,11 @@ logger = logging.getLogger('KOS.shell.sysmon')
 
 # Try to import the KADVLayer components
 try:
-    from ...kadv.layer import KADVLayer
-    from ...kadv.system_resource_monitor import SystemResourceMonitor
-    from ...kadv.process_monitor import ProcessMonitor
-    from ...kadv.system_info import SystemInfo
-    from ...kadv.system_metrics import SystemMetrics
+    from ...advlayer import KADVLayer, get_kadvlayer
+    from ...advlayer.system_resource_monitor import SystemResourceMonitor
+    from ...advlayer.process_monitor import ProcessMonitor
+    from ...advlayer.system_info import SystemInfo
+    from ...advlayer.system_metrics import SystemMetrics
     KADV_AVAILABLE = True
 except ImportError:
     KADV_AVAILABLE = False

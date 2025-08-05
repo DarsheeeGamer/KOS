@@ -41,7 +41,7 @@ from .commands.textproc import cut_command, paste_command, tr_command
 logger = logging.getLogger('KOS.shell')
 
 
-class KaedeShell(cmd.Cmd):
+class KOSShell(cmd.Cmd):
     """Enhanced KOS shell with advanced features"""
     HISTORY_FILE = ".kos_history"
     MAX_HISTORY = 1000
@@ -54,13 +54,19 @@ class KaedeShell(cmd.Cmd):
         self.pm = package_manager
         self.process_mgr = process_manager
         self.us = user_system
+        # Use custom history manager
+        from .history_manager import get_history_manager
+        self.history_manager = get_history_manager()
         self.history: List[str] = []
         self.console = Console() if RICH_AVAILABLE and Console else None
         self.executor = ThreadPoolExecutor(max_workers=4)
         self._resource_cache = TTLCache(
             maxsize=100, ttl=1)  # Cache resource usage for 1 second
-        self._load_history()
+        self._load_history_from_manager()
         self._setup_signal_handlers()
+        
+        # Initialize package CLI integration
+        self._init_package_cli_integration()
 
         # Enhanced command categories with descriptions
         self.command_categories = {
@@ -193,16 +199,20 @@ class KaedeShell(cmd.Cmd):
 
     def _get_prompt(self) -> str:
         """Generate enhanced shell prompt with git-like info"""
-        cwd = self.fs.current_path.replace('/home/runner/workspace', '')
-        if not cwd:
-            cwd = "/"
+        cwd = self.fs.current_path
+        
+        # Show just the directory name for non-root paths, or "/" for root
+        if cwd == "/":
+            display_path = "/"
+        else:
+            display_path = os.path.basename(cwd) or "/"
 
         time_str = datetime.now().strftime("%H:%M")
         branch = "main"  # TODO: Implement git integration
 
         if self.us.current_user == "kaede":
-            return f"\033[1;31m[{time_str} root@kos {cwd} ({branch})]#\033[0m "
-        return f"\033[1;34m[{time_str} {self.us.current_user}@kos {cwd} ({branch})]$\033[0m "
+            return f"\033[1;31m[{time_str} root@kos {display_path} ({branch})]#\033[0m "
+        return f"\033[1;34m[{time_str} {self.us.current_user}@kos {display_path} ({branch})]$\033[0m "
 
     def _setup_signal_handlers(self):
         """Setup enhanced signal handling"""
@@ -226,6 +236,16 @@ class KaedeShell(cmd.Cmd):
         self._cleanup()
         sys.exit(0)
 
+    def _init_package_cli_integration(self):
+        """Initialize package CLI command integration"""
+        try:
+            from kos.package.cli_integration import integrate_with_shell
+            self.package_cli_integration = integrate_with_shell(self)
+            logger.info("Package CLI integration initialized")
+        except Exception as e:
+            logger.warning(f"Failed to initialize package CLI integration: {e}")
+            self.package_cli_integration = None
+
     def _cleanup(self):
         """Cleanup resources before exit"""
         try:
@@ -234,6 +254,64 @@ class KaedeShell(cmd.Cmd):
             logger.info("Shell cleanup completed")
         except Exception as e:
             logger.error(f"Error during cleanup: {e}")
+
+    def register_command(self, command_name: str, command_func: callable, help_text: str = ""):
+        """Register a new command with the shell
+        
+        Args:
+            command_name: Name of the command
+            command_func: Function to execute for the command
+            help_text: Help text for the command
+        """
+        # Create a do_ method dynamically
+        def do_method(self, arg):
+            try:
+                return command_func(self, arg)
+            except Exception as e:
+                self._print_error(f"Error executing {command_name}: {e}")
+        
+        # Set the method on the shell instance
+        setattr(self, f"do_{command_name}", do_method.__get__(self, self.__class__))
+        
+        # Add help if provided
+        if help_text:
+            def help_method(self):
+                self._print_info(help_text)
+            setattr(self, f"help_{command_name}", help_method.__get__(self, self.__class__))
+        
+        logger.debug(f"Registered command: {command_name}")
+
+    def default(self, line):
+        """Handle unknown commands - check if they're package commands"""
+        try:
+            # Split command and arguments
+            parts = line.split()
+            if not parts:
+                return
+            
+            command_name = parts[0]
+            args = parts[1:] if len(parts) > 1 else []
+            
+            # Check if it's a package command
+            if self.package_cli_integration:
+                if self.package_cli_integration.command_manager.is_command_available(command_name):
+                    success = self.package_cli_integration.command_manager.execute_command(command_name, args)
+                    return
+            
+            # Try to find similar commands (typo correction)
+            suggestion = self._find_similar_command(command_name)
+            if suggestion:
+                print(f"Command '{command_name}' not found. Did you mean '{suggestion}'?")
+                # Ask if user wants to run the suggested command
+                response = input(f"Run '{suggestion} {' '.join(args)}'? (y/N): ")
+                if response.lower() == 'y':
+                    self.onecmd(f"{suggestion} {' '.join(args)}")
+            else:
+                print(f"*** Unknown syntax: {command_name}")
+            
+        except Exception as e:
+            logger.error(f"Error in default command handler: {e}")
+            print(f"*** Unknown syntax: {line}")
 
     def do_clear(self, arg):
         """Clear the terminal screen"""
@@ -432,36 +510,85 @@ class KaedeShell(cmd.Cmd):
             logger.error(f"Error in top command: {e}")
             print(f"top: {str(e)}")
 
-    def _load_history(self):
-        """Load command history from file"""
-        history_file = os.path.expanduser(self.HISTORY_FILE)
-        if os.path.exists(history_file):
-            try:
-                with open(history_file, 'r') as f:
-                    for line in f:
-                        cmd = line.strip()
-                        if cmd:
-                            self.history.append(cmd)
-            except Exception as e:
-                logger.warning(f"Error loading command history: {e}")
+    def _load_history_from_manager(self):
+        """Load command history from custom manager"""
+        try:
+            # Load recent history into local cache
+            entries = self.history_manager.get_history(limit=1000)
+            self.history = [entry.command for entry in entries]
+        except Exception as e:
+            logger.warning(f"Error loading command history: {e}")
+    
+    def _levenshtein_distance(self, s1: str, s2: str) -> int:
+        """Calculate Levenshtein distance between two strings"""
+        if len(s1) < len(s2):
+            return self._levenshtein_distance(s2, s1)
+        
+        if len(s2) == 0:
+            return len(s1)
+        
+        previous_row = range(len(s2) + 1)
+        for i, c1 in enumerate(s1):
+            current_row = [i + 1]
+            for j, c2 in enumerate(s2):
+                # j+1 instead of j since previous_row and current_row are one character longer
+                insertions = previous_row[j + 1] + 1
+                deletions = current_row[j] + 1
+                substitutions = previous_row[j] + (c1 != c2)
+                current_row.append(min(insertions, deletions, substitutions))
+            previous_row = current_row
+        
+        return previous_row[-1]
+    
+    def _find_similar_command(self, command: str) -> Optional[str]:
+        """Find similar command using Levenshtein distance"""
+        # Get all available commands
+        all_commands = []
+        
+        # Built-in shell commands
+        for attr in dir(self):
+            if attr.startswith('do_'):
+                cmd_name = attr[3:]
+                all_commands.append(cmd_name)
+        
+        # Package commands
+        if self.package_cli_integration:
+            all_commands.extend(self.package_cli_integration.command_manager.list_commands())
+        
+        # Find the closest match
+        min_distance = float('inf')
+        best_match = None
+        
+        for cmd in all_commands:
+            distance = self._levenshtein_distance(command.lower(), cmd.lower())
+            # Only suggest if the distance is reasonable (less than half the length)
+            if distance < min_distance and distance <= len(command) // 2 + 1:
+                min_distance = distance
+                best_match = cmd
+        
+        return best_match
 
     def precmd(self, line):
         """Preprocess command line before execution"""
         if line.strip():
-            self.history.append(line)
-            if len(self.history) > self.MAX_HISTORY:
-                self.history.pop(0)
+            # Record start time for duration tracking
+            self._cmd_start_time = time.time()
         return line
 
     def postcmd(self, stop, line):
         """Save command history after execution"""
-        history_file = os.path.expanduser(self.HISTORY_FILE)
-        try:
-            with open(history_file, 'w') as f:
-                for cmd in self.history:
-                    f.write(cmd + '\n')
-        except Exception as e:
-            logger.warning(f"Error saving command history: {e}")
+        if line.strip():
+            # Calculate duration
+            duration = time.time() - getattr(self, '_cmd_start_time', time.time())
+            
+            # Add to custom history manager
+            self.history_manager.add_entry(line, exit_code=0, duration=duration)
+            
+            # Update local cache
+            self.history.append(line)
+            if len(self.history) > self.MAX_HISTORY:
+                self.history.pop(0)
+        
         return stop
 
     def do_disk(self, arg):
@@ -648,20 +775,11 @@ class KaedeShell(cmd.Cmd):
             if path == "~":
                 path = f"/home/{self.us.current_user}"
 
-            # Try to change directory through filesystem
-            try:
-                self.fs.current_path = path
-                logger.debug(f"Changed directory to: {self.fs.current_path}")
-                self.prompt = self._get_prompt()  # Update prompt with new path
-            except FileSystemError as e:
-                print(f"cd: {str(e)}")
+            # Use the filesystem's change_directory method for proper validation
+            self.fs.change_directory(path)
+            self.prompt = self._get_prompt()  # Update prompt with new path
 
         except Exception as e:
-            logger.error(f"Error in cd command: {e}")
-            print(f"cd: {str(e)}")
-
-        except Exception as e:
-            logger.error(f"Error in cd command: {e}")
             print(f"cd: {str(e)}")
 
     def do_pwd(self, arg):
@@ -732,7 +850,7 @@ class KaedeShell(cmd.Cmd):
     def do_exit(self, arg):
         """Exit the shell"""
         self._cleanup()
-        print("Exiting KaedeShell...")
+        print("Exiting KOS Shell...")
         return True
 
     def do_EOF(self, arg):
@@ -1534,7 +1652,7 @@ class KaedeShell(cmd.Cmd):
                 print("kos")
                 return
 
-            if not self.us.can_kudo(self.us.current_user):
+            if not self.us.can_sudo(self.us.current_user):
                 print("hostname: Permission denied")
                 return
 
@@ -1553,7 +1671,7 @@ class KaedeShell(cmd.Cmd):
                 print("userdel: missing operand")
                 return
 
-            if not self.us.can_kudo(self.us.current_user):
+            if not self.us.can_sudo(self.us.current_user):
                 print("userdel: Permission denied")
                 return
 
@@ -1613,7 +1731,7 @@ class KaedeShell(cmd.Cmd):
                 print("kudo: missing operand")
                 return
 
-            if not self.us.can_kudo(self.us.current_user):
+            if not self.us.can_sudo(self.us.current_user):
                 print("kudo: Permission denied")
                 return
 
@@ -1678,7 +1796,7 @@ class KaedeShell(cmd.Cmd):
                 print(current_time.strftime("%Y-%m-%d %H:%M:%S"))
                 return
 
-            if not self.us.can_kudo(self.us.current_user):
+            if not self.us.can_sudo(self.us.current_user):
                 print("date: Permission denied")
                 return
 
@@ -2816,3 +2934,6 @@ class KaedeShell(cmd.Cmd):
         except Exception as e:
             logger.error(f"Error in find command: {e}")
             print(f"find: {str(e)}")
+
+# Compatibility alias
+KaedeShell = KOSShell

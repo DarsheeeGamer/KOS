@@ -253,7 +253,41 @@ def has_capability(capability: str) -> bool:
     if current_user.uid == 0:
         return True
     
-    # TODO: Implement capability checking based on groups
+    # Import permission manager
+    from .permissions import PermissionManager
+    
+    # Check user permissions
+    perm_mgr = PermissionManager()
+    if perm_mgr.check_permission(current_user.username, capability):
+        return True
+    
+    # Check group-based capabilities
+    capability_groups = {
+        'CAP_SYS_ADMIN': ['sudo', 'wheel', 'admin'],
+        'CAP_NET_ADMIN': ['network', 'netdev'],
+        'CAP_AUDIT_WRITE': ['audit'],
+        'CAP_SYS_BOOT': ['sudo', 'wheel'],
+        'CAP_SYS_RESOURCE': ['sudo', 'wheel'],
+        'CAP_KILL': ['sudo', 'wheel'],
+        'CAP_SETUID': ['sudo', 'wheel'],
+        'CAP_SETGID': ['sudo', 'wheel'],
+        'CAP_DAC_OVERRIDE': ['sudo', 'wheel'],
+        'CAP_CHOWN': ['sudo', 'wheel'],
+        'CAP_FOWNER': ['sudo', 'wheel'],
+    }
+    
+    # Check if user is in any group that grants the capability
+    if capability in capability_groups:
+        import grp
+        for group_name in capability_groups[capability]:
+            try:
+                group = grp.getgrnam(group_name)
+                if current_user.username in group.gr_mem or group.gr_gid == current_user.gid:
+                    return True
+            except KeyError:
+                # Group doesn't exist
+                pass
+    
     return False
 
 

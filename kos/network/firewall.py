@@ -45,6 +45,15 @@ except ImportError:
 # Set up logging
 logger = logging.getLogger('KOS.network.firewall')
 
+# Try to use VFS if available, fallback to host filesystem
+try:
+    from ..vfs.vfs_wrapper import get_vfs, VFS_O_RDONLY, VFS_O_WRONLY, VFS_O_CREAT, VFS_O_APPEND
+    USE_VFS = True
+    logger.info("Using KOS VFS for firewall management")
+except Exception as e:
+    USE_VFS = False
+    logger.warning(f"VFS not available, using host filesystem: {e}")
+
 # Constants
 FIREWALL_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.kos', 'firewall')
 DEFAULT_CONFIG_FILE = os.path.join(FIREWALL_CONFIG_PATH, 'firewall.json')
@@ -87,6 +96,7 @@ TABLES = {
 }
 
 FIREWALL_LOCK = threading.Lock()
+_initialized = False
 
 # Define Pydantic models if available
 if PYDANTIC_AVAILABLE:
@@ -360,6 +370,7 @@ class FirewallManager:
                 interface_in: str = None, interface_out: str = None,
                 action: str = "ACCEPT", comment: str = None) -> Tuple[bool, str, Optional[FirewallRule]]:
         """Add a new firewall rule"""
+        ensure_initialized()
         # Validate table
         if table not in TABLES:
             return False, f"Invalid table: {table}", None
@@ -568,7 +579,12 @@ class NAT:
 # Initialize firewall system
 def initialize():
     """Initialize the firewall system"""
+    global _initialized
+    if _initialized:
+        return
+    
     logger.info("Initializing KOS firewall system")
+    _initialized = True
     
     # Create firewall directory
     firewall_dir = os.path.join(os.path.expanduser('~'), '.kos', 'firewall')
@@ -606,5 +622,11 @@ def initialize():
     
     logger.info("KOS firewall system initialized")
 
-# Initialize on import
-initialize()
+# Helper function for lazy initialization
+def ensure_initialized():
+    """Ensure firewall system is initialized"""
+    if not _initialized:
+        initialize()
+
+# Initialize lazily when needed (removed automatic initialization to prevent blocking)
+# Call initialize() manually when firewall functionality is first used

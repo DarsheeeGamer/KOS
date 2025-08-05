@@ -31,6 +31,15 @@ from collections import defaultdict
 
 logger = logging.getLogger('KOS.repo_config')
 
+# Try to use VFS if available, fallback to host filesystem
+try:
+    from .vfs.vfs_wrapper import get_vfs, VFS_O_RDONLY, VFS_O_WRONLY, VFS_O_CREAT, VFS_O_APPEND
+    USE_VFS = True
+    logger.info("Using KOS VFS for repository management")
+except Exception as e:
+    USE_VFS = False
+    logger.warning(f"VFS not available, using host filesystem: {e}")
+
 class RepositoryType(Enum):
     """Repository types"""
     HTTP = "http"
@@ -251,9 +260,18 @@ class RepositoryManager:
         self.repos_file = os.path.join(self.config_dir, "repositories.json")
         self.cache_file = os.path.join(self.config_dir, "cache.json")
         
+        # Initialize VFS if available
+        self.vfs = None
+        if USE_VFS:
+            try:
+                self.vfs = get_vfs()
+                logger.debug("VFS initialized for repository management")
+            except Exception as e:
+                logger.warning(f"Failed to initialize VFS: {e}")
+                self.vfs = None
+        
         # Ensure directories exist
-        os.makedirs(self.config_dir, exist_ok=True)
-        os.makedirs(self.cache_dir, exist_ok=True)
+        self._ensure_directories()
         
         # Repository storage
         self.repositories: Dict[str, RepositoryMetadata] = {}
@@ -274,6 +292,66 @@ class RepositoryManager:
         self._load_cache()
         
         logger.info(f"RepositoryManager initialized with {len(self.repositories)} repositories")
+    
+    def _ensure_directories(self):
+        """Ensure directories exist using VFS or host filesystem"""
+        if self.vfs:
+            try:
+                # Use VFS to create directories
+                self.vfs.mkdir(self.config_dir, 0o700, recursive=True)
+                self.vfs.mkdir(self.cache_dir, 0o700, recursive=True)
+            except Exception as e:
+                logger.warning(f"Failed to create directories via VFS: {e}")
+                # Fall back to host filesystem
+                os.makedirs(self.config_dir, exist_ok=True)
+                os.makedirs(self.cache_dir, exist_ok=True)
+        else:
+            os.makedirs(self.config_dir, exist_ok=True)
+            os.makedirs(self.cache_dir, exist_ok=True)
+    
+    def _file_exists(self, path: str) -> bool:
+        """Check if file exists using VFS or host filesystem"""
+        if self.vfs:
+            try:
+                return self.vfs.exists(path)
+            except Exception:
+                pass
+        return os.path.exists(path)
+    
+    def _read_file(self, path: str) -> str:
+        """Read file content using VFS or host filesystem"""
+        if self.vfs:
+            try:
+                return self.vfs.read_text(path)
+            except Exception as e:
+                logger.debug(f"VFS read failed for {path}: {e}")
+        
+        with open(path, 'r') as f:
+            return f.read()
+    
+    def _write_file(self, path: str, content: str):
+        """Write file content using VFS or host filesystem"""
+        if self.vfs:
+            try:
+                self.vfs.write_text(path, content)
+                return
+            except Exception as e:
+                logger.debug(f"VFS write failed for {path}: {e}")
+        
+        with open(path, 'w') as f:
+            f.write(content)
+    
+    def _remove_file(self, path: str):
+        """Remove file using VFS or host filesystem"""
+        if self.vfs:
+            try:
+                self.vfs.remove(path)
+                return
+            except Exception as e:
+                logger.debug(f"VFS remove failed for {path}: {e}")
+        
+        if os.path.exists(path):
+            os.remove(path)
     
     def add_repository(self, name: str, url: str, repo_type: RepositoryType = None, 
                       description: str = "", priority: PackagePriority = PackagePriority.NORMAL) -> bool:
@@ -329,8 +407,8 @@ class RepositoryManager:
             
             # Clean up cache
             cache_file = os.path.join(self.cache_dir, f"{name}.json")
-            if os.path.exists(cache_file):
-                os.remove(cache_file)
+            if self._file_exists(cache_file):
+                self._remove_file(cache_file)
             
             # Save configuration
             self._save_repositories()
@@ -529,7 +607,7 @@ class RepositoryManager:
             return RepositoryType.HTTP
         elif url_lower.startswith('git://') or url_lower.endswith('.git'):
             return RepositoryType.GIT
-        elif url_lower.startswith('file://') or os.path.exists(url):
+        elif url_lower.startswith('file://') or self._file_exists(url):
             return RepositoryType.LOCAL
         else:
             # Default to HTTPS for security
@@ -539,7 +617,7 @@ class RepositoryManager:
         """Validate repository URL"""
         try:
             if repo_type == RepositoryType.LOCAL:
-                return os.path.exists(url) or url.startswith('file://')
+                return self._file_exists(url) or url.startswith('file://')
             
             # Parse URL
             parsed = urllib.parse.urlparse(url)
@@ -574,7 +652,17 @@ class RepositoryManager:
             
             # Update repository metadata
             repo.last_updated = datetime.now()
-            repo.package_count = len(index_data.get('packages', []))
+            
+            # Handle both dictionary and array formats for packages
+            packages_data = index_data.get('packages', {})
+            if isinstance(packages_data, dict):
+                # Convert dictionary format to list of package data
+                packages_list = list(packages_data.values())
+                repo.package_count = len(packages_data)
+            else:
+                # Already in array format
+                packages_list = packages_data
+                repo.package_count = len(packages_list)
             
             # Update package index
             index = self.indices[repo.name]
@@ -582,7 +670,7 @@ class RepositoryManager:
             index.categories.clear()
             index.tags.clear()
             
-            for pkg_data in index_data.get('packages', []):
+            for pkg_data in packages_list:
                 package = self._parse_package_metadata(pkg_data, repo.name)
                 if package:
                     index.add_package(package)
@@ -614,16 +702,25 @@ class RepositoryManager:
         try:
             index_file = os.path.join(repo.url, "index.json")
             
-            if not os.path.exists(index_file):
+            if not self._file_exists(index_file):
                 logger.error(f"Local repository index not found: {index_file}")
                 return False
             
-            with open(index_file, 'r') as f:
-                index_data = json.load(f)
+            index_data = json.loads(self._read_file(index_file))
             
             # Update repository metadata
             repo.last_updated = datetime.now()
-            repo.package_count = len(index_data.get('packages', []))
+            
+            # Handle both dictionary and array formats for packages
+            packages_data = index_data.get('packages', {})
+            if isinstance(packages_data, dict):
+                # Convert dictionary format to list of package data
+                packages_list = list(packages_data.values())
+                repo.package_count = len(packages_data)
+            else:
+                # Already in array format
+                packages_list = packages_data
+                repo.package_count = len(packages_list)
             
             # Update package index
             index = self.indices[repo.name]
@@ -631,7 +728,7 @@ class RepositoryManager:
             index.categories.clear()
             index.tags.clear()
             
-            for pkg_data in index_data.get('packages', []):
+            for pkg_data in packages_list:
                 package = self._parse_package_metadata(pkg_data, repo.name)
                 if package:
                     index.add_package(package)
@@ -722,9 +819,8 @@ class RepositoryManager:
     def _load_repositories(self):
         """Load repository configuration"""
         try:
-            if os.path.exists(self.repos_file):
-                with open(self.repos_file, 'r') as f:
-                    data = json.load(f)
+            if self._file_exists(self.repos_file):
+                data = json.loads(self._read_file(self.repos_file))
                 
                 for repo_data in data.get('repositories', []):
                     try:
@@ -763,7 +859,7 @@ class RepositoryManager:
         """Initialize with default KOS repository"""
         default_repo = RepositoryMetadata(
             name="main",
-            url="https://raw.githubusercontent.com/DarsheeeGamer/kos-repo/refs/heads/main",
+            url="https://raw.githubusercontent.com/DarsheeeGamer/kos-repo/main/repo",
             repo_type=RepositoryType.HTTPS,
             description="Official KOS package repository",
             maintainer="KOS Development Team",
@@ -802,8 +898,7 @@ class RepositoryManager:
                 
                 data['repositories'].append(repo_data)
             
-            with open(self.repos_file, 'w') as f:
-                json.dump(data, f, indent=2)
+            self._write_file(self.repos_file, json.dumps(data, indent=2))
                 
         except Exception as e:
             logger.error(f"Error saving repositories configuration: {e}")
@@ -811,9 +906,8 @@ class RepositoryManager:
     def _load_cache(self):
         """Load repository cache"""
         try:
-            if os.path.exists(self.cache_file):
-                with open(self.cache_file, 'r') as f:
-                    cache_data = json.load(f)
+            if self._file_exists(self.cache_file):
+                cache_data = json.loads(self._read_file(self.cache_file))
                 
                 # Load cached package indices
                 for repo_name, index_data in cache_data.get('indices', {}).items():
@@ -863,8 +957,7 @@ class RepositoryManager:
                     
                     cache_data['indices'][repo_name] = index_data
             
-            with open(self.cache_file, 'w') as f:
-                json.dump(cache_data, f, indent=2)
+            self._write_file(self.cache_file, json.dumps(cache_data, indent=2))
                 
         except Exception as e:
             logger.error(f"Error saving repository cache: {e}")
