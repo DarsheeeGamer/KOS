@@ -65,7 +65,7 @@ Type 'exit' to quit
     def _load_commands(self):
         """Load modular commands"""
         # Import command modules
-        from .commands import filesystem, packages, system, auth, editor, process
+        from .commands import filesystem, packages, system, auth, editor, process, cluster
         
         # Register commands
         filesystem.register_commands(self)
@@ -74,6 +74,7 @@ Type 'exit' to quit
         auth.register_commands(self)
         editor.register_commands(self)
         process.register_commands(self)
+        cluster.register_commands(self)
     
     def postcmd(self, stop, line):
         """After each command"""
@@ -124,6 +125,7 @@ Type 'exit' to quit
             file_cmds = ['ls', 'cd', 'pwd', 'cat', 'mkdir', 'rm', 'cp', 'mv', 'touch', 'find']
             pkg_cmds = ['kpm', 'pip']
             sys_cmds = ['status', 'ps', 'services', 'info', 'clear', 'exit']
+            cluster_cmds = ['cluster', 'migrate']
             
             print("\nFile System:")
             for cmd in file_cmds:
@@ -137,6 +139,11 @@ Type 'exit' to quit
             
             print("\nSystem:")
             for cmd in sys_cmds:
+                if cmd in commands:
+                    print(f"  {cmd:<10} - {self._get_short_help(cmd)}")
+            
+            print("\nCluster:")
+            for cmd in cluster_cmds:
                 if cmd in commands:
                     print(f"  {cmd:<10} - {self._get_short_help(cmd)}")
             
