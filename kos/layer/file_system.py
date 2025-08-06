@@ -2,714 +2,379 @@
 FileSystemInterface Component for KLayer
 
 This module provides file system access capabilities for KOS applications,
-allowing them to interact with the KOS file system in a controlled manner.
+allowing them to interact with the KOS VFS in a controlled manner.
+All operations are performed on the KOS Virtual File System (kaede.kdsk).
 """
 
 import os
-import sys
-import shutil
 import logging
 import threading
-import json
-from typing import Dict, List, Any, Optional, Union, BinaryIO, TextIO
+from typing import Dict, List, Any, Optional, Union, BinaryIO
 
 logger = logging.getLogger('KOS.layer.file_system')
 
 class FileSystemInterface:
     """
-    Provides controlled file system access for KOS applications
+    Provides controlled VFS access for KOS applications
     
-    This class provides methods for applications to interact with the
-    KOS file system while enforcing permissions and sandboxing.
+    This class wraps KaedeVFS to provide file system operations
+    entirely within the KOS Virtual File System (kaede.kdsk).
     """
     
     def __init__(self):
         """Initialize the FileSystemInterface component"""
         self.lock = threading.RLock()
         
-        # Load configuration
-        self.kos_home = os.environ.get('KOS_HOME', os.path.expanduser('~/.kos'))
-        self.app_data_dir = os.path.join(self.kos_home, 'app_data')
-        self.shared_data_dir = os.path.join(self.kos_home, 'shared')
+        # Get the KaedeVFS instance
+        from kos.vfs import get_vfs
+        self.vfs = get_vfs()
         
-        # Ensure directories exist
-        os.makedirs(self.app_data_dir, exist_ok=True)
-        os.makedirs(self.shared_data_dir, exist_ok=True)
+        if not self.vfs:
+            raise RuntimeError("KaedeVFS not initialized")
         
-        logger.debug("FileSystemInterface component initialized")
+        # VFS paths (all inside kaede.kdsk)
+        self.app_data_dir = "/var/lib/kos/app_data"
+        self.shared_data_dir = "/var/lib/kos/shared"
+        
+        # Ensure VFS directories exist
+        self._ensure_vfs_dirs()
+        
+        logger.debug("FileSystemInterface component initialized with KaedeVFS")
+    
+    def _ensure_vfs_dirs(self):
+        """Ensure required VFS directories exist"""
+        dirs = [
+            "/var",
+            "/var/lib",
+            "/var/lib/kos",
+            self.app_data_dir,
+            self.shared_data_dir
+        ]
+        
+        for dir_path in dirs:
+            if not self.vfs.exists(dir_path):
+                try:
+                    self.vfs.mkdir(dir_path, 0o755)
+                except FileExistsError:
+                    pass
     
     def _get_app_data_path(self, app_id: str) -> str:
         """
-        Get application data directory path
+        Get application data directory path in VFS
         
         Args:
             app_id: Application ID
             
         Returns:
-            Path to application data directory
+            VFS path to application data directory
         """
-        app_dir = os.path.join(self.app_data_dir, app_id)
-        os.makedirs(app_dir, exist_ok=True)
-        return app_dir
+        return os.path.join(self.app_data_dir, app_id)
     
-    def _validate_path(self, app_id: str, path: str, for_write: bool = False) -> Dict[str, Any]:
+    def create_app_data_dir(self, app_id: str) -> bool:
         """
-        Validate and resolve a file path
+        Create application data directory in VFS
         
         Args:
             app_id: Application ID
-            path: File path
-            for_write: Whether the path is for write access
             
         Returns:
-            Dictionary with validation result
+            True if successful
         """
-        # Check if path is absolute or relative
-        if os.path.isabs(path):
-            # Check if path is within allowed directories
-            if path.startswith(self._get_app_data_path(app_id)):
-                # Path is in app's data directory
-                return {
-                    "valid": True,
-                    "resolved_path": path,
-                    "access": "private"
-                }
-            elif path.startswith(self.shared_data_dir):
-                # Path is in shared data directory
-                # Check permissions for write access to shared data
-                if for_write:
-                    # Get permissions manager
-                    from kos.layer import klayer
-                    permissions = klayer.get_permissions()
+        with self.lock:
+            try:
+                app_dir = self._get_app_data_path(app_id)
+                if not self.vfs.exists(app_dir):
+                    self.vfs.mkdir(app_dir, 0o755)
+                    logger.info(f"Created VFS app data directory: {app_dir}")
+                return True
+            except Exception as e:
+                logger.error(f"Failed to create app data dir in VFS: {e}")
+                return False
+    
+    def read_file(self, app_id: str, filepath: str) -> Optional[bytes]:
+        """
+        Read file from VFS
+        
+        Args:
+            app_id: Application ID
+            filepath: Relative file path
+            
+        Returns:
+            File contents or None if error
+        """
+        with self.lock:
+            try:
+                # Construct VFS path
+                if filepath.startswith('/'):
+                    # Absolute VFS path
+                    vfs_path = filepath
+                else:
+                    # Relative to app data dir
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, filepath)
+                
+                # Read from VFS
+                with self.vfs.open(vfs_path, os.O_RDONLY) as f:
+                    return f.read()
                     
-                    if permissions and not permissions.check_permission(app_id, "shared_data.write"):
-                        return {
-                            "valid": False,
-                            "error": "Permission denied: App does not have write access to shared data"
-                        }
-                
-                return {
-                    "valid": True,
-                    "resolved_path": path,
-                    "access": "shared"
-                }
-            else:
-                # Path is outside of allowed directories
-                
-                # Get permissions manager to check for unrestricted file access
-                from kos.layer import klayer
-                permissions = klayer.get_permissions()
-                
-                if permissions and permissions.check_permission(app_id, "file.unrestricted"):
-                    # App has unrestricted file access
-                    return {
-                        "valid": True,
-                        "resolved_path": path,
-                        "access": "unrestricted"
-                    }
-                
-                return {
-                    "valid": False,
-                    "error": "Permission denied: Path outside of allowed directories"
-                }
-        else:
-            # Relative path, resolve relative to app's data directory
-            resolved_path = os.path.join(self._get_app_data_path(app_id), path)
-            
-            return {
-                "valid": True,
-                "resolved_path": resolved_path,
-                "access": "private"
-            }
+            except FileNotFoundError:
+                logger.debug(f"File not found in VFS: {vfs_path}")
+                return None
+            except Exception as e:
+                logger.error(f"Error reading from VFS: {e}")
+                return None
     
-    def read_file(self, app_id: str, path: str, binary: bool = False) -> Dict[str, Any]:
+    def write_file(self, app_id: str, filepath: str, content: bytes) -> bool:
         """
-        Read a file
+        Write file to VFS
         
         Args:
             app_id: Application ID
-            path: File path
-            binary: Whether to read in binary mode
-            
-        Returns:
-            Dictionary with file content
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Check if file exists
-            if not os.path.exists(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"File not found: {path}"
-                }
-            
-            # Check if path is a file
-            if not os.path.isfile(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Path is not a file: {path}"
-                }
-            
-            # Read file
-            mode = "rb" if binary else "r"
-            with open(resolved_path, mode) as f:
-                content = f.read()
-            
-            return {
-                "success": True,
-                "content": content,
-                "size": len(content),
-                "path": path,
-                "access": validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error reading file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def write_file(self, app_id: str, path: str, content: Union[str, bytes], binary: bool = False) -> Dict[str, Any]:
-        """
-        Write to a file
-        
-        Args:
-            app_id: Application ID
-            path: File path
+            filepath: Relative file path
             content: File content
-            binary: Whether to write in binary mode
             
         Returns:
-            Dictionary with write status
+            True if successful
         """
-        # Validate path
-        validation = self._validate_path(app_id, path, for_write=True)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Create parent directories if they don't exist
-            os.makedirs(os.path.dirname(resolved_path), exist_ok=True)
-            
-            # Write file
-            mode = "wb" if binary else "w"
-            with open(resolved_path, mode) as f:
-                f.write(content)
-            
-            return {
-                "success": True,
-                "size": len(content),
-                "path": path,
-                "access": validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error writing file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def append_file(self, app_id: str, path: str, content: Union[str, bytes], binary: bool = False) -> Dict[str, Any]:
-        """
-        Append to a file
-        
-        Args:
-            app_id: Application ID
-            path: File path
-            content: Content to append
-            binary: Whether to append in binary mode
-            
-        Returns:
-            Dictionary with append status
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path, for_write=True)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Create parent directories if they don't exist
-            os.makedirs(os.path.dirname(resolved_path), exist_ok=True)
-            
-            # Append to file
-            mode = "ab" if binary else "a"
-            with open(resolved_path, mode) as f:
-                f.write(content)
-            
-            return {
-                "success": True,
-                "size": len(content),
-                "path": path,
-                "access": validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error appending to file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def delete_file(self, app_id: str, path: str) -> Dict[str, Any]:
-        """
-        Delete a file
-        
-        Args:
-            app_id: Application ID
-            path: File path
-            
-        Returns:
-            Dictionary with delete status
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path, for_write=True)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Check if file exists
-            if not os.path.exists(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"File not found: {path}"
-                }
-            
-            # Check if path is a file
-            if not os.path.isfile(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Path is not a file: {path}"
-                }
-            
-            # Delete file
-            os.remove(resolved_path)
-            
-            return {
-                "success": True,
-                "path": path,
-                "access": validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error deleting file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def list_directory(self, app_id: str, path: str) -> Dict[str, Any]:
-        """
-        List directory contents
-        
-        Args:
-            app_id: Application ID
-            path: Directory path
-            
-        Returns:
-            Dictionary with directory contents
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Check if directory exists
-            if not os.path.exists(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Directory not found: {path}"
-                }
-            
-            # Check if path is a directory
-            if not os.path.isdir(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Path is not a directory: {path}"
-                }
-            
-            # List directory contents
-            contents = []
-            
-            for item in os.listdir(resolved_path):
-                item_path = os.path.join(resolved_path, item)
+        with self.lock:
+            try:
+                # Construct VFS path
+                if filepath.startswith('/'):
+                    vfs_path = filepath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, filepath)
                 
-                contents.append({
-                    "name": item,
-                    "type": "directory" if os.path.isdir(item_path) else "file",
-                    "size": os.path.getsize(item_path) if os.path.isfile(item_path) else None,
-                    "modified": os.path.getmtime(item_path)
-                })
-            
-            return {
-                "success": True,
-                "contents": contents,
-                "path": path,
-                "access": validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error listing directory: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
+                # Ensure parent directory exists
+                parent_dir = os.path.dirname(vfs_path)
+                if not self.vfs.exists(parent_dir):
+                    self._create_dirs_recursive(parent_dir)
+                
+                # Write to VFS
+                flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
+                with self.vfs.open(vfs_path, flags, 0o644) as f:
+                    f.write(content)
+                
+                logger.debug(f"Wrote {len(content)} bytes to VFS: {vfs_path}")
+                return True
+                
+            except Exception as e:
+                logger.error(f"Error writing to VFS: {e}")
+                return False
     
-    def create_directory(self, app_id: str, path: str) -> Dict[str, Any]:
+    def _create_dirs_recursive(self, path: str):
+        """Recursively create directories in VFS"""
+        if not path or path == '/':
+            return
+        
+        parts = path.strip('/').split('/')
+        current = ''
+        
+        for part in parts:
+            current = f"/{part}" if not current else f"{current}/{part}"
+            if not self.vfs.exists(current):
+                try:
+                    self.vfs.mkdir(current, 0o755)
+                except FileExistsError:
+                    pass
+    
+    def delete_file(self, app_id: str, filepath: str) -> bool:
         """
-        Create a directory
+        Delete file from VFS
         
         Args:
             app_id: Application ID
-            path: Directory path
+            filepath: Relative file path
             
         Returns:
-            Dictionary with create status
+            True if successful
         """
-        # Validate path
-        validation = self._validate_path(app_id, path, for_write=True)
+        with self.lock:
+            try:
+                if filepath.startswith('/'):
+                    vfs_path = filepath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, filepath)
+                
+                if self.vfs.exists(vfs_path):
+                    self.vfs.unlink(vfs_path)
+                    logger.debug(f"Deleted from VFS: {vfs_path}")
+                    return True
+                return False
+                
+            except Exception as e:
+                logger.error(f"Error deleting from VFS: {e}")
+                return False
+    
+    def list_directory(self, app_id: str, dirpath: str = '') -> Optional[List[str]]:
+        """
+        List directory contents in VFS
         
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
+        Args:
+            app_id: Application ID
+            dirpath: Directory path
+            
+        Returns:
+            List of filenames or None if error
+        """
+        with self.lock:
+            try:
+                if dirpath.startswith('/'):
+                    vfs_path = dirpath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, dirpath) if dirpath else app_dir
+                
+                if self.vfs.exists(vfs_path):
+                    entries = self.vfs.listdir(vfs_path)
+                    # Filter out . and ..
+                    return [e for e in entries if e not in ['.', '..']]
+                return []
+                
+            except Exception as e:
+                logger.error(f"Error listing VFS directory: {e}")
+                return None
+    
+    def file_exists(self, app_id: str, filepath: str) -> bool:
+        """
+        Check if file exists in VFS
         
-        resolved_path = validation["resolved_path"]
+        Args:
+            app_id: Application ID
+            filepath: File path
+            
+        Returns:
+            True if file exists
+        """
+        with self.lock:
+            try:
+                if filepath.startswith('/'):
+                    vfs_path = filepath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, filepath)
+                
+                return self.vfs.exists(vfs_path)
+                
+            except Exception as e:
+                logger.error(f"Error checking VFS file existence: {e}")
+                return False
+    
+    def get_file_info(self, app_id: str, filepath: str) -> Optional[Dict[str, Any]]:
+        """
+        Get file information from VFS
         
+        Args:
+            app_id: Application ID
+            filepath: File path
+            
+        Returns:
+            File info dict or None if error
+        """
+        with self.lock:
+            try:
+                if filepath.startswith('/'):
+                    vfs_path = filepath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, filepath)
+                
+                if self.vfs.exists(vfs_path):
+                    stat = self.vfs.stat(vfs_path)
+                    
+                    return {
+                        'path': vfs_path,
+                        'size': stat.st_size,
+                        'mode': stat.st_mode,
+                        'uid': stat.st_uid,
+                        'gid': stat.st_gid,
+                        'atime': stat.st_atime,
+                        'mtime': stat.st_mtime,
+                        'ctime': stat.st_ctime,
+                        'is_file': stat.st_mode & 0o100000 != 0,
+                        'is_dir': stat.st_mode & 0o040000 != 0
+                    }
+                return None
+                
+            except Exception as e:
+                logger.error(f"Error getting VFS file info: {e}")
+                return None
+    
+    def create_directory(self, app_id: str, dirpath: str) -> bool:
+        """
+        Create directory in VFS
+        
+        Args:
+            app_id: Application ID
+            dirpath: Directory path
+            
+        Returns:
+            True if successful
+        """
+        with self.lock:
+            try:
+                if dirpath.startswith('/'):
+                    vfs_path = dirpath
+                else:
+                    app_dir = self._get_app_data_path(app_id)
+                    vfs_path = os.path.join(app_dir, dirpath)
+                
+                self._create_dirs_recursive(vfs_path)
+                return True
+                
+            except Exception as e:
+                logger.error(f"Error creating VFS directory: {e}")
+                return False
+    
+    def cleanup_app_data(self, app_id: str) -> bool:
+        """
+        Clean up application data from VFS
+        
+        Args:
+            app_id: Application ID
+            
+        Returns:
+            True if successful
+        """
+        with self.lock:
+            try:
+                app_dir = self._get_app_data_path(app_id)
+                
+                if self.vfs.exists(app_dir):
+                    # Recursively delete app directory
+                    self._delete_recursive(app_dir)
+                    logger.info(f"Cleaned up VFS app data: {app_dir}")
+                
+                return True
+                
+            except Exception as e:
+                logger.error(f"Error cleaning up VFS app data: {e}")
+                return False
+    
+    def _delete_recursive(self, path: str):
+        """Recursively delete directory from VFS"""
         try:
-            # Create directory
-            os.makedirs(resolved_path, exist_ok=True)
+            # List directory contents
+            entries = self.vfs.listdir(path)
             
-            return {
-                "success": True,
-                "path": path,
-                "access": validation["access"]
-            }
+            for entry in entries:
+                if entry in ['.', '..']:
+                    continue
+                
+                entry_path = os.path.join(path, entry)
+                
+                # Check if it's a directory
+                stat = self.vfs.stat(entry_path)
+                if stat.st_mode & 0o040000:  # S_IFDIR
+                    # Recursive deletion
+                    self._delete_recursive(entry_path)
+                else:
+                    # Delete file
+                    self.vfs.unlink(entry_path)
+            
+            # Delete the directory itself
+            self.vfs.rmdir(path)
+            
         except Exception as e:
-            logger.error(f"Error creating directory: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def delete_directory(self, app_id: str, path: str, recursive: bool = False) -> Dict[str, Any]:
-        """
-        Delete a directory
-        
-        Args:
-            app_id: Application ID
-            path: Directory path
-            recursive: Whether to delete recursively
-            
-        Returns:
-            Dictionary with delete status
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path, for_write=True)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Check if directory exists
-            if not os.path.exists(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Directory not found: {path}"
-                }
-            
-            # Check if path is a directory
-            if not os.path.isdir(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Path is not a directory: {path}"
-                }
-            
-            # Delete directory
-            if recursive:
-                shutil.rmtree(resolved_path)
-            else:
-                os.rmdir(resolved_path)
-            
-            return {
-                "success": True,
-                "path": path,
-                "access": validation["access"],
-                "recursive": recursive
-            }
-        except OSError as e:
-            if "Directory not empty" in str(e):
-                return {
-                    "success": False,
-                    "error": f"Directory not empty: {path}. Use recursive=True to delete non-empty directories."
-                }
-            
-            logger.error(f"Error deleting directory: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-        except Exception as e:
-            logger.error(f"Error deleting directory: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def get_file_info(self, app_id: str, path: str) -> Dict[str, Any]:
-        """
-        Get file information
-        
-        Args:
-            app_id: Application ID
-            path: File path
-            
-        Returns:
-            Dictionary with file information
-        """
-        # Validate path
-        validation = self._validate_path(app_id, path)
-        
-        if not validation["valid"]:
-            return {
-                "success": False,
-                "error": validation["error"]
-            }
-        
-        resolved_path = validation["resolved_path"]
-        
-        try:
-            # Check if path exists
-            if not os.path.exists(resolved_path):
-                return {
-                    "success": False,
-                    "error": f"Path not found: {path}"
-                }
-            
-            # Get file information
-            is_file = os.path.isfile(resolved_path)
-            is_dir = os.path.isdir(resolved_path)
-            
-            info = {
-                "name": os.path.basename(resolved_path),
-                "path": path,
-                "type": "file" if is_file else "directory" if is_dir else "unknown",
-                "size": os.path.getsize(resolved_path) if is_file else None,
-                "created": os.path.getctime(resolved_path),
-                "modified": os.path.getmtime(resolved_path),
-                "accessed": os.path.getatime(resolved_path),
-                "access": validation["access"]
-            }
-            
-            return {
-                "success": True,
-                "info": info
-            }
-        except Exception as e:
-            logger.error(f"Error getting file info: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def copy_file(self, app_id: str, source_path: str, target_path: str) -> Dict[str, Any]:
-        """
-        Copy a file
-        
-        Args:
-            app_id: Application ID
-            source_path: Source file path
-            target_path: Target file path
-            
-        Returns:
-            Dictionary with copy status
-        """
-        # Validate source path
-        source_validation = self._validate_path(app_id, source_path)
-        
-        if not source_validation["valid"]:
-            return {
-                "success": False,
-                "error": f"Source: {source_validation['error']}"
-            }
-        
-        # Validate target path
-        target_validation = self._validate_path(app_id, target_path, for_write=True)
-        
-        if not target_validation["valid"]:
-            return {
-                "success": False,
-                "error": f"Target: {target_validation['error']}"
-            }
-        
-        resolved_source = source_validation["resolved_path"]
-        resolved_target = target_validation["resolved_path"]
-        
-        try:
-            # Check if source exists
-            if not os.path.exists(resolved_source):
-                return {
-                    "success": False,
-                    "error": f"Source file not found: {source_path}"
-                }
-            
-            # Check if source is a file
-            if not os.path.isfile(resolved_source):
-                return {
-                    "success": False,
-                    "error": f"Source path is not a file: {source_path}"
-                }
-            
-            # Create target parent directory if it doesn't exist
-            os.makedirs(os.path.dirname(resolved_target), exist_ok=True)
-            
-            # Copy file
-            shutil.copy2(resolved_source, resolved_target)
-            
-            return {
-                "success": True,
-                "source_path": source_path,
-                "target_path": target_path,
-                "source_access": source_validation["access"],
-                "target_access": target_validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error copying file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def move_file(self, app_id: str, source_path: str, target_path: str) -> Dict[str, Any]:
-        """
-        Move a file
-        
-        Args:
-            app_id: Application ID
-            source_path: Source file path
-            target_path: Target file path
-            
-        Returns:
-            Dictionary with move status
-        """
-        # Validate source path
-        source_validation = self._validate_path(app_id, source_path, for_write=True)
-        
-        if not source_validation["valid"]:
-            return {
-                "success": False,
-                "error": f"Source: {source_validation['error']}"
-            }
-        
-        # Validate target path
-        target_validation = self._validate_path(app_id, target_path, for_write=True)
-        
-        if not target_validation["valid"]:
-            return {
-                "success": False,
-                "error": f"Target: {target_validation['error']}"
-            }
-        
-        resolved_source = source_validation["resolved_path"]
-        resolved_target = target_validation["resolved_path"]
-        
-        try:
-            # Check if source exists
-            if not os.path.exists(resolved_source):
-                return {
-                    "success": False,
-                    "error": f"Source file not found: {source_path}"
-                }
-            
-            # Check if source is a file
-            if not os.path.isfile(resolved_source):
-                return {
-                    "success": False,
-                    "error": f"Source path is not a file: {source_path}"
-                }
-            
-            # Create target parent directory if it doesn't exist
-            os.makedirs(os.path.dirname(resolved_target), exist_ok=True)
-            
-            # Move file
-            shutil.move(resolved_source, resolved_target)
-            
-            return {
-                "success": True,
-                "source_path": source_path,
-                "target_path": target_path,
-                "source_access": source_validation["access"],
-                "target_access": target_validation["access"]
-            }
-        except Exception as e:
-            logger.error(f"Error moving file: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    def get_app_data_dir(self, app_id: str) -> Dict[str, Any]:
-        """
-        Get application data directory
-        
-        Args:
-            app_id: Application ID
-            
-        Returns:
-            Dictionary with app data directory
-        """
-        app_data_dir = self._get_app_data_path(app_id)
-        
-        return {
-            "success": True,
-            "app_data_dir": app_data_dir
-        }
-    
-    def get_shared_data_dir(self) -> Dict[str, Any]:
-        """
-        Get shared data directory
-        
-        Returns:
-            Dictionary with shared data directory
-        """
-        return {
-            "success": True,
-            "shared_data_dir": self.shared_data_dir
-        }
+            logger.warning(f"Could not delete {path}: {e}")

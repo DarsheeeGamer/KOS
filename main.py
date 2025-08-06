@@ -1,515 +1,243 @@
 #!/usr/bin/env python3
-
 """
-KOS (Kaede Operating System) Main Entry Point
-==============================================
-
-Comprehensive Unix-like operating system with advanced features:
-- Kaede programming language integration
-- Advanced security and authentication
-- Kernel-level system management
-- Package management with repository support
-- Real-time system monitoring
-- Comprehensive shell environment
+KOS - Kaede Operating System v2.0
+Clean architecture, actually works
 """
 
-import os
 import sys
-import logging
+import os
 import argparse
-from typing import Optional
+import logging
+from pathlib import Path
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('KOS')
+# Add KOS to path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Core KOS imports
-try:
-    from kos.base import get_system_state, get_service_manager, get_config_manager
-    from kos.filesystem.base import FileSystem
-    from kos.process.manager import ProcessManager
-    from kos.package_manager import KpmManager
-    from kos.user_system import UserSystem
-    from kos.shell.shell import KOSShell as KaedeShell
-    from kos.repo_config import get_repository_manager
-    CORE_AVAILABLE = True
-except ImportError as e:
-    logger.error(f"Critical KOS core components missing: {e}")
-    print(f"Error: Cannot initialize KOS - {e}")
-    CORE_AVAILABLE = False
+# Configure logging
+logging.basicConfig(
+    level=logging.WARNING,  # Only show warnings and errors
+    format='%(levelname)s: %(message)s'
+)
 
-# SDK components are always available
-SDK_AVAILABLE = True
-logger.info("KOS SDK components loaded successfully")
-
-# Try to import KLayer and KADVLayer
-try:
-    from kos.layer import get_klayer
-    from kos.advlayer import get_kadvlayer
-    ADVANCED_LAYERS_AVAILABLE = True
-except ImportError as e:
-    logger.warning(f"Advanced layers not fully available: {e}")
-    ADVANCED_LAYERS_AVAILABLE = False
-    get_klayer = lambda: None
-    get_kadvlayer = lambda: None
-
-# Try to import shell system
-try:
-    from kos.commands import KaedeShell as AlternativeShell
-    SHELL_COMMANDS_AVAILABLE = True
-except ImportError as e:
-    logger.warning(f"Alternative shell commands not available: {e}")
-    SHELL_COMMANDS_AVAILABLE = False
-    AlternativeShell = None
-
-class KOSSystem:
-    """Main KOS System Controller"""
+class KOS:
+    """
+    Main KOS System
+    Clean, simple, functional
+    """
     
-    def __init__(self, debug: bool = False, show_logs: bool = False):
-        self.debug = debug
-        self.show_logs = show_logs
-        
-        if self.debug:
-            logging.getLogger().setLevel(logging.DEBUG)
-            logger.debug("Debug mode enabled")
-        
-        if not self.show_logs:
-            logging.getLogger().setLevel(logging.WARNING)
-        
-        # Core components
-        self.filesystem: Optional[FileSystem] = None
-        self.process_manager: Optional[ProcessManager] = None
-        self.user_system: Optional[UserSystem] = None
-        self.package_manager: Optional[KpmManager] = None
-        self.shell: Optional[KaedeShell] = None
-        
-        # Advanced components
-        self.repository_manager = None
+    def __init__(self):
+        self.vfs = None
         self.klayer = None
         self.kadvlayer = None
-        
-        # SDK environment
-        self.sdk_enabled = SDK_AVAILABLE
-        
-        # System state
-        self.system_state = None
-        self.service_manager = None
-        self.config_manager = None
-        
-        logger.info("KOS system started")
-        
-    def initialize(self) -> bool:
+        self.kpm = None
+        self.python_env = None
+        self.shell = None
+        self.config = None
+    
+    def initialize(self, verbose=False):
         """Initialize all KOS components"""
+        if verbose:
+            logging.getLogger().setLevel(logging.INFO)
+        
         try:
-            logger.info("Initializing KOS components...")
+            print("Initializing KOS v2.0...")
             
-            if not CORE_AVAILABLE:
-                logger.error("Core components not available - cannot initialize")
-                return False
+            # 1. Load configuration
+            from kos.core import Config
+            self.config = Config()
             
-            # Initialize base system
-            self._init_base_system()
+            # 2. Initialize VFS
+            print("  → Loading Virtual File System...")
+            from kos.core import get_vfs
+            self.vfs = get_vfs(self.config.get('vfs.disk_path', 'kaede.kdsk'))
             
-            # Initialize core components
-            self._init_core_components()
+            # 3. Initialize KLayer
+            print("  → Starting KLayer...")
+            from kos.layers import KLayer
+            self.klayer = KLayer(vfs=self.vfs)
             
-            # Initialize repository system
-            self._init_repository_system()
+            # 4. Initialize KADVLayer  
+            print("  → Starting KADVLayer...")
+            from kos.layers import KADVLayer
+            self.kadvlayer = KADVLayer(klayer=self.klayer, vfs=self.vfs)
             
-            # Initialize advanced layers
-            if ADVANCED_LAYERS_AVAILABLE:
-                self._init_advanced_layers()
+            # 5. Initialize KPM
+            print("  → Loading Package Manager...")
+            from kos.packages import KPM
+            self.kpm = KPM(vfs=self.vfs)
             
-            # Initialize shell
-            self._init_shell()
+            # 6. Initialize Python VFS Environment
+            print("  → Setting up Python VFS environment...")
+            from kos.packages import PythonVFSEnvironment
+            self.python_env = PythonVFSEnvironment(vfs=self.vfs)
             
-            logger.info("KOS initialization completed successfully")
+            # 7. Initialize Shell
+            print("  → Preparing shell...")
+            from kos.shell import KOSShell
+            self.shell = KOSShell(
+                vfs=self.vfs,
+                klayer=self.klayer,
+                kadvlayer=self.kadvlayer,
+                kpm=self.kpm,
+                python_env=self.python_env
+            )
+            
+            print("✓ KOS initialized successfully!\n")
             return True
             
         except Exception as e:
-            logger.error(f"KOS initialization failed: {e}")
+            print(f"\n✗ Failed to initialize: {e}")
+            if verbose:
+                import traceback
+                traceback.print_exc()
             return False
     
-    def _init_base_system(self):
-        """Initialize base system components"""
-        logger.debug("Initializing base system...")
-        
-        self.system_state = get_system_state()
-        self.service_manager = get_service_manager()
-        self.config_manager = get_config_manager()
-        
-        # Set system state to running
-        self.system_state.set_state("running")
-        
-        logger.debug("Base system initialized")
-    
-    def _init_core_components(self):
-        """Initialize core system components"""
-        logger.debug("Initializing core components...")
-        
-        # Filesystem
-        try:
-            self.filesystem = FileSystem()
-            logger.debug("FileSystem initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize FileSystem: {e}")
-            raise
-        
-        # Process manager
-        try:
-            # Create a minimal kernel object for ProcessManager
-            from types import SimpleNamespace
-            kernel = SimpleNamespace()
-            self.process_manager = ProcessManager(kernel)
-            logger.debug("ProcessManager initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize ProcessManager: {e}")
-            # Continue without process manager
-            self.process_manager = None
-        
-        # User system
-        try:
-            self.user_system = UserSystem(self.filesystem)
-            logger.debug("UserSystem initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize UserSystem: {e}")
-            # Continue without user system
-            self.user_system = None
-        
-        # Package manager
-        try:
-            self.package_manager = KpmManager()
-            logger.info("Package Manager initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize Package Manager: {e}")
-            # Continue without package manager
-            self.package_manager = None
-        
-    def _init_repository_system(self):
-        """Initialize repository management system"""
-        try:
-            logger.debug("Initializing repository system...")
-            self.repository_manager = get_repository_manager()
-            
-            # Check if we need to update repositories
-            stats = self.repository_manager.get_statistics()
-            logger.info(f"Repository system initialized - {stats['repositories']['total']} repositories configured")
-            
-        except Exception as e:
-            logger.error(f"Repository system initialization failed: {e}")
-            # Don't fail completely - package manager can work without repos
-            self.repository_manager = None
-    
-    def _init_advanced_layers(self):
-        """Initialize advanced kernel layers"""
-        try:
-            logger.debug("Initializing advanced layers...")
-            
-            # KLayer - Kernel application layer
-            self.klayer = get_klayer()
-            if self.klayer:
-                logger.debug("KLayer initialized")
-            
-            # KADVLayer - Advanced system layer
-            self.kadvlayer = get_kadvlayer()
-            if self.kadvlayer:
-                logger.debug("KADVLayer initialized")
-            
-            if self.klayer or self.kadvlayer:
-                logger.info("Advanced kernel layers initialized")
-            
-        except Exception as e:
-            logger.warning(f"Advanced layers initialization failed: {e}")
-            self.klayer = None
-            self.kadvlayer = None
-    
-    
-    def _init_shell(self):
-        """Initialize KOS shell"""
-        try:
-            logger.debug("Initializing shell...")
-            
-            # Try main shell first
-            try:
-                self.shell = KaedeShell(
-                    filesystem=self.filesystem,
-                    package_manager=self.package_manager,
-                    process_manager=self.process_manager,
-                    user_system=self.user_system
-                )
-                
-                # Register APT integration commands
-                try:
-                    logger.debug("Attempting to register APT integration...")
-                    from kos.shell.commands.apt_integration import register_commands as register_apt_commands
-                    register_apt_commands(self.shell)
-                    logger.info("APT integration registered with main shell")
-                        
-                except Exception as e:
-                    logger.error(f"Failed to register APT integration: {e}")
-                    
-                # Register SDK commands
-                try:
-                    logger.debug("Registering SDK commands...")
-                    from kos.shell.commands.sdk_commands import register_commands as register_sdk_commands
-                    register_sdk_commands(self.shell)
-                    logger.info("SDK commands registered successfully")
-                except Exception as e:
-                    logger.error(f"Failed to register SDK commands: {e}")
-                
-                logger.info("Main shell initialized")
-                return
-            except Exception as e:
-                logger.warning(f"Main shell initialization failed: {e}")
-            
-            # Try alternative shell if available
-            if SHELL_COMMANDS_AVAILABLE and AlternativeShell:
-                try:
-                    self.shell = AlternativeShell(
-                        filesystem=self.filesystem,
-                        package_manager=self.package_manager,
-                        process_manager=self.process_manager,
-                        user_system=self.user_system
-                    )
-                    logger.info("Alternative shell initialized")
-                    return
-                except Exception as e:
-                    logger.warning(f"Alternative shell initialization failed: {e}")
-            
-            # Create minimal shell if all else fails
-            logger.warning("Creating minimal shell fallback")
-            from kos.shell.minimal import MinimalShell
-            self.shell = MinimalShell()
-            
-        except Exception as e:
-            logger.error(f"Shell initialization failed completely: {e}")
-            raise
-    
-    def run_interactive(self):
-        """Run KOS in interactive shell mode"""
+    def run_shell(self):
+        """Run interactive shell"""
         if not self.shell:
-            logger.error("Shell not initialized")
-            return False
+            print("Error: Shell not initialized")
+            return 1
         
         try:
-            logger.info("Starting interactive shell")
             self.shell.cmdloop()
-            return True
-            
+            return 0
         except KeyboardInterrupt:
-            print("\nExiting KOS...")
-            return True
+            print("\nUse 'exit' to quit")
+            return self.run_shell()
         except Exception as e:
-            logger.error(f"Shell execution failed: {e}")
-            return False
+            print(f"Shell error: {e}")
+            return 1
     
-    def run_command(self, command: str) -> bool:
+    def run_command(self, command):
         """Run a single command"""
         if not self.shell:
-            logger.error("Shell not initialized")
-            return False
+            print("Error: Shell not initialized")
+            return 1
         
         try:
-            result = self.shell.onecmd(command)
-            return result is not True  # Shell returns True to exit
+            self.shell.onecmd(command)
+            return 0
         except Exception as e:
-            logger.error(f"Command execution failed: {e}")
-            return False
+            print(f"Command error: {e}")
+            return 1
     
-    def get_system_status(self) -> dict:
-        """Get comprehensive system status"""
-        status = {
-            "core": {
-                "filesystem": self.filesystem is not None,
-                "process_manager": self.process_manager is not None,
-                "user_system": self.user_system is not None,
-                "package_manager": self.package_manager is not None,
-                "shell": self.shell is not None
-            },
-            "features": {
-                "sdk_available": SDK_AVAILABLE,
-                "advanced_layers": ADVANCED_LAYERS_AVAILABLE,
-                "c_cpp_support": self.sdk_enabled,
-                "klayer": self.klayer is not None,
-                "kadvlayer": self.kadvlayer is not None,
-                "shell_commands": SHELL_COMMANDS_AVAILABLE
-            },
-            "availability": {
-                "core_components": CORE_AVAILABLE,
-                "development_sdk": SDK_AVAILABLE,
-                "advanced_layers": ADVANCED_LAYERS_AVAILABLE,
-                "shell_commands": SHELL_COMMANDS_AVAILABLE
-            }
-        }
+    def show_status(self):
+        """Show system status"""
+        print("\n" + "="*50)
+        print("KOS System Status")
+        print("="*50)
         
-        # Add repository statistics if available
-        if self.repository_manager:
+        # Component status
+        components = [
+            ("VFS", self.vfs),
+            ("KLayer", self.klayer),
+            ("KADVLayer", self.kadvlayer),
+            ("KPM", self.kpm),
+            ("Python VFS", self.python_env),
+            ("Shell", self.shell),
+            ("Config", self.config)
+        ]
+        
+        for name, component in components:
+            status = "✓ Active" if component else "✗ Not loaded"
+            print(f"{name:<15} {status}")
+        
+        # VFS info
+        if self.vfs:
+            print(f"\nVFS Disk: {self.vfs.disk_path}")
             try:
-                repo_stats = self.repository_manager.get_statistics()
-                status["repositories"] = repo_stats
-            except Exception as e:
-                logger.debug(f"Could not get repository stats: {e}")
+                root_entries = len(self.vfs.listdir('/'))
+                print(f"Root entries: {root_entries}")
+            except:
+                pass
         
-        # Add package statistics if available
-        if self.package_manager:
-            try:
-                packages = self.package_manager.list_packages()
-                status["packages"] = {
-                    "installed": len([p for p in packages.get("installed", {}).values() if p.get("installed", False)]),
-                    "available": len(packages.get("available", []))
-                }
-            except Exception as e:
-                logger.debug(f"Could not get package stats: {e}")
+        # KLayer info
+        if self.klayer:
+            info = self.klayer.get_system_info()
+            print(f"\nSystem Info:")
+            print(f"  Hostname: {info['hostname']}")
+            print(f"  Uptime: {info['uptime_str']}")
+            print(f"  Processes: {info['process_count']}")
         
-        # Add system state if available
-        if self.system_state:
-            try:
-                sys_info = self.system_state.get_system_info()
-                status["system_state"] = sys_info
-            except Exception as e:
-                logger.debug(f"Could not get system state: {e}")
-        
-        return status
+        return 0
     
-    def cleanup(self):
-        """Cleanup system resources"""
-        logger.info("Cleaning up KOS system...")
+    def shutdown(self):
+        """Clean shutdown"""
+        print("\nShutting down KOS...")
         
-        try:
-            # Cleanup advanced layers
-            if self.kadvlayer and hasattr(self.kadvlayer, 'shutdown'):
-                self.kadvlayer.shutdown()
-            
-            if self.klayer and hasattr(self.klayer, 'shutdown'):
-                self.klayer.shutdown()
-            
-            # Cleanup repository manager
-            if self.repository_manager and hasattr(self.repository_manager, 'cleanup'):
-                self.repository_manager.cleanup()
-            
-            # Cleanup other components
-            if self.process_manager and hasattr(self.process_manager, 'cleanup'):
-                self.process_manager.cleanup()
-            
-            # Cleanup service manager
-            if self.service_manager:
-                self.service_manager.stop_all_services()
-            
-            # Set final system state
-            if self.system_state:
-                self.system_state.set_state("shutdown")
-            
-            logger.info("KOS cleanup completed")
-            
-        except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
-
-def parse_arguments():
-    """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description="KOS - Kaede Operating System")
-    
-    parser.add_argument("--debug", action="store_true", help="Enable debug logging")
-    parser.add_argument("--show-logs", action="store_true", help="Show system logs")
-    parser.add_argument("--command", "-c", help="Run a single command")
-    parser.add_argument("--status", action="store_true", help="Show system status and exit")
-    parser.add_argument("--check", action="store_true", help="Run system check and exit")
-    parser.add_argument("--version", action="store_true", help="Show version information")
-    parser.add_argument("--minimal", action="store_true", help="Start in minimal mode")
-    
-    return parser.parse_args()
-
-def show_version():
-    """Show version information"""
-    print("KOS (Kaede Operating System) v1.0.0")
-    print("A comprehensive Unix-like operating system with advanced features")
-    print("Supporting C, C++, and Python application development")
-    print()
-    print("Components:")
-    print(f"  - Core Components: {'Available' if CORE_AVAILABLE else 'Not Available'}")
-    print(f"  - Development SDK: {'Available' if SDK_AVAILABLE else 'Not Available'}")
-    print(f"  - Advanced Layers: {'Available' if ADVANCED_LAYERS_AVAILABLE else 'Not Available'}")
-    print(f"  - Shell Commands: {'Available' if SHELL_COMMANDS_AVAILABLE else 'Not Available'}")
-    print(f"  - Repository System: Available")
-    print(f"  - Package Manager: Available")
-
-def run_system_check():
-    """Run system verification"""
-    try:
-        import subprocess
-        result = subprocess.run([sys.executable, "system_check.py"], capture_output=True, text=True)
-        print(result.stdout)
-        if result.stderr:
-            print("Errors:", result.stderr)
-        return result.returncode == 0
-    except Exception as e:
-        print(f"Failed to run system check: {e}")
-        return False
+        # Shutdown layers
+        if self.kadvlayer:
+            self.kadvlayer.shutdown()
+        
+        if self.klayer:
+            self.klayer.shutdown()
+        
+        # Unmount VFS
+        if self.vfs:
+            self.vfs.unmount()
+        
+        print("Goodbye!")
 
 def main():
     """Main entry point"""
-    args = parse_arguments()
+    parser = argparse.ArgumentParser(
+        description='KOS - Kaede Operating System v2.0',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python3 main.py              # Start interactive shell
+  python3 main.py -c "ls /"    # Run single command
+  python3 main.py --status     # Show system status
+        """
+    )
     
+    parser.add_argument('-c', '--command',
+                       help='Execute a single command and exit')
+    parser.add_argument('-s', '--status',
+                       action='store_true',
+                       help='Show system status and exit')
+    parser.add_argument('-v', '--verbose',
+                       action='store_true',
+                       help='Enable verbose output')
+    parser.add_argument('--version',
+                       action='store_true',
+                       help='Show version and exit')
+    parser.add_argument('--clean',
+                       action='store_true',
+                       help='Start with clean VFS (delete existing)')
+    
+    args = parser.parse_args()
+    
+    # Show version
     if args.version:
-        show_version()
+        print("KOS - Kaede Operating System")
+        print("Version 2.0 - Clean Architecture")
+        print("Built with actual working code")
         return 0
     
-    if args.check:
-        success = run_system_check()
-        return 0 if success else 1
+    # Clean VFS if requested
+    if args.clean:
+        if os.path.exists('kaede.kdsk'):
+            print("Removing existing VFS...")
+            os.remove('kaede.kdsk')
+            print("Starting with clean VFS")
     
-    if not CORE_AVAILABLE:
-        print("ERROR: Core KOS components are not available!")
-        print("Please ensure all required modules are installed and accessible.")
+    # Initialize KOS
+    kos = KOS()
+    if not kos.initialize(verbose=args.verbose):
         return 1
     
-    # Initialize KOS system
-    kos = KOSSystem(debug=args.debug, show_logs=args.show_logs)
-    
-    if not kos.initialize():
-        print("Failed to initialize KOS system")
-        return 1
-    
-    logger.info("KOS system initialization complete, proceeding to shell startup...")
-    
-    if args.status:
-        # Show system status
-        status = kos.get_system_status()
-        print("KOS System Status:")
-        print("=" * 40)
-        
-        for category, items in status.items():
-            print(f"\n{category.upper()}:")
-            if isinstance(items, dict):
-                for item, value in items.items():
-                    if isinstance(value, bool):
-                        status_str = "✓" if value else "✗"
-                        print(f"  {status_str} {item}")
-                    else:
-                        print(f"  {item}: {value}")
-            else:
-                print(f"  {items}")
-        
-        return 0
-    
-    if args.command:
-        # Run single command
-        success = kos.run_command(args.command)
-        return 0 if success else 1
-    
-    # Run interactive shell
     try:
-        logger.info("About to start interactive shell...")
-        success = kos.run_interactive()
-        return 0 if success else 1
-    except KeyboardInterrupt:
-        print("\nGoodbye!")
-        return 0
+        # Execute requested action
+        if args.status:
+            return kos.show_status()
+        elif args.command:
+            return kos.run_command(args.command)
+        else:
+            return kos.run_shell()
+    
     finally:
-        kos.cleanup()
+        kos.shutdown()
 
-if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except Exception as e:
-        logger.error(f"Critical error: {e}")
-        sys.exit(2)
+if __name__ == '__main__':
+    sys.exit(main())

@@ -124,14 +124,26 @@ class ShellIntegration:
     def _add_command_to_shell(self, command_name: str):
         """Add a single command to the shell"""
         try:
-            def command_wrapper(args):
+            def command_wrapper(self_or_args, args=None):
                 """Wrapper function for package commands"""
-                # Split args if it's a string
-                if isinstance(args, str):
-                    import shlex
-                    args = shlex.split(args) if args else []
+                # Handle both shell.do_command(arg) and direct call patterns
+                if args is None:
+                    # Called as do_command(arg) - self_or_args is actually the arg
+                    actual_args = self_or_args
+                else:
+                    # Called with both self and args
+                    actual_args = args
                 
-                return self.command_manager.execute_command(command_name, args)
+                # Split args if it's a string
+                if isinstance(actual_args, str):
+                    import shlex
+                    actual_args = shlex.split(actual_args) if actual_args else []
+                
+                # Execute command but don't return the result
+                # Returning True in cmd.Cmd tells the shell to exit!
+                self.command_manager.execute_command(command_name, actual_args)
+                # Return None (or don't return) to keep shell running
+                return None
             
             # Add the command to the shell using register_command if available
             if hasattr(self.shell, 'register_command'):
@@ -141,7 +153,7 @@ class ShellIntegration:
             else:
                 # Fallback: add as a do_ method
                 setattr(self.shell, f'do_{command_name}', 
-                       lambda arg, cmd=command_name: self._execute_package_command(cmd, arg))
+                       lambda self_shell, arg, cmd=command_name: self._execute_package_command(cmd, arg))
             
         except Exception as e:
             logger.error(f"Error adding command {command_name} to shell: {e}")
@@ -153,6 +165,8 @@ class ShellIntegration:
         success = self.command_manager.execute_command(command_name, args)
         if not success:
             print(f"Command {command_name} failed or not found")
+        # Don't return the success value - returning True exits the shell!
+        return None
     
     def refresh_integration(self):
         """Refresh command integration (call after installing/uninstalling packages)"""
