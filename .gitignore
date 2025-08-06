@@ -4,9 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
 build/
 develop-eggs/
 dist/
@@ -27,6 +24,15 @@ wheels/
 venv/
 ENV/
 env/
+.venv
+
+# KOS specific
+*.kdsk
+kaede.kdsk
+demo.kdsk
+demo_adv.kdsk
+integration.kdsk
+system.kdsk
 
 # IDE
 .vscode/
@@ -36,25 +42,31 @@ env/
 *~
 .DS_Store
 
-# KOS specific
-kaede.kdsk.backup
-kos.config.json
-.kos_history
-*.log
-
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
-.hypothesis/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
 
 # Documentation
 docs/_build/
 site/
 
+# Logs
+*.log
+logs/
+
 # Temporary files
+tmp/
+temp/
 *.tmp
 *.bak
-.temp/
-tmp/
+*.backup
+
+# Config
+config.local.json
+*.local

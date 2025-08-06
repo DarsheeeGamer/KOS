@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-KOS - Kaede Operating System v2.0
-Clean architecture, actually works
+KOS - Kaede Operating System v3.0
+Complete OS with KLayer and KADVLayer
 """
 
 import sys
@@ -41,55 +41,45 @@ class KOS:
             logging.getLogger().setLevel(logging.INFO)
         
         try:
-            print("Initializing KOS v2.0...")
+            print("Initializing KOS v3.0...")
             
-            # 1. Load configuration
-            from kos.core import Config
-            self.config = Config()
+            # 1. Initialize KLayer (Core OS Layer)
+            print("  → Starting KLayer (Core OS)...")
+            from kos.layers.klayer import KLayer
+            self.klayer = KLayer(disk_file='kaede.kdsk')
+            self.vfs = self.klayer.vfs
+            self.auth = self.klayer.auth
             
-            # 2. Initialize VFS
-            print("  → Loading Virtual File System...")
-            from kos.core import get_vfs
-            self.vfs = get_vfs(self.config.get('vfs.disk_path', 'kaede.kdsk'))
+            # 2. Initialize KADVLayer (Advanced OS Layer)
+            print("  → Starting KADVLayer (Advanced Services)...")
+            from kos.layers.kadvlayer import KADVLayer
+            self.kadvlayer = KADVLayer(klayer=self.klayer)
             
-            # 3. Initialize Authentication
-            print("  → Setting up authentication...")
-            from kos.core.auth import AuthManager
-            self.auth = AuthManager(vfs=self.vfs)
+            # 3. Login as root for initialization
+            print("  → Setting up root user...")
+            if not self.klayer.user_login('root', 'root'):
+                # Create root user if doesn't exist
+                self.klayer.auth.create_user('root', 'root', 'ROOT')
+                self.klayer.user_login('root', 'root')
             
-            # 4. Initialize KLayer
-            print("  → Starting KLayer...")
-            from kos.layers import KLayer
-            self.klayer = KLayer(vfs=self.vfs)
-            
-            # 5. Initialize KADVLayer  
-            print("  → Starting KADVLayer...")
-            from kos.layers import KADVLayer
-            self.kadvlayer = KADVLayer(klayer=self.klayer, vfs=self.vfs)
-            
-            # 6. Initialize KPM
-            print("  → Loading Package Manager...")
-            from kos.packages import KPM
-            self.kpm = KPM(vfs=self.vfs)
-            
-            # 7. Initialize Python VFS Environment
-            print("  → Setting up Python VFS environment...")
-            from kos.packages import PythonVFSEnvironment
-            self.python_env = PythonVFSEnvironment(vfs=self.vfs)
-            
-            # 8. Initialize Shell
+            # 4. Initialize Shell
             print("  → Preparing shell...")
-            from kos.shell import KOSShell
-            self.shell = KOSShell(
-                vfs=self.vfs,
-                auth=self.auth,
-                klayer=self.klayer,
-                kadvlayer=self.kadvlayer,
-                kpm=self.kpm,
-                python_env=self.python_env
-            )
+            from kos.shell.shell import Shell
+            self.shell = Shell(self.vfs, self.auth, self.klayer.executor)
             
-            print("✓ KOS initialized successfully!\n")
+            # 5. Initialize Package Manager
+            print("  → Loading Package Manager...")
+            from kos.package.cli_integration import PackageManagerCLI
+            self.kpm = PackageManagerCLI(self.vfs)
+            
+            # 6. Initialize Python Environment
+            print("  → Setting up Python environment...")
+            from kos.python_env import PythonVFSEnvironment
+            self.python_env = PythonVFSEnvironment(self.vfs)
+            
+            print("✓ KOS initialized successfully!")
+            print("✓ KLayer provides: filesystem, processes, users, devices")
+            print("✓ KADVLayer provides: networking, services, monitoring, containers\n")
             return True
             
         except Exception as e:
@@ -142,8 +132,7 @@ class KOS:
             ("KADVLayer", self.kadvlayer),
             ("KPM", self.kpm),
             ("Python VFS", self.python_env),
-            ("Shell", self.shell),
-            ("Config", self.config)
+            ("Shell", self.shell)
         ]
         
         for name, component in components:
@@ -152,7 +141,7 @@ class KOS:
         
         # VFS info
         if self.vfs:
-            print(f"\nVFS Disk: {self.vfs.disk_path}")
+            print(f"\nVFS Disk: {self.vfs.disk_file}")
             try:
                 root_entries = len(self.vfs.listdir('/'))
                 print(f"Root entries: {root_entries}")
@@ -161,11 +150,33 @@ class KOS:
         
         # KLayer info
         if self.klayer:
-            info = self.klayer.get_system_info()
-            print(f"\nSystem Info:")
-            print(f"  Hostname: {info['hostname']}")
-            print(f"  Uptime: {info['uptime_str']}")
-            print(f"  Processes: {info['process_count']}")
+            sys_info = self.klayer.sys_info()
+            uptime = self.klayer.sys_uptime()
+            mem_info = self.klayer.sys_memory_info()
+            cpu_info = self.klayer.sys_cpu_info()
+            
+            print(f"\nKLayer System Info:")
+            print(f"  Name: {sys_info['name']}")
+            print(f"  Version: {sys_info['version']}")
+            print(f"  Kernel: {sys_info['kernel']}")
+            print(f"  Architecture: {sys_info['architecture']}")
+            print(f"  Hostname: {sys_info['hostname']}")
+            print(f"  Uptime: {int(uptime)} seconds")
+            print(f"  CPU Cores: {cpu_info['cores']}")
+            print(f"  Memory: {mem_info['used']/1024/1024:.0f}MB / {mem_info['total']/1024/1024:.0f}MB")
+            
+            if self.klayer.current_user:
+                print(f"  Current User: {self.klayer.current_user.username}")
+        
+        # KADVLayer info
+        if self.kadvlayer:
+            print(f"\nKADVLayer Services:")
+            print(f"  Network: {self.kadvlayer.network is not None}")
+            print(f"  Firewall: {self.kadvlayer.firewall is not None}")
+            print(f"  Web Server: {self.kadvlayer.web_server is not None}")
+            print(f"  Database: {self.kadvlayer.database is not None}")
+            print(f"  Containers: {len(self.kadvlayer.containers)}")
+            print(f"  Apps: {len(self.kadvlayer.app_manager.apps) if self.kadvlayer.app_manager else 0}")
         
         return 0
     
@@ -173,16 +184,18 @@ class KOS:
         """Clean shutdown"""
         print("\nShutting down KOS...")
         
-        # Shutdown layers
+        # Stop services in KADVLayer
         if self.kadvlayer:
-            self.kadvlayer.shutdown()
+            try:
+                self.kadvlayer.monitor.stop() if hasattr(self.kadvlayer.monitor, 'stop') else None
+                self.kadvlayer.cron.stop() if hasattr(self.kadvlayer.cron, 'stop') else None
+                self.kadvlayer.syslog.stop() if hasattr(self.kadvlayer.syslog, 'stop') else None
+            except:
+                pass
         
+        # Shutdown KLayer
         if self.klayer:
             self.klayer.shutdown()
-        
-        # Unmount VFS
-        if self.vfs:
-            self.vfs.unmount()
         
         print("Goodbye!")
 
@@ -219,8 +232,9 @@ Examples:
     # Show version
     if args.version:
         print("KOS - Kaede Operating System")
-        print("Version 2.0 - Clean Architecture")
-        print("Built with actual working code")
+        print("Version 3.0 - Complete OS")
+        print("KLayer: Core OS Services")
+        print("KADVLayer: Advanced Services")
         return 0
     
     # Clean VFS if requested
