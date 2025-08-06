@@ -65,7 +65,7 @@ Type 'exit' to quit
     def _load_commands(self):
         """Load modular commands"""
         # Import command modules
-        from .commands import filesystem, packages, system, auth, editor
+        from .commands import filesystem, packages, system, auth, editor, process
         
         # Register commands
         filesystem.register_commands(self)
@@ -73,6 +73,7 @@ Type 'exit' to quit
         system.register_commands(self)
         auth.register_commands(self)
         editor.register_commands(self)
+        process.register_commands(self)
     
     def postcmd(self, stop, line):
         """After each command"""
