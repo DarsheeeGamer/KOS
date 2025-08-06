@@ -2,6 +2,8 @@
 System commands for KOS Shell
 """
 
+import types
+
 def register_commands(shell):
     """Register system commands with shell"""
     
@@ -262,12 +264,12 @@ def register_commands(shell):
         else:
             print("Usage: container [list|create <name>|start <id>|stop <id>]")
     
-    # Register commands
-    shell.do_status = do_status
-    shell._walk_vfs = _walk_vfs
-    shell.do_info = do_info
-    shell.do_ps = do_ps
-    shell.do_services = do_services
-    shell.do_hostname = do_hostname
-    shell.do_monitor = do_monitor
-    shell.do_container = do_container
+    # Register commands using MethodType
+    shell.do_status = types.MethodType(do_status, shell)
+    shell._walk_vfs = types.MethodType(_walk_vfs, shell)
+    shell.do_info = types.MethodType(do_info, shell)
+    shell.do_ps = types.MethodType(do_ps, shell)
+    shell.do_services = types.MethodType(do_services, shell)
+    shell.do_hostname = types.MethodType(do_hostname, shell)
+    shell.do_monitor = types.MethodType(do_monitor, shell)
+    shell.do_container = types.MethodType(do_container, shell)

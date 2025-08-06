@@ -4,6 +4,7 @@ Filesystem commands for KOS Shell
 
 import os
 import shlex
+import types
 from typing import List
 
 def register_commands(shell):
@@ -276,14 +277,14 @@ def register_commands(shell):
         # TODO: Implement proper find
         print("Find command not fully implemented yet")
     
-    # Register all commands
-    shell.do_pwd = do_pwd
-    shell.do_cd = do_cd
-    shell.do_ls = do_ls
-    shell.do_cat = do_cat
-    shell.do_mkdir = do_mkdir
-    shell.do_rm = do_rm
-    shell.do_touch = do_touch
-    shell.do_cp = do_cp
-    shell.do_mv = do_mv
-    shell.do_find = do_find
+    # Register all commands using MethodType
+    shell.do_pwd = types.MethodType(do_pwd, shell)
+    shell.do_cd = types.MethodType(do_cd, shell)
+    shell.do_ls = types.MethodType(do_ls, shell)
+    shell.do_cat = types.MethodType(do_cat, shell)
+    shell.do_mkdir = types.MethodType(do_mkdir, shell)
+    shell.do_rm = types.MethodType(do_rm, shell)
+    shell.do_touch = types.MethodType(do_touch, shell)
+    shell.do_cp = types.MethodType(do_cp, shell)
+    shell.do_mv = types.MethodType(do_mv, shell)
+    shell.do_find = types.MethodType(do_find, shell)

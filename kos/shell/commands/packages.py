@@ -3,6 +3,7 @@ Package management commands for KOS Shell
 """
 
 import shlex
+import types
 
 def register_commands(shell):
     """Register package commands with shell"""
@@ -187,6 +188,6 @@ def register_commands(shell):
             print(f"Unknown pip command: {command}")
             print("Type 'pip' for usage")
     
-    # Register commands
-    shell.do_kpm = do_kpm
-    shell.do_pip = do_pip
+    # Register commands using MethodType
+    shell.do_kpm = types.MethodType(do_kpm, shell)
+    shell.do_pip = types.MethodType(do_pip, shell)
