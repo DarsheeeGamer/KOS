@@ -27,6 +27,7 @@ class KOS:
     
     def __init__(self):
         self.vfs = None
+        self.auth = None
         self.klayer = None
         self.kadvlayer = None
         self.kpm = None
@@ -51,31 +52,37 @@ class KOS:
             from kos.core import get_vfs
             self.vfs = get_vfs(self.config.get('vfs.disk_path', 'kaede.kdsk'))
             
-            # 3. Initialize KLayer
+            # 3. Initialize Authentication
+            print("  → Setting up authentication...")
+            from kos.core.auth import AuthManager
+            self.auth = AuthManager(vfs=self.vfs)
+            
+            # 4. Initialize KLayer
             print("  → Starting KLayer...")
             from kos.layers import KLayer
             self.klayer = KLayer(vfs=self.vfs)
             
-            # 4. Initialize KADVLayer  
+            # 5. Initialize KADVLayer  
             print("  → Starting KADVLayer...")
             from kos.layers import KADVLayer
             self.kadvlayer = KADVLayer(klayer=self.klayer, vfs=self.vfs)
             
-            # 5. Initialize KPM
+            # 6. Initialize KPM
             print("  → Loading Package Manager...")
             from kos.packages import KPM
             self.kpm = KPM(vfs=self.vfs)
             
-            # 6. Initialize Python VFS Environment
+            # 7. Initialize Python VFS Environment
             print("  → Setting up Python VFS environment...")
             from kos.packages import PythonVFSEnvironment
             self.python_env = PythonVFSEnvironment(vfs=self.vfs)
             
-            # 7. Initialize Shell
+            # 8. Initialize Shell
             print("  → Preparing shell...")
             from kos.shell import KOSShell
             self.shell = KOSShell(
                 vfs=self.vfs,
+                auth=self.auth,
                 klayer=self.klayer,
                 kadvlayer=self.kadvlayer,
                 kpm=self.kpm,
@@ -130,6 +137,7 @@ class KOS:
         # Component status
         components = [
             ("VFS", self.vfs),
+            ("Auth", self.auth),
             ("KLayer", self.klayer),
             ("KADVLayer", self.kadvlayer),
             ("KPM", self.kpm),

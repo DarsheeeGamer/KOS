@@ -123,17 +123,21 @@ class VFSFileHandle(io.BytesIO):
         self.vfs = vfs
         self.path = path
         self.mode = mode
-        self.closed = False
+        self._closed = False
         
         if 'a' in mode:
             self.seek(0, 2)  # Seek to end for append
     
+    @property
+    def closed(self):
+        return self._closed
+    
     def close(self):
-        if not self.closed:
+        if not self._closed:
             if 'w' in self.mode or 'a' in self.mode or '+' in self.mode:
                 # Save content back to VFS
                 self.vfs._write_file_content(self.path, self.getvalue())
-            self.closed = True
+            self._closed = True
             super().close()
     
     def __enter__(self):

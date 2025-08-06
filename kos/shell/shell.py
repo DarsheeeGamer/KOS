@@ -28,9 +28,10 @@ Type 'exit' to quit
     
     prompt = 'kos> '
     
-    def __init__(self, vfs=None, klayer=None, kadvlayer=None, kpm=None, python_env=None):
+    def __init__(self, vfs=None, auth=None, klayer=None, kadvlayer=None, kpm=None, python_env=None):
         super().__init__()
         self.vfs = vfs
+        self.auth = auth
         self.klayer = klayer
         self.kadvlayer = kadvlayer
         self.kpm = kpm
@@ -64,12 +65,14 @@ Type 'exit' to quit
     def _load_commands(self):
         """Load modular commands"""
         # Import command modules
-        from .commands import filesystem, packages, system
+        from .commands import filesystem, packages, system, auth, editor
         
         # Register commands
         filesystem.register_commands(self)
         packages.register_commands(self)
         system.register_commands(self)
+        auth.register_commands(self)
+        editor.register_commands(self)
     
     def postcmd(self, stop, line):
         """After each command"""
