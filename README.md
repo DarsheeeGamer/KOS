@@ -1,19 +1,23 @@
-# KOS - Kaede Operating System v3.0
+# KOS - Kaede Operating System v4.0
 
-A complete operating system implementation in Python with layered architecture.
+A complete operating system implementation in Python with **real memory management** and **full Python/pip integration**.
 
 ## Architecture
 
 KOS is built with a clean, modular architecture consisting of two main layers:
 
-### KLayer (Core OS Layer)
-Provides fundamental OS services:
+### KLayer (Core OS Layer) 
+Provides fundamental OS services with **real implementations**:
+- **Real Memory Management** - Actual memory allocation with tracking, garbage collection, and memory mapping
+- **Python Integration** - Full Python interpreter with VFS isolation
+- **pip Support** - Install real Python packages into VFS
+- **Virtual Environments** - Create isolated Python environments
 - **File System Operations** - Virtual filesystem with full POSIX-like operations
-- **Process Management** - Process creation, execution, and lifecycle management
+- **Process Management** - Process creation with memory tracking
 - **User Management** - Multi-user support with authentication and roles
-- **System Information** - CPU, memory, disk, and system metrics
-- **I/O Operations** - Standard input/output handling
-- **Memory Management** - Simulated memory allocation and management
+- **System Information** - Real memory statistics and system metrics
+- **Shared Memory** - IPC through shared memory segments
+- **Memory-Mapped Files** - Map files directly into memory
 - **Device Abstraction** - Device management and I/O
 - **Environment Variables** - System and user environment configuration
 - **Permissions** - File permissions and access control
@@ -64,7 +68,38 @@ Run the comprehensive demo to see all features:
 python3 demo.py
 ```
 
+## Key Features
+
+### Real Memory Management
+- **Actual memory allocation** using Python's memory management
+- **Memory tracking** per process and globally
+- **Garbage collection** for orphaned memory
+- **Memory mapping** for files
+- **Shared memory** for IPC
+- **Memory statistics** with real usage data
+
+### Python & pip Integration
+- **Run Python scripts** from VFS
+- **Install packages** with `pip install numpy` (real packages!)
+- **Create virtual environments** isolated in VFS
+- **Import packages** from VFS seamlessly
+- **Execute Python code** in sandboxed namespaces
+
 ## Shell Commands
+
+### Python & pip
+- `python` - Start Python REPL
+- `python script.py` - Run Python script from VFS
+- `python -c "code"` - Execute Python code
+- `pip install <package>` - Install real Python package
+- `pip uninstall <package>` - Remove package
+- `pip list` - List installed packages
+- `venv create <name>` - Create virtual environment
+
+### Memory Management
+- `free [-h]` - Show memory usage (real stats)
+- `memstat [pid]` - Detailed memory statistics
+- `gc` - Run garbage collection
 
 ### File System
 - `ls [path]` - List directory contents
@@ -130,29 +165,46 @@ python3 demo.py
 
 ## Python API
 
-### Using KLayer
+### Using KLayer with Real Memory & Python
 
 ```python
 from kos.layers.klayer import KLayer
 
-# Initialize KLayer
-klayer = KLayer(disk_file='system.kdsk')
+# Initialize KLayer with 8GB memory
+klayer = KLayer(disk_file='system.kdsk', memory_size=8*1024*1024*1024)
 
-# File operations
-klayer.fs_write('/test.txt', b'Hello World')
-data = klayer.fs_read('/test.txt')
+# Real memory allocation
+addr = klayer.mem_allocate(1024)  # Allocate 1KB
+klayer.mem_write(addr, b'Hello Memory!')
+data = klayer.mem_read(addr, 13)
+klayer.mem_free(addr)
 
-# Process management
-pid = klayer.process_create('echo', ['Hello'])
-result = klayer.process_execute(pid)
+# Shared memory for IPC
+shm_addr = klayer.mem_share("mydata", 4096)
+klayer.mem_write(shm_addr, b'Shared data')
 
-# User management
-klayer.user_create('alice', 'password', 'user')
-klayer.user_login('alice', 'password')
+# Python execution in VFS
+klayer.python_execute("print('Hello from VFS Python!')")
 
-# System info
-info = klayer.sys_info()
-memory = klayer.sys_memory_info()
+# Install real Python packages
+klayer.python_install_package("requests")
+klayer.python_install_package("numpy", "1.21.0")
+
+# Create and use virtual environment
+klayer.python_create_venv("myproject", "/home/user/venvs/myproject")
+
+# Execute Python file from VFS
+klayer.fs_write('/script.py', b'import requests\nprint(requests.__version__)')
+result = klayer.python_execute_file('/script.py')
+
+# Get real memory statistics
+mem_stats = klayer.sys_memory_info()
+print(f"Memory: {mem_stats['used']}/{mem_stats['total']} ({mem_stats['percent']}%)")
+
+# Process with memory tracking
+pid = klayer.process_create('python', ['-c', 'print("test")'])
+mem_usage = klayer.mem_get_process_usage(pid)
+print(f"Process {pid} using {mem_usage['total']} bytes")
 ```
 
 ### Using KADVLayer

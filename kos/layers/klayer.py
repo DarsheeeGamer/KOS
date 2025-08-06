@@ -1,6 +1,6 @@
 """
 KLayer - Core OS Layer for KOS
-Provides fundamental OS services and abstractions
+Provides fundamental OS services and abstractions with real memory management
 """
 
 import time
@@ -15,6 +15,8 @@ from kos.core.auth import AuthManager, User, UserRole
 from kos.core.executor import ProcessExecutor, Process
 from kos.core.permissions import PermissionManager, FilePermissions
 from kos.core.config import ConfigManager, EnvironmentManager
+from kos.core.memory import MemoryManager, MemoryStats, MemoryType
+from kos.python.interpreter import PythonEnvironment
 
 class KLayer:
     """
@@ -28,9 +30,9 @@ class KLayer:
     - Device Abstraction
     """
     
-    def __init__(self, disk_file: str = "kaede.kdsk"):
-        """Initialize KLayer with all core components"""
-        self.version = "1.0.0"
+    def __init__(self, disk_file: str = "kaede.kdsk", memory_size: int = 8 * 1024 * 1024 * 1024):
+        """Initialize KLayer with all core components including real memory management"""
+        self.version = "2.0.0"
         self.boot_time = time.time()
         
         # Core components
@@ -41,11 +43,20 @@ class KLayer:
         self.config_manager = ConfigManager(self.vfs)
         self.env_manager = EnvironmentManager(self.config_manager)
         
+        # Memory management
+        self.memory = MemoryManager(memory_size)
+        
+        # Python environment
+        self.python = PythonEnvironment(self.vfs, self.memory)
+        
         # System state
         self.current_user: Optional[User] = None
         self.processes: Dict[int, Process] = {}
         self.next_pid = 1000
         self.system_info = self._init_system_info()
+        
+        # Process memory tracking
+        self.process_memory: Dict[int, List[int]] = {}  # pid -> [memory addresses]
         
         # Initialize system
         self._initialize_system()
@@ -323,17 +334,21 @@ class KLayer:
         return time.time() - self.boot_time
     
     def sys_memory_info(self) -> Dict[str, int]:
-        """Get memory information (simulated)"""
-        total = self.system_info['total_memory']
-        used = int(total * 0.3)  # Simulate 30% usage
-        free = total - used
+        """Get real memory information"""
+        stats = self.memory.get_stats()
         
         return {
-            'total': total,
-            'used': used,
-            'free': free,
-            'available': free,
-            'percent': (used * 100) // total
+            'total': stats.total,
+            'used': stats.used,
+            'free': stats.free,
+            'available': stats.available,
+            'percent': int(stats.percent),
+            'buffers': stats.buffers,
+            'cached': stats.cached,
+            'shared': stats.shared,
+            'swap_total': stats.swap_total,
+            'swap_used': stats.swap_used,
+            'swap_free': stats.swap_free
         }
     
     def sys_cpu_info(self) -> Dict[str, Any]:
@@ -373,29 +388,63 @@ class KLayer:
         import sys
         print(text, file=sys.stderr)
     
-    # ==================== Memory Management (Simulated) ====================
+    # ==================== Memory Management (Real) ====================
     
     def mem_allocate(self, size: int) -> Optional[int]:
-        """Allocate memory (returns simulated address)"""
-        # Simulated memory allocation
-        import random
-        return random.randint(0x1000, 0xFFFFFFFF)
+        """Allocate real memory"""
+        pid = self.current_user.uid if self.current_user else 0
+        addr = self.memory.malloc(size, pid)
+        
+        if addr and pid not in self.process_memory:
+            self.process_memory[pid] = []
+        if addr:
+            self.process_memory[pid].append(addr)
+        
+        return addr
     
     def mem_free(self, address: int) -> bool:
         """Free allocated memory"""
-        # Simulated - always succeeds
-        return True
+        success = self.memory.free(address)
+        
+        if success:
+            # Remove from process tracking
+            for pid, addrs in self.process_memory.items():
+                if address in addrs:
+                    addrs.remove(address)
+                    break
+        
+        return success
     
-    def mem_read(self, address: int, size: int) -> bytes:
-        """Read from memory address"""
-        # Simulated - returns random data
-        import os
-        return os.urandom(size)
+    def mem_read(self, address: int, size: int) -> Optional[bytes]:
+        """Read from real memory address"""
+        data = self.memory.allocator.read(address, size)
+        return data
     
     def mem_write(self, address: int, data: bytes) -> bool:
-        """Write to memory address"""
-        # Simulated - always succeeds
-        return True
+        """Write to real memory address"""
+        return self.memory.allocator.write(address, data)
+    
+    def mem_realloc(self, address: int, new_size: int) -> Optional[int]:
+        """Reallocate memory block"""
+        return self.memory.realloc(address, new_size)
+    
+    def mem_share(self, name: str, size: int) -> Optional[int]:
+        """Create shared memory segment"""
+        pid = self.current_user.uid if self.current_user else 0
+        return self.memory.create_shared_memory(name, size, pid)
+    
+    def mem_map_file(self, filepath: str, size: int = 0) -> Optional[int]:
+        """Memory-map a file"""
+        pid = self.current_user.uid if self.current_user else 0
+        return self.memory.mmap(filepath, size, pid=pid)
+    
+    def mem_get_process_usage(self, pid: int) -> Dict[str, int]:
+        """Get process memory usage"""
+        return self.memory.get_process_memory(pid)
+    
+    def mem_garbage_collect(self) -> int:
+        """Run garbage collection"""
+        return self.memory.garbage_collect()
     
     # ==================== Device Operations ====================
     
@@ -466,10 +515,48 @@ class KLayer:
             path, self.current_user.uid, self.current_user.gid, mode
         )
     
+    # ==================== Python Support ====================
+    
+    def python_execute(self, code: str, namespace: Optional[str] = None) -> Dict[str, Any]:
+        """Execute Python code in VFS environment"""
+        return self.python.execute(code, namespace)
+    
+    def python_execute_file(self, filepath: str, namespace: Optional[str] = None) -> Dict[str, Any]:
+        """Execute Python file from VFS"""
+        return self.python.execute_file(filepath, namespace)
+    
+    def python_install_package(self, package: str, version: Optional[str] = None) -> bool:
+        """Install Python package to VFS"""
+        return self.python.install_package(package, version)
+    
+    def python_uninstall_package(self, package: str) -> bool:
+        """Uninstall Python package from VFS"""
+        return self.python.uninstall_package(package)
+    
+    def python_list_packages(self) -> List[Dict[str, Any]]:
+        """List installed Python packages"""
+        return self.python.list_packages()
+    
+    def python_create_venv(self, name: str, path: Optional[str] = None) -> bool:
+        """Create Python virtual environment"""
+        return self.python.create_virtualenv(name, path)
+    
+    def python_repl(self):
+        """Start Python REPL"""
+        console = self.python.create_repl()
+        console.interact(banner="KOS Python REPL (VFS-integrated)")
+    
     # ==================== Utility Functions ====================
     
     def shutdown(self):
         """Shutdown KLayer and save state"""
+        # Free all process memory
+        for pid in list(self.process_memory.keys()):
+            self.memory.free_process_memory(pid)
+        
+        # Run garbage collection
+        self.memory.garbage_collect()
+        
         # Save VFS
         self.vfs._save()
         

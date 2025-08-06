@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-KOS - Kaede Operating System v3.0
-Complete OS with KLayer and KADVLayer
+KOS - Kaede Operating System v4.0
+Complete OS with Real Memory Management and Python/pip Integration
 """
 
 import sys
@@ -35,18 +35,18 @@ class KOS:
         self.shell = None
         self.config = None
     
-    def initialize(self, verbose=False):
+    def initialize(self, verbose=False, memory_size=8*1024*1024*1024):
         """Initialize all KOS components"""
         if verbose:
             logging.getLogger().setLevel(logging.INFO)
         
         try:
-            print("Initializing KOS v3.0...")
+            print("Initializing KOS v4.0...")
             
-            # 1. Initialize KLayer (Core OS Layer)
-            print("  → Starting KLayer (Core OS)...")
+            # 1. Initialize KLayer with real memory management
+            print("  → Starting KLayer with real memory management...")
             from kos.layers.klayer import KLayer
-            self.klayer = KLayer(disk_file='kaede.kdsk')
+            self.klayer = KLayer(disk_file='kaede.kdsk', memory_size=memory_size)
             self.vfs = self.klayer.vfs
             self.auth = self.klayer.auth
             
@@ -59,27 +59,33 @@ class KOS:
             print("  → Setting up root user...")
             if not self.klayer.user_login('root', 'root'):
                 # Create root user if doesn't exist
-                self.klayer.auth.create_user('root', 'root', 'ROOT')
+                from kos.core.auth import UserRole
+                self.klayer.auth.create_user('root', 'root', UserRole.ROOT)
                 self.klayer.user_login('root', 'root')
             
-            # 4. Initialize Shell
+            # 4. Initialize Shell with Python commands
             print("  → Preparing shell...")
             from kos.shell.shell import Shell
             self.shell = Shell(self.vfs, self.auth, self.klayer.executor)
+            self.shell.klayer = self.klayer  # Add klayer reference for commands
+            
+            # Register Python and memory commands
+            from kos.shell.commands.python_commands import register_commands
+            register_commands(self.shell)
             
             # 5. Initialize Package Manager
             print("  → Loading Package Manager...")
             from kos.package.cli_integration import PackageManagerCLI
             self.kpm = PackageManagerCLI(self.vfs)
             
-            # 6. Initialize Python Environment
-            print("  → Setting up Python environment...")
-            from kos.python_env import PythonVFSEnvironment
-            self.python_env = PythonVFSEnvironment(self.vfs)
+            # 6. Python environment is now integrated in KLayer
+            self.python_env = self.klayer.python
             
             print("✓ KOS initialized successfully!")
-            print("✓ KLayer provides: filesystem, processes, users, devices")
-            print("✓ KADVLayer provides: networking, services, monitoring, containers\n")
+            print("✓ Real memory management: {}MB available".format(memory_size // (1024*1024)))
+            print("✓ Python integration: Run 'python' or 'pip install <package>'")
+            print("✓ KLayer: filesystem, memory, processes, Python/pip")
+            print("✓ KADVLayer: networking, services, monitoring, containers\n")
             return True
             
         except Exception as e:
@@ -232,9 +238,14 @@ Examples:
     # Show version
     if args.version:
         print("KOS - Kaede Operating System")
-        print("Version 3.0 - Complete OS")
-        print("KLayer: Core OS Services")
-        print("KADVLayer: Advanced Services")
+        print("Version 4.0 - Complete OS with Real Memory & Python")
+        print("Features:")
+        print("  - Real memory management with allocation tracking")
+        print("  - Python interpreter integration")
+        print("  - pip package installation to VFS")
+        print("  - Virtual environment support")
+        print("  - Process memory tracking")
+        print("  - Garbage collection")
         return 0
     
     # Clean VFS if requested
