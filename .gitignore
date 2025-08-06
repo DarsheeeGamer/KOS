@@ -119,6 +119,15 @@ config.local.json
 .env.local
 .env.*.local
 
+# Documentation (private)
+docs/
+DISTRIBUTED_ARCHITECTURE.md
+ARCHITECTURE.md
+TODO.md
+NOTES.md
+*.md
+!README.md
+
 # Documentation build
 docs/_build/
 docs/_static/
