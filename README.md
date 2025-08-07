@@ -1,28 +1,36 @@
-# KOS - Distributed Computing Operating System
+# KOS - Kaede Operating System
 
-**KOS** is an advanced Python-based operating system designed for transparent distributed computing across multiple hardware devices. It provides a unified interface for managing heterogeneous computing resources including CPUs, GPUs, and distributed systems.
+**KOS** is an advanced Python-based operating system with a custom virtual file system, real memory management, and comprehensive system services. Built from scratch without external dependencies, KOS provides a complete OS environment with advanced features.
 
 ## 🚀 Features
 
-### Core Capabilities
-- **Unified Hardware Pool** - Transparent access to multiple GPUs, CPUs, and compute devices as a single resource pool
-- **Distributed Computing** - Automatic workload distribution across available hardware
-- **Custom Virtual File System** - Binary-format VFS without pickle dependencies
+### Core System
+- **Custom Binary VFS** - High-performance virtual file system with inode-based structure
 - **Real Memory Management** - Actual memory allocation, tracking, and garbage collection
 - **Process Management** - Advanced process control with resource isolation
-- **Python Integration** - Full Python interpreter with package management support
+- **Multi-User Support** - User authentication, permissions, and role-based access
+- **Python Integration** - Embedded Python interpreter with isolated execution
 
-### Hardware Abstraction
-- **Multi-GPU Support** - CUDA, ROCm, Metal, and OpenCL backends
-- **Unified Memory Space** - Single address space across all devices
-- **Automatic Load Balancing** - Smart distribution of compute tasks
-- **Hardware Transparency** - Write once, run on any available hardware
+### File System
+- **Binary Format Storage** - Custom VFS implementation without pickle dependencies
+- **Inode-Based Structure** - Unix-like filesystem with superblock and block allocation
+- **Directory Hierarchy** - Full POSIX-compatible directory tree
+- **File Operations** - Complete read/write/seek support with buffering
+- **Background Sync** - Automatic persistence with configurable sync intervals
 
-### Distributed Systems
-- **Cluster Management** - Coordinate multiple nodes as a single system
-- **Distributed Memory** - Shared memory across network-connected devices
-- **Network Computing** - Transparent remote execution
-- **Fault Tolerance** - Automatic failover and recovery
+### Memory System
+- **Unified Memory Space** - Single address space with virtual-to-physical mapping
+- **Memory Distribution** - Intelligent data distribution across virtual devices
+- **Segment Caching** - High-performance cache with LRU eviction
+- **Garbage Collection** - Automatic memory reclamation
+- **Memory Statistics** - Real-time usage tracking and reporting
+
+### Advanced Services
+- **Process Manager** - Execute and manage system processes
+- **Network Stack** - TCP/IP networking simulation
+- **Package Management** - pip-compatible package installation
+- **Service Control** - systemd-like service management
+- **System Monitoring** - Resource usage and performance metrics
 
 ## 📦 Installation
 
@@ -31,9 +39,9 @@
 git clone https://github.com/DarsheeeGamer/KOS.git
 cd KOS
 
-# Install dependencies (optional, for GPU support)
-pip install numpy cupy-cuda11x torch  # For CUDA
-pip install numpy torch-rocm  # For AMD ROCm
+# No external dependencies required - pure Python!
+# Just run:
+python3 kos_system.py
 ```
 
 ## 🎯 Quick Start
@@ -43,53 +51,53 @@ pip install numpy torch-rocm  # For AMD ROCm
 ```python
 from kos import KOSUnifiedSystem, KOSConfig
 
-# Initialize KOS with GPU pooling
+# Initialize KOS
 config = KOSConfig(
-    enable_gpu_pooling=True,
-    enable_cpu_pooling=True,
-    auto_load_balancing=True
+    vfs_size=100 * 1024 * 1024,  # 100MB VFS
+    memory_size=512 * 1024 * 1024,  # 512MB memory
+    enable_cache=True
 )
 
 kos = KOSUnifiedSystem(config)
 kos.initialize()
 
-# Allocate unified memory (automatically distributed)
-addr = kos.malloc(1024 * 1024 * 100)  # 100MB
-
-# Write data (automatically distributed across devices)
-kos.write(addr, data)
-
-# Read data (gathered from all devices)
-result = kos.read(addr, size)
-
-# Free memory
+# Memory operations
+addr = kos.malloc(1024)  # Allocate 1KB
+kos.write(addr, b"Hello KOS!")
+data = kos.read(addr, 10)
 kos.free(addr)
+
+# File operations
+with kos.vfs.open("/home/user/test.txt", "w") as f:
+    f.write(b"KOS VFS Working!")
+
+# Create NumPy arrays in unified memory
+import numpy as np
+addr, array = kos.create_numpy_array((1000, 1000), np.float32)
+array[:] = np.random.randn(1000, 1000)
 ```
 
-### Distributed Computing Example
+### VFS Operations
 
 ```python
-from kos.distributed_system import KOSDistributedSystem
+from kos.core.vfs import get_vfs
 
-# Initialize distributed system
-distributed = KOSDistributedSystem()
+# Get VFS instance
+vfs = get_vfs("mydata.vfs")
 
-# Start as master node
-distributed.start_master_node(port=9000)
+# Create directories
+vfs.makedirs("/home/user/projects")
 
-# Register compute kernel
-distributed.register_kernel(
-    "matrix_multiply",
-    kernel_code,
-    kernel_type="cuda"
-)
+# Write files
+with vfs.open("/home/user/data.txt", "w") as f:
+    f.write(b"Custom VFS with binary format")
 
-# Execute across all available hardware
-result = distributed.execute_kernel(
-    "matrix_multiply",
-    args=(matrix_a, matrix_b),
-    device_type="auto"  # Automatically choose best device
-)
+# List directory
+files = vfs.listdir("/home/user")
+
+# Get file stats
+stats = vfs.stat("/home/user/data.txt")
+print(f"Size: {stats['st_size']} bytes")
 ```
 
 ## 🏗️ Architecture
@@ -100,107 +108,120 @@ KOS/
 │   ├── core/               # Core OS components
 │   │   ├── vfs.py         # Custom Virtual File System
 │   │   ├── config.py      # System configuration
-│   │   └── errors.py      # Error handling
-│   ├── hardware/          # Hardware abstraction layer
-│   │   ├── base.py        # Universal hardware pool
-│   │   ├── gpu_cuda.py    # NVIDIA CUDA support
-│   │   ├── gpu_rocm.py    # AMD ROCm support
-│   │   └── gpu_metal.py   # Apple Metal support
+│   │   ├── errors.py      # Error handling
+│   │   └── framework.py   # Core framework
 │   ├── memory/            # Memory management
 │   │   ├── unified_memory.py    # Unified memory space
-│   │   └── data_distributor.py  # Byte-level distribution
+│   │   └── data_distributor.py  # Data distribution engine
 │   ├── compute/           # Compute management
 │   │   ├── kernel_registry.py   # Kernel management
 │   │   └── scheduler.py         # Task scheduling
-│   ├── network/           # Distributed computing
-│   │   ├── cluster_communication.py
-│   │   ├── distributed_compute.py
-│   │   └── distributed_memory.py
-│   └── distributed_system.py    # Main distributed system
+│   ├── hardware/          # Hardware abstraction
+│   │   ├── base.py        # Device abstraction
+│   │   └── cpu.py         # CPU management
+│   ├── advlayer/          # Advanced services
+│   │   └── process_manager.py   # Process management
+│   └── kos_system.py      # Main system interface
 ```
 
-## 💡 Key Concepts
+## 💡 Key Components
 
-### Unified Hardware Pool
-KOS abstracts all available hardware (CPUs, GPUs, TPUs) into a single pool, allowing applications to use resources without explicitly managing device allocation.
+### Custom VFS Implementation
+The VFS uses a binary format with:
+- **Superblock**: Filesystem metadata
+- **Inode Table**: File and directory metadata
+- **Data Blocks**: Actual file content
+- **Block Allocation**: Dynamic block management
+- **Binary Serialization**: Using Python struct module
 
-### Transparent Distribution
-Data and compute tasks are automatically distributed across available devices based on:
-- Device capabilities
-- Current utilization
-- Memory bandwidth
-- Task requirements
+### Memory Management
+- **Virtual Address Space**: 64-bit addressing
+- **Page Tables**: Virtual-to-physical mapping
+- **Memory Segments**: Distributed data chunks
+- **Cache Layer**: High-speed data access
 
-### Zero-Copy Operations
-When possible, KOS uses zero-copy operations between devices to minimize data transfer overhead.
+### Process Management
+- **Process Isolation**: Separate memory spaces
+- **Resource Tracking**: CPU and memory usage
+- **Signal Handling**: Inter-process communication
+- **Scheduling**: Fair process scheduling
 
 ## 🔧 Advanced Features
 
+### Memory-Mapped Arrays
+```python
+# Create memory-mapped NumPy array
+shape = (10000, 10000)
+addr, array = kos.create_numpy_array(shape, np.float32)
+
+# Direct array operations
+array *= 2.0
+result = np.sum(array)
+```
+
+### Process Execution
+```python
+from kos.advlayer.process_manager import ProcessManager
+
+pm = ProcessManager()
+
+# Execute command
+result = pm.execute_command('echo "Hello from KOS"')
+print(result['stdout'])
+
+# Manage processes
+pm.create_process("worker", "/usr/bin/worker")
+pm.terminate_process(pid)
+```
+
 ### Custom Kernels
 ```python
-# Register custom CUDA kernel
-cuda_kernel = '''
-__global__ void vector_add(float* a, float* b, float* c, int n) {
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < n) {
-        c[idx] = a[idx] + b[idx];
-    }
-}
+# Register Python kernel
+python_kernel = '''
+def process_data(input_array):
+    return input_array * 2 + 1
 '''
 
-kos.register_kernel("vector_add", cuda_kernel, kernel_type="cuda")
-```
+kos.register_kernel("process_data", python_kernel, kernel_type="python")
 
-### Memory-Mapped Files
-```python
-# Map file to unified memory
-mmap_addr = kos.mmap_file("/path/to/large/file.dat")
-data = kos.read(mmap_addr, size)
-```
-
-### Distributed Arrays
-```python
-# Create distributed NumPy array
-import numpy as np
-
-shape = (10000, 10000)
-dist_array = kos.create_distributed_array(shape, dtype=np.float32)
-
-# Operations automatically distributed
-result = np.dot(dist_array, dist_array.T)
+# Execute kernel
+result = kos.execute_kernel("process_data", args=(data,))
 ```
 
 ## 📊 Performance
 
-KOS achieves near-linear scaling across multiple GPUs:
-- **2x GPUs**: ~1.9x performance
-- **4x GPUs**: ~3.7x performance
-- **8x GPUs**: ~7.2x performance
-
-Benchmarks available in `benchmarks/` directory.
+KOS achieves excellent performance through:
+- **Binary VFS Format**: Fast serialization without pickle overhead
+- **Memory Caching**: Intelligent segment caching
+- **Background Sync**: Asynchronous disk operations
+- **Zero-Copy Operations**: Where possible
 
 ## 🛠️ Development
 
-### Running Tests
+### Running Examples
+```python
+# Start master node
+python examples/start_master_node.py
+
+# Start worker node  
+python examples/start_worker_node.py
+
+# Run unified demo
+python examples/unified_hardware_demo.py
+```
+
+### Testing
 ```bash
 python -m pytest tests/
 ```
 
-### Building Documentation
-```bash
-cd docs
-make html
-```
-
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Areas of Interest
-- Additional hardware backend support (Intel oneAPI, etc.)
+We welcome contributions! Areas of interest:
 - Performance optimizations
-- Distributed computing improvements
-- Documentation and examples
+- Additional system services
+- Documentation improvements
+- Bug fixes and testing
 
 ## 📄 License
 
@@ -208,9 +229,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- Inspired by CUDA Unified Memory and distributed computing frameworks
-- Built on Python's powerful ecosystem
-- Special thanks to the open-source community
+- Built with pure Python - no external dependencies
+- Inspired by Unix/Linux design principles
+- Custom VFS implementation for reliability
 
 ## 📞 Contact
 
@@ -219,12 +240,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🎯 Roadmap
 
-- [ ] OpenCL backend support
-- [ ] Vulkan compute support
-- [ ] Distributed training framework
-- [ ] Container orchestration
-- [ ] Web-based management UI
-- [ ] Performance profiling tools
+- [ ] Network filesystem support
+- [ ] Compression for VFS
+- [ ] Multi-threading improvements
+- [ ] GUI interface
+- [ ] Container support
+- [ ] Distributed VFS
 
 ---
 
