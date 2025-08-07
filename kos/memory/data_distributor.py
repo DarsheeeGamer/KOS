@@ -1,6 +1,6 @@
 """
-Byte-Level Data Distribution Engine for KOS Hardware Pool
-Transparently distributes data across multiple devices at binary level
+Byte-Level Data Storage Engine for KOS Memory System
+Advanced data storage with caching and segmentation
 """
 
 import os
@@ -15,19 +15,16 @@ import logging
 import struct
 import mmap
 
-from ..hardware.base import UniversalHardwarePool, HardwareDevice, DeviceType
+# Hardware abstraction removed - using simple memory storage
 
 logger = logging.getLogger(__name__)
 
-class DistributionStrategy(Enum):
-    """Data distribution strategies"""
-    ROUND_ROBIN = "round_robin"
-    LOAD_BALANCED = "load_balanced"
-    LOCALITY_AWARE = "locality_aware"
-    BANDWIDTH_OPTIMIZED = "bandwidth_optimized"
-    MEMORY_OPTIMIZED = "memory_optimized"
-    COMPUTE_OPTIMIZED = "compute_optimized"
-    CUSTOM = "custom"
+class StorageStrategy(Enum):
+    """Data storage strategies"""
+    SIMPLE = "simple" 
+    SEGMENTED = "segmented"
+    CACHED = "cached"
+    COMPRESSED = "compressed"
 
 class DataType(Enum):
     """Supported data types for distribution"""
@@ -47,61 +44,69 @@ class DataType(Enum):
 
 @dataclass
 class DataSegment:
-    """Represents a segment of distributed data"""
+    """Represents a segment of stored data"""
     segment_id: str
-    device_id: str
+    storage_id: str  # Storage location identifier
     start_offset: int
     end_offset: int
     size: int
     data_type: DataType
     shape: Optional[Tuple[int, ...]]
-    device_ptr: Optional[int] = None
+    memory_ptr: Optional[int] = None
     checksum: Optional[str] = None
     is_dirty: bool = False
     last_accessed: float = 0.0
 
 @dataclass
-class DistributedDataObject:
-    """Represents a distributed data object across devices"""
+class StoredDataObject:
+    """Represents a stored data object with segments"""
     object_id: str
     total_size: int
     data_type: DataType
     shape: Optional[Tuple[int, ...]]
     segments: List[DataSegment]
-    strategy: DistributionStrategy
+    strategy: StorageStrategy
     coherency_policy: str = "write_back"
     created_time: float = 0.0
     access_count: int = 0
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-class ByteLevelDistributor:
-    """Core byte-level data distribution engine"""
+class ByteLevelStorage:
+    """Core byte-level data storage engine"""
     
-    def __init__(self, hardware_pool: UniversalHardwarePool):
-        self.hardware_pool = hardware_pool
-        self.distributed_objects: Dict[str, DistributedDataObject] = {}
-        self.segment_cache: Dict[str, bytes] = {}  # Host-side cache
+    def __init__(self, memory_size: int = 1024 * 1024 * 1024):  # 1GB default
+        self.memory_size = memory_size
+        self.stored_objects: Dict[str, StoredDataObject] = {}
+        self.segment_cache: Dict[str, bytes] = {}  # Memory cache
+        self.memory_storage = {}  # Direct memory storage
         self.lock = threading.RLock()
         
-        # Distribution parameters
+        # Storage parameters
         self.min_segment_size = 4096  # 4KB minimum
         self.max_segment_size = 256 * 1024 * 1024  # 256MB maximum
-        self.cache_size_limit = 1024 * 1024 * 1024  # 1GB cache limit
+        self.cache_size_limit = 512 * 1024 * 1024  # 512MB cache limit
+        
+        # Storage locations (simulated memory locations)
+        self.storage_locations = {
+            "primary": {"available": True, "capacity": memory_size // 2},
+            "cache": {"available": True, "capacity": memory_size // 4},
+            "secondary": {"available": True, "capacity": memory_size // 4}
+        }
         
         # Statistics
         self.stats = {
             'total_objects': 0,
-            'total_size_distributed': 0,
+            'total_size_stored': 0,
             'cache_hits': 0,
             'cache_misses': 0,
-            'transfers': 0,
+            'storage_ops': 0,
             'segments_created': 0
         }
     
-    def create_distributed_object(self, data: Union[np.ndarray, bytes, memoryview], 
-                                 strategy: DistributionStrategy = DistributionStrategy.LOAD_BALANCED,
-                                 preferred_devices: Optional[List[str]] = None) -> Optional[str]:
-        """Create a distributed data object from input data"""
+    def create_stored_object(self, data: Union[np.ndarray, bytes, memoryview], 
+                                 strategy: StorageStrategy = StorageStrategy.SEGMENTED,
+                                 preferred_locations: Optional[List[str]] = None) -> Optional[str]:
+        """Create a stored data object from input data"""
         
         try:
             with self.lock:
@@ -127,20 +132,20 @@ class ByteLevelDistributor:
                 
                 total_size = len(data_bytes)
                 
-                # Select devices for distribution
-                target_devices = self._select_devices(strategy, total_size, preferred_devices)
-                if not target_devices:
-                    logger.error("No suitable devices found for distribution")
+                # Select storage locations
+                target_locations = self._select_storage_locations(strategy, total_size, preferred_locations)
+                if not target_locations:
+                    logger.error("No suitable storage locations found")
                     return None
                 
                 # Create segments
-                segments = self._create_segments(data_bytes, target_devices, strategy, data_type, shape)
+                segments = self._create_segments(data_bytes, target_locations, strategy, data_type, shape)
                 if not segments:
                     logger.error("Failed to create data segments")
                     return None
                 
-                # Create distributed object
-                distributed_obj = DistributedDataObject(
+                # Create stored object
+                stored_obj = StoredDataObject(
                     object_id=object_id,
                     total_size=total_size,
                     data_type=data_type,
@@ -151,18 +156,18 @@ class ByteLevelDistributor:
                 )
                 
                 # Store object
-                self.distributed_objects[object_id] = distributed_obj
+                self.stored_objects[object_id] = stored_obj
                 
                 # Update statistics
                 self.stats['total_objects'] += 1
-                self.stats['total_size_distributed'] += total_size
+                self.stats['total_size_stored'] += total_size
                 self.stats['segments_created'] += len(segments)
                 
-                logger.info(f"Created distributed object {object_id}: {total_size} bytes across {len(segments)} segments")
+                logger.info(f"Created stored object {object_id}: {total_size} bytes across {len(segments)} segments")
                 return object_id
                 
         except Exception as e:
-            logger.error(f"Failed to create distributed object: {e}")
+            logger.error(f"Failed to create stored object: {e}")
             return None
     
     def _generate_object_id(self, data: Any) -> str:
@@ -195,74 +200,60 @@ class ByteLevelDistributor:
         }
         return dtype_map.get(np_dtype.type, DataType.BINARY)
     
-    def _select_devices(self, strategy: DistributionStrategy, data_size: int, 
-                       preferred_devices: Optional[List[str]] = None) -> List[str]:
-        """Select optimal devices for data distribution"""
+    def _select_storage_locations(self, strategy: StorageStrategy, data_size: int, 
+                       preferred_locations: Optional[List[str]] = None) -> List[str]:
+        """Select optimal storage locations for data"""
         
-        available_devices = [d for d in self.hardware_pool.devices.values() if d.available]
+        available_locations = [loc for loc, info in self.storage_locations.items() if info["available"]]
         
-        if preferred_devices:
-            # Filter by preferred devices
-            available_devices = [d for d in available_devices if d.device_id in preferred_devices]
+        if preferred_locations:
+            # Filter by preferred locations
+            available_locations = [loc for loc in available_locations if loc in preferred_locations]
         
-        if not available_devices:
-            return []
+        if not available_locations:
+            return ["primary"]  # Fallback to primary storage
         
-        if strategy == DistributionStrategy.ROUND_ROBIN:
-            # Simple round-robin selection
-            return [d.device_id for d in available_devices]
+        if strategy == StorageStrategy.SIMPLE:
+            # Use primary storage only
+            return ["primary"] if "primary" in available_locations else [available_locations[0]]
         
-        elif strategy == DistributionStrategy.LOAD_BALANCED:
-            # Select based on current utilization
-            sorted_devices = sorted(available_devices, key=lambda d: d.utilization)
-            return [d.device_id for d in sorted_devices]
+        elif strategy == StorageStrategy.SEGMENTED:
+            # Use all available locations
+            return available_locations
         
-        elif strategy == DistributionStrategy.BANDWIDTH_OPTIMIZED:
-            # Select based on memory bandwidth
-            sorted_devices = sorted(available_devices, key=lambda d: d.memory_bandwidth, reverse=True)
-            return [d.device_id for d in sorted_devices]
+        elif strategy == StorageStrategy.CACHED:
+            # Prefer cache location
+            if "cache" in available_locations:
+                return ["cache", "primary"]
+            return available_locations
         
-        elif strategy == DistributionStrategy.MEMORY_OPTIMIZED:
-            # Select based on available memory
-            devices_with_memory = []
-            for device in available_devices:
-                used_memory = self._calculate_device_memory_usage(device.device_id)
-                free_memory = device.memory_size - used_memory
-                if free_memory >= data_size // len(available_devices):
-                    devices_with_memory.append((device, free_memory))
-            
-            sorted_devices = sorted(devices_with_memory, key=lambda x: x[1], reverse=True)
-            return [d[0].device_id for d in sorted_devices]
+        elif strategy == StorageStrategy.COMPRESSED:
+            # Use secondary storage for compressed data
+            if "secondary" in available_locations:
+                return ["secondary", "primary"]
+            return available_locations
         
-        elif strategy == DistributionStrategy.COMPUTE_OPTIMIZED:
-            # Select based on compute power
-            compute_devices = [d for d in available_devices 
-                             if d.device_type in [DeviceType.GPU_CUDA, DeviceType.GPU_ROCM, DeviceType.GPU_METAL]]
-            if compute_devices:
-                sorted_devices = sorted(compute_devices, key=lambda d: d.capabilities.compute_power, reverse=True)
-                return [d.device_id for d in sorted_devices]
-        
-        # Default: return all available devices
-        return [d.device_id for d in available_devices]
+        # Default: return all available locations
+        return available_locations
     
-    def _create_segments(self, data_bytes: bytes, target_devices: List[str], 
-                        strategy: DistributionStrategy, data_type: DataType, 
+    def _create_segments(self, data_bytes: bytes, target_locations: List[str], 
+                        strategy: StorageStrategy, data_type: DataType, 
                         shape: Optional[Tuple[int, ...]]) -> List[DataSegment]:
-        """Create data segments for distribution"""
+        """Create data segments for storage"""
         
         segments = []
         total_size = len(data_bytes)
-        device_count = len(target_devices)
+        location_count = len(target_locations)
         
-        if device_count == 0:
+        if location_count == 0:
             return segments
         
         try:
             # Calculate segment sizes based on strategy
-            segment_sizes = self._calculate_segment_sizes(total_size, target_devices, strategy)
+            segment_sizes = self._calculate_segment_sizes(total_size, target_locations, strategy)
             
             current_offset = 0
-            for i, (device_id, segment_size) in enumerate(zip(target_devices, segment_sizes)):
+            for i, (location_id, segment_size) in enumerate(zip(target_locations, segment_sizes)):
                 if current_offset >= total_size:
                     break
                 
@@ -272,31 +263,24 @@ class ByteLevelDistributor:
                 
                 # Create segment
                 segment_data = data_bytes[current_offset:current_offset + segment_size]
-                segment_id = f"seg_{i}_{device_id}_{current_offset}"
+                segment_id = f"seg_{i}_{location_id}_{current_offset}"
                 
                 # Calculate checksum
                 checksum = hashlib.md5(segment_data).hexdigest()
                 
-                # Allocate on device
-                device = self.hardware_pool.get_device(device_id)
-                handler = self.hardware_pool.device_handlers.get(device.device_type)
-                
-                device_ptr = None
-                if handler:
-                    device_ptr = handler.allocate_memory(device_id, segment_size)
-                    if device_ptr:
-                        # Transfer data to device (simplified - would use proper transfer)
-                        self._transfer_to_device(handler, device_id, segment_data, device_ptr)
+                # Store in memory
+                memory_ptr = id(segment_data)  # Use Python object id as memory pointer
+                self.memory_storage[memory_ptr] = segment_data
                 
                 segment = DataSegment(
                     segment_id=segment_id,
-                    device_id=device_id,
+                    storage_id=location_id,
                     start_offset=current_offset,
                     end_offset=current_offset + segment_size,
                     size=segment_size,
                     data_type=data_type,
                     shape=shape,
-                    device_ptr=device_ptr,
+                    memory_ptr=memory_ptr,
                     checksum=checksum,
                     last_accessed=time.time()
                 )
@@ -406,10 +390,10 @@ class ByteLevelDistributor:
         
         try:
             with self.lock:
-                if object_id not in self.distributed_objects:
+                if object_id not in self.stored_objects:
                     return None
                 
-                obj = self.distributed_objects[object_id]
+                obj = self.stored_objects[object_id]
                 
                 # Determine read range
                 if length is None:
@@ -481,10 +465,10 @@ class ByteLevelDistributor:
         
         try:
             with self.lock:
-                if object_id not in self.distributed_objects:
+                if object_id not in self.stored_objects:
                     return False
                 
-                obj = self.distributed_objects[object_id]
+                obj = self.stored_objects[object_id]
                 end_offset = start_offset + len(data)
                 
                 if end_offset > obj.total_size:
@@ -559,10 +543,10 @@ class ByteLevelDistributor:
         
         try:
             with self.lock:
-                if object_id not in self.distributed_objects:
+                if object_id not in self.stored_objects:
                     return False
                 
-                obj = self.distributed_objects[object_id]
+                obj = self.stored_objects[object_id]
                 
                 # Free device memory for all segments
                 for segment in obj.segments:
@@ -666,4 +650,7 @@ class ByteLevelDistributor:
         except Exception as e:
             logger.error(f"Cache cleanup failed: {e}")
 
-import time
+# Backward compatibility aliases
+ByteLevelDistributor = ByteLevelStorage
+DistributedDataObject = StoredDataObject
+DistributionStrategy = StorageStrategy

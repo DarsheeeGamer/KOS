@@ -1,6 +1,6 @@
 """
-Unified Memory Space for KOS Hardware Pool
-Single memory interface across all distributed hardware devices
+Simple Memory Management System for KOS
+Basic memory allocation and management
 """
 
 import os
@@ -13,57 +13,36 @@ from dataclasses import dataclass, field
 from enum import Enum
 import logging
 
-from ..hardware.base import UniversalHardwarePool
-from .data_distributor import ByteLevelDistributor, DistributionStrategy, DataType
-from .coherency_protocol import MOESICoherencyProtocol, CoherencyState
-
 logger = logging.getLogger(__name__)
 
-class MemoryAccessPattern(Enum):
-    """Memory access patterns for optimization"""
-    SEQUENTIAL = "sequential"
-    RANDOM = "random"
-    STREAMING = "streaming"
-    TEMPORAL_LOCALITY = "temporal_locality"
-    SPATIAL_LOCALITY = "spatial_locality"
-
 @dataclass
-class UnifiedMemoryRegion:
-    """Represents a region in unified memory space"""
+class MemoryRegion:
+    """Represents a region in memory space"""
     region_id: str
     start_address: int
     end_address: int
     size: int
     access_permissions: str  # "r", "w", "rw", "rwx"
-    numa_hint: Optional[int] = None
-    prefetch_policy: Optional[str] = None
-    coherency_policy: str = "strong"  # "strong", "weak", "release"
-    compression: bool = False
-    encryption: bool = False
 
 @dataclass
 class MemoryAllocation:
-    """Memory allocation in unified space"""
+    """Memory allocation in memory space"""
     allocation_id: str
     virtual_address: int
     size: int
-    data_type: DataType
-    shape: Optional[Tuple[int, ...]]
-    distributed_object_id: Optional[str]
-    region_id: str
-    allocated_time: float
+    shape: Optional[Tuple[int, ...]] = None
+    region_id: str = "general"
+    allocated_time: float = field(default_factory=time.time)
     access_count: int = 0
     last_access_time: float = 0.0
-    access_pattern: Optional[MemoryAccessPattern] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-class UnifiedMemorySpace:
-    """Unified memory space across all hardware devices"""
+class SimpleMemoryManager:
+    """Simple memory management system"""
     
-    def __init__(self, hardware_pool: UniversalHardwarePool):
-        self.hardware_pool = hardware_pool
-        self.data_distributor = ByteLevelDistributor(hardware_pool)
-        self.coherency_protocol = MOESICoherencyProtocol(hardware_pool)
+    def __init__(self, total_size: int = 512 * 1024 * 1024):  # 512MB default
+        self.total_size = total_size
+        self.memory_data = {}  # address -> bytes
         
         # Memory management
         self.virtual_address_space = 1 << 48  # 256TB virtual address space
@@ -71,40 +50,28 @@ class UnifiedMemorySpace:
         self.next_virtual_address = 0x10000000  # Start at 256MB
         self.allocations: Dict[str, MemoryAllocation] = {}
         self.address_map: Dict[int, str] = {}  # Virtual address -> allocation ID
-        self.regions: Dict[str, UnifiedMemoryRegion] = {}
+        self.regions: Dict[str, MemoryRegion] = {}
         
         # Locks
         self.lock = threading.RLock()
         self.allocation_lock = threading.Lock()
-        
-        # Memory policies
-        self.default_distribution_strategy = DistributionStrategy.LOAD_BALANCED
-        self.auto_migration_enabled = True
-        self.prefetch_enabled = True
-        self.compression_enabled = False
         
         # Statistics
         self.stats = {
             'total_allocations': 0,
             'active_allocations': 0,
             'total_allocated_bytes': 0,
-            'virtual_pages_used': 0,
-            'memory_migrations': 0,
-            'prefetch_operations': 0,
-            'cache_coherency_events': 0
+            'used_bytes': 0
         }
         
         # Initialize default regions
         self._initialize_default_regions()
-        
-        # Start background tasks
-        self._start_background_tasks()
     
     def _initialize_default_regions(self):
         """Initialize default memory regions"""
         
         # General purpose region
-        self.regions["general"] = UnifiedMemoryRegion(
+        self.regions["general"] = MemoryRegion(
             region_id="general",
             start_address=0x10000000,
             end_address=0x80000000,
@@ -112,33 +79,18 @@ class UnifiedMemorySpace:
             access_permissions="rw"
         )
         
-        # High performance region (GPU-optimized)
-        self.regions["high_performance"] = UnifiedMemoryRegion(
-            region_id="high_performance", 
+        # Shared data region
+        self.regions["shared"] = MemoryRegion(
+            region_id="shared",
             start_address=0x80000000,
             end_address=0x100000000,
             size=0x80000000,  # 2GB
-            access_permissions="rw",
-            coherency_policy="weak",
-            prefetch_policy="aggressive"
-        )
-        
-        # Shared data region
-        self.regions["shared"] = UnifiedMemoryRegion(
-            region_id="shared",
-            start_address=0x100000000,
-            end_address=0x200000000,
-            size=0x100000000,  # 4GB
-            access_permissions="rw",
-            coherency_policy="strong"
+            access_permissions="rw"
         )
     
-    def malloc(self, size: int, data_type: DataType = DataType.BINARY,
-              shape: Optional[Tuple[int, ...]] = None,
-              region: str = "general",
-              strategy: Optional[DistributionStrategy] = None,
-              alignment: int = 16) -> Optional[int]:
-        """Allocate memory in unified space"""
+    def malloc(self, size: int, shape: Optional[Tuple[int, ...]] = None,
+              region: str = "general", alignment: int = 16) -> Optional[int]:
+        """Allocate memory"""
         
         try:
             with self.allocation_lock:
@@ -147,90 +99,86 @@ class UnifiedMemorySpace:
                     return None
                 
                 # Align size
-                aligned_size = self._align_size(size, alignment)
+                aligned_size = ((size + alignment - 1) // alignment) * alignment
                 
-                # Find virtual address
-                virtual_address = self._allocate_virtual_address(aligned_size, alignment, region)
+                # Generate allocation ID
+                allocation_id = f"alloc_{int(time.time() * 1000000)}_{id(self)}"
+                
+                # Allocate virtual address
+                virtual_address = self._allocate_virtual_address(aligned_size, region)
                 if not virtual_address:
                     logger.error("Failed to allocate virtual address")
                     return None
                 
-                # Create distributed data object
-                strategy = strategy or self.default_distribution_strategy
-                
-                # Initialize with zeros
-                initial_data = np.zeros(aligned_size, dtype=np.uint8)
-                if shape and data_type != DataType.BINARY:
-                    initial_data = self._create_typed_array(shape, data_type)
-                
-                distributed_obj_id = self.data_distributor.create_distributed_object(
-                    initial_data, strategy
-                )
-                
-                if not distributed_obj_id:
-                    logger.error("Failed to create distributed object")
-                    return None
-                
                 # Create allocation record
-                allocation_id = f"alloc_{int(time.time() * 1000000)}"
                 allocation = MemoryAllocation(
                     allocation_id=allocation_id,
                     virtual_address=virtual_address,
                     size=aligned_size,
-                    data_type=data_type,
                     shape=shape,
-                    distributed_object_id=distributed_obj_id,
-                    region_id=region,
-                    allocated_time=time.time()
+                    region_id=region
                 )
                 
                 # Store allocation
                 self.allocations[allocation_id] = allocation
-                self._map_virtual_address(virtual_address, allocation_id, aligned_size)
+                self.address_map[virtual_address] = allocation_id
+                
+                # Initialize memory data
+                self.memory_data[virtual_address] = b'\x00' * aligned_size
                 
                 # Update statistics
                 self.stats['total_allocations'] += 1
                 self.stats['active_allocations'] += 1
                 self.stats['total_allocated_bytes'] += aligned_size
-                self.stats['virtual_pages_used'] += (aligned_size + self.page_size - 1) // self.page_size
+                self.stats['used_bytes'] += aligned_size
                 
-                logger.info(f"Allocated {aligned_size} bytes at virtual address 0x{virtual_address:x}")
+                logger.debug(f"Allocated {aligned_size} bytes at 0x{virtual_address:x}")
                 return virtual_address
                 
         except Exception as e:
             logger.error(f"Memory allocation failed: {e}")
             return None
     
+    def _allocate_virtual_address(self, size: int, region: str) -> Optional[int]:
+        """Allocate virtual address in specified region"""
+        
+        region_info = self.regions.get(region)
+        if not region_info:
+            return None
+        
+        # Simple bump allocator
+        if self.next_virtual_address + size <= region_info.end_address:
+            address = self.next_virtual_address
+            self.next_virtual_address += size
+            return address
+        
+        return None
+    
     def free(self, virtual_address: int) -> bool:
-        """Free memory at virtual address"""
+        """Free allocated memory"""
         
         try:
             with self.allocation_lock:
-                allocation_id = self._get_allocation_id(virtual_address)
-                if not allocation_id:
-                    logger.error(f"No allocation found at address 0x{virtual_address:x}")
+                if virtual_address not in self.address_map:
+                    logger.warning(f"Address 0x{virtual_address:x} not found")
                     return False
                 
+                allocation_id = self.address_map[virtual_address]
                 allocation = self.allocations[allocation_id]
                 
-                # Free distributed object
-                if allocation.distributed_object_id:
-                    success = self.data_distributor.delete_object(allocation.distributed_object_id)
-                    if not success:
-                        logger.warning(f"Failed to delete distributed object {allocation.distributed_object_id}")
-                
-                # Remove mappings
-                self._unmap_virtual_address(virtual_address, allocation.size)
+                # Free memory data
+                if virtual_address in self.memory_data:
+                    del self.memory_data[virtual_address]
                 
                 # Remove allocation
                 del self.allocations[allocation_id]
+                del self.address_map[virtual_address]
                 
                 # Update statistics
                 self.stats['active_allocations'] -= 1
-                self.stats['total_allocated_bytes'] -= allocation.size
-                self.stats['virtual_pages_used'] -= (allocation.size + self.page_size - 1) // self.page_size
+                self.stats['used_bytes'] -= allocation.size
                 
-                logger.info(f"Freed allocation at 0x{virtual_address:x}")
+                logger.debug(f"Freed {allocation.size} bytes at 0x{virtual_address:x}")
                 return True
                 
         except Exception as e:
@@ -238,435 +186,123 @@ class UnifiedMemorySpace:
             return False
     
     def read(self, virtual_address: int, size: int) -> Optional[bytes]:
-        """Read data from unified memory space"""
+        """Read data from memory"""
         
         try:
-            allocation = self._get_allocation(virtual_address)
-            if not allocation:
+            if virtual_address not in self.memory_data:
                 return None
             
-            # Calculate offset within allocation
-            offset = virtual_address - allocation.virtual_address
-            
-            if offset + size > allocation.size:
-                logger.error("Read extends beyond allocation boundary")
-                return None
-            
-            # Read from distributed object
-            data = self.data_distributor.read_object(
-                allocation.distributed_object_id, offset, size
-            )
-            
-            if data:
-                # Update access statistics
-                allocation.access_count += 1
-                allocation.last_access_time = time.time()
-                
-                # Update access pattern analysis
-                self._analyze_access_pattern(allocation, offset, size, "read")
-                
-                # Trigger prefetch if enabled
-                if self.prefetch_enabled:
-                    self._consider_prefetch(allocation, offset, size)
-            
-            return data
+            data = self.memory_data[virtual_address]
+            return data[:size]
             
         except Exception as e:
             logger.error(f"Memory read failed: {e}")
             return None
     
     def write(self, virtual_address: int, data: bytes) -> bool:
-        """Write data to unified memory space"""
+        """Write data to memory"""
         
         try:
-            allocation = self._get_allocation(virtual_address)
-            if not allocation:
+            if virtual_address not in self.address_map:
                 return False
             
-            # Calculate offset within allocation
-            offset = virtual_address - allocation.virtual_address
-            size = len(data)
+            allocation_id = self.address_map[virtual_address]
+            allocation = self.allocations[allocation_id]
             
-            if offset + size > allocation.size:
-                logger.error("Write extends beyond allocation boundary")
-                return False
+            if len(data) > allocation.size:
+                logger.warning(f"Write size {len(data)} exceeds allocation size {allocation.size}")
+                data = data[:allocation.size]
             
-            # Write to distributed object
-            success = self.data_distributor.write_object(
-                allocation.distributed_object_id, data, offset
-            )
+            # Pad data to allocation size
+            if len(data) < allocation.size:
+                data = data + b'\x00' * (allocation.size - len(data))
             
-            if success:
-                # Update access statistics
-                allocation.access_count += 1
-                allocation.last_access_time = time.time()
-                
-                # Update access pattern analysis
-                self._analyze_access_pattern(allocation, offset, size, "write")
-                
-                # Handle coherency
-                self._handle_coherency_write(allocation, offset, size)
+            self.memory_data[virtual_address] = data
             
-            return success
+            # Update access statistics
+            allocation.access_count += 1
+            allocation.last_access_time = time.time()
+            
+            return True
             
         except Exception as e:
             logger.error(f"Memory write failed: {e}")
             return False
     
-    def memcpy(self, dst_address: int, src_address: int, size: int) -> bool:
-        """Copy memory between locations in unified space"""
-        
-        try:
-            # Read from source
-            data = self.read(src_address, size)
-            if not data:
-                return False
-            
-            # Write to destination
-            return self.write(dst_address, data)
-            
-        except Exception as e:
-            logger.error(f"Memory copy failed: {e}")
-            return False
-    
-    def memset(self, virtual_address: int, value: int, size: int) -> bool:
-        """Set memory to specified value"""
-        
-        try:
-            # Create data with specified value
-            data = bytes([value & 0xFF] * size)
-            return self.write(virtual_address, data)
-            
-        except Exception as e:
-            logger.error(f"Memory set failed: {e}")
-            return False
-    
-    def numpy_array(self, shape: Tuple[int, ...], dtype: np.dtype,
-                   region: str = "general") -> Optional[Tuple[int, np.ndarray]]:
-        """Create numpy array in unified memory"""
+    def create_numpy_array(self, shape: Tuple[int, ...], dtype=np.float32) -> Optional[Tuple[int, np.ndarray]]:
+        """Create NumPy array in managed memory"""
         
         try:
             # Calculate size
-            element_size = np.dtype(dtype).itemsize
-            total_elements = int(np.prod(shape))
-            total_size = total_elements * element_size
-            
-            # Convert numpy dtype to DataType
-            data_type = self._numpy_to_datatype(dtype)
+            array_size = np.prod(shape) * np.dtype(dtype).itemsize
             
             # Allocate memory
-            virtual_address = self.malloc(total_size, data_type, shape, region)
-            if not virtual_address:
+            address = self.malloc(array_size, shape=shape)
+            if not address:
                 return None
             
-            # Create numpy array view
-            array = self._create_numpy_view(virtual_address, shape, dtype)
+            # Create array
+            array = np.zeros(shape, dtype=dtype)
             
-            return virtual_address, array
+            # Write array data to memory
+            self.write(address, array.tobytes())
+            
+            return address, array
             
         except Exception as e:
             logger.error(f"NumPy array creation failed: {e}")
             return None
     
-    def _create_numpy_view(self, virtual_address: int, shape: Tuple[int, ...], dtype: np.dtype) -> np.ndarray:
-        """Create numpy array view of unified memory"""
-        
-        # This is a simplified implementation
-        # Real implementation would create a custom numpy array that reads/writes
-        # through the unified memory interface
-        
-        allocation = self._get_allocation(virtual_address)
-        if not allocation or not allocation.distributed_object_id:
-            raise ValueError("Invalid virtual address")
-        
-        # Read current data
-        data = self.data_distributor.read_object(allocation.distributed_object_id)
-        if not data:
-            data = b'\x00' * allocation.size
-        
-        # Create numpy array from data
-        array = np.frombuffer(data, dtype=dtype).reshape(shape).copy()
-        
-        # TODO: Create custom array class that writes changes back to unified memory
-        
-        return array
-    
-    def migrate_allocation(self, virtual_address: int, target_devices: List[str],
-                          new_strategy: Optional[DistributionStrategy] = None) -> bool:
-        """Migrate allocation to different devices"""
-        
-        try:
-            allocation = self._get_allocation(virtual_address)
-            if not allocation:
-                return False
-            
-            if not allocation.distributed_object_id:
-                return False
-            
-            # Read current data
-            data = self.data_distributor.read_object(allocation.distributed_object_id)
-            if not data:
-                return False
-            
-            # Delete old distribution
-            self.data_distributor.delete_object(allocation.distributed_object_id)
-            
-            # Create new distribution
-            strategy = new_strategy or self.default_distribution_strategy
-            
-            new_obj_id = self.data_distributor.create_distributed_object(
-                data, strategy, target_devices
-            )
-            
-            if not new_obj_id:
-                logger.error("Failed to create new distribution during migration")
-                return False
-            
-            # Update allocation
-            allocation.distributed_object_id = new_obj_id
-            
-            # Update statistics
-            self.stats['memory_migrations'] += 1
-            
-            logger.info(f"Migrated allocation 0x{virtual_address:x} to devices: {target_devices}")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Memory migration failed: {e}")
-            return False
-    
-    def _allocate_virtual_address(self, size: int, alignment: int, region: str) -> Optional[int]:
-        """Allocate virtual address in specified region"""
-        
-        region_info = self.regions[region]
-        
-        # Simple linear allocation within region
-        # Real implementation would use more sophisticated allocation
-        
-        current_addr = self.next_virtual_address
-        if current_addr < region_info.start_address:
-            current_addr = region_info.start_address
-        
-        # Align address
-        aligned_addr = (current_addr + alignment - 1) & ~(alignment - 1)
-        
-        # Check if fits in region
-        if aligned_addr + size > region_info.end_address:
-            logger.error(f"Cannot allocate {size} bytes in region {region}")
-            return None
-        
-        self.next_virtual_address = aligned_addr + size
-        return aligned_addr
-    
-    def _align_size(self, size: int, alignment: int) -> int:
-        """Align size to specified alignment"""
-        return (size + alignment - 1) & ~(alignment - 1)
-    
-    def _map_virtual_address(self, virtual_address: int, allocation_id: str, size: int):
-        """Map virtual address range to allocation"""
-        
-        # Map entire range
-        end_address = virtual_address + size
-        for addr in range(virtual_address, end_address, self.page_size):
-            self.address_map[addr] = allocation_id
-    
-    def _unmap_virtual_address(self, virtual_address: int, size: int):
-        """Unmap virtual address range"""
-        
-        end_address = virtual_address + size
-        for addr in range(virtual_address, end_address, self.page_size):
-            self.address_map.pop(addr, None)
-    
-    def _get_allocation_id(self, virtual_address: int) -> Optional[str]:
-        """Get allocation ID for virtual address"""
-        
-        # Find the page containing this address
-        page_address = virtual_address & ~(self.page_size - 1)
-        return self.address_map.get(page_address)
-    
-    def _get_allocation(self, virtual_address: int) -> Optional[MemoryAllocation]:
-        """Get allocation for virtual address"""
-        
-        allocation_id = self._get_allocation_id(virtual_address)
-        if allocation_id:
-            return self.allocations.get(allocation_id)
-        return None
-    
-    def _analyze_access_pattern(self, allocation: MemoryAllocation, offset: int, size: int, access_type: str):
-        """Analyze memory access pattern for optimization"""
-        
-        # Simple access pattern detection
-        # Real implementation would be more sophisticated
-        
-        if not hasattr(allocation, '_last_offset'):
-            allocation._last_offset = offset
-            return
-        
-        # Check for sequential access
-        if abs(offset - allocation._last_offset) <= size * 2:
-            if allocation.access_pattern != MemoryAccessPattern.SEQUENTIAL:
-                allocation.access_pattern = MemoryAccessPattern.SEQUENTIAL
-                logger.debug(f"Detected sequential access pattern for allocation {allocation.allocation_id}")
-        else:
-            allocation.access_pattern = MemoryAccessPattern.RANDOM
-        
-        allocation._last_offset = offset
-    
-    def _consider_prefetch(self, allocation: MemoryAllocation, offset: int, size: int):
-        """Consider prefetching data based on access pattern"""
-        
-        if allocation.access_pattern == MemoryAccessPattern.SEQUENTIAL:
-            # Prefetch next chunk
-            prefetch_offset = offset + size
-            prefetch_size = min(size * 2, allocation.size - prefetch_offset)
-            
-            if prefetch_size > 0:
-                # Trigger prefetch (simplified)
-                self.stats['prefetch_operations'] += 1
-                logger.debug(f"Prefetching {prefetch_size} bytes at offset {prefetch_offset}")
-    
-    def _handle_coherency_write(self, allocation: MemoryAllocation, offset: int, size: int):
-        """Handle coherency for write operations"""
-        
-        region = self.regions[allocation.region_id]
-        
-        if region.coherency_policy == "strong":
-            # Invalidate all caches immediately
-            # This would use the coherency protocol
-            self.stats['cache_coherency_events'] += 1
-        elif region.coherency_policy == "weak":
-            # Lazy coherency - defer until next access
-            pass
-    
-    def _create_typed_array(self, shape: Tuple[int, ...], data_type: DataType) -> np.ndarray:
-        """Create typed numpy array"""
-        
-        dtype_map = {
-            DataType.FLOAT32: np.float32,
-            DataType.FLOAT64: np.float64,
-            DataType.INT32: np.int32,
-            DataType.INT64: np.int64,
-            DataType.UINT8: np.uint8,
-            DataType.UINT32: np.uint32,
-        }
-        
-        dtype = dtype_map.get(data_type, np.uint8)
-        return np.zeros(shape, dtype=dtype)
-    
-    def _numpy_to_datatype(self, np_dtype: np.dtype) -> DataType:
-        """Convert numpy dtype to DataType"""
-        
-        dtype_map = {
-            np.float32: DataType.FLOAT32,
-            np.float64: DataType.FLOAT64,
-            np.int8: DataType.INT8,
-            np.int16: DataType.INT16,
-            np.int32: DataType.INT32,
-            np.int64: DataType.INT64,
-            np.uint8: DataType.UINT8,
-            np.uint16: DataType.UINT16,
-            np.uint32: DataType.UINT32,
-            np.uint64: DataType.UINT64,
-        }
-        
-        return dtype_map.get(np_dtype.type, DataType.BINARY)
-    
-    def _start_background_tasks(self):
-        """Start background maintenance tasks"""
-        
-        def cleanup_task():
-            while True:
-                try:
-                    # Clean up old cache entries
-                    self.data_distributor.cleanup_cache()
-                    
-                    # Run memory compaction if needed
-                    self._run_memory_compaction()
-                    
-                    time.sleep(60)  # Run every minute
-                    
-                except Exception as e:
-                    logger.error(f"Background task error: {e}")
-                    time.sleep(10)
-        
-        cleanup_thread = threading.Thread(target=cleanup_task, daemon=True)
-        cleanup_thread.start()
-    
-    def _run_memory_compaction(self):
-        """Run memory compaction to reduce fragmentation"""
-        
-        # Simple compaction - real implementation would be more sophisticated
-        try:
-            # Find fragmented regions and consolidate them
-            # This is a placeholder for a complex algorithm
-            pass
-            
-        except Exception as e:
-            logger.error(f"Memory compaction failed: {e}")
-    
-    def get_memory_stats(self) -> Dict[str, Any]:
-        """Get comprehensive memory statistics"""
-        
-        # Combine stats from all components
-        distributor_stats = self.data_distributor.get_statistics()
-        coherency_stats = self.coherency_protocol.get_cache_statistics()
-        
-        return {
-            'unified_memory': self.stats,
-            'data_distribution': distributor_stats,
-            'cache_coherency': coherency_stats,
-            'total_virtual_space': self.virtual_address_space,
-            'next_virtual_address': self.next_virtual_address,
-            'regions': {
-                region_id: {
-                    'start': region.start_address,
-                    'end': region.end_address,
-                    'size': region.size,
-                    'permissions': region.access_permissions
-                }
-                for region_id, region in self.regions.items()
-            }
-        }
-    
     def get_allocation_info(self, virtual_address: int) -> Optional[Dict[str, Any]]:
-        """Get information about specific allocation"""
+        """Get allocation information"""
         
-        allocation = self._get_allocation(virtual_address)
-        if not allocation:
+        if virtual_address not in self.address_map:
             return None
         
-        distributed_info = None
-        if allocation.distributed_object_id:
-            distributed_info = self.data_distributor.get_object_info(allocation.distributed_object_id)
+        allocation_id = self.address_map[virtual_address]
+        allocation = self.allocations[allocation_id]
         
         return {
             'allocation_id': allocation.allocation_id,
-            'virtual_address': f"0x{allocation.virtual_address:x}",
+            'virtual_address': allocation.virtual_address,
             'size': allocation.size,
-            'data_type': allocation.data_type.value,
             'shape': allocation.shape,
-            'region': allocation.region_id,
+            'region_id': allocation.region_id,
             'allocated_time': allocation.allocated_time,
             'access_count': allocation.access_count,
-            'last_access': allocation.last_access_time,
-            'access_pattern': allocation.access_pattern.value if allocation.access_pattern else None,
-            'distributed_object': distributed_info
+            'last_access_time': allocation.last_access_time
         }
     
-    def shutdown(self):
-        """Shutdown unified memory system"""
+    def get_memory_stats(self) -> Dict[str, Any]:
+        """Get memory statistics"""
         
-        logger.info("Shutting down unified memory system...")
+        return {
+            **self.stats,
+            'total_size': self.total_size,
+            'free_bytes': self.total_size - self.stats['used_bytes'],
+            'utilization_percent': (self.stats['used_bytes'] / self.total_size) * 100
+        }
+    
+    def garbage_collect(self) -> int:
+        """Run garbage collection"""
         
-        # Free all allocations
+        cleaned_count = 0
+        current_time = time.time()
+        
         with self.allocation_lock:
-            for allocation_id in list(self.allocations.keys()):
-                allocation = self.allocations[allocation_id]
-                self.free(allocation.virtual_address)
+            # Find allocations that haven't been accessed in a while
+            stale_allocations = []
+            for allocation in self.allocations.values():
+                if current_time - allocation.last_access_time > 3600:  # 1 hour
+                    stale_allocations.append(allocation.virtual_address)
+            
+            # Free stale allocations (in a real implementation, you'd be more careful)
+            for address in stale_allocations:
+                if self.free(address):
+                    cleaned_count += 1
         
-        # Shutdown components
-        self.coherency_protocol.shutdown()
-        
-        logger.info("Unified memory system shutdown complete")
+        logger.info(f"Garbage collection freed {cleaned_count} allocations")
+        return cleaned_count
 
-from enum import Enum
+# Backward compatibility aliases
+UnifiedMemorySpace = SimpleMemoryManager
