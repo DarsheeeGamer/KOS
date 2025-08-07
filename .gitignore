@@ -63,6 +63,8 @@ venv.bak/
 
 # KOS disk files
 *.kdsk
+*.vfs
+*.kfs
 kaede.kdsk
 demo.kdsk
 demo_adv.kdsk
@@ -70,6 +72,13 @@ integration.kdsk
 system.kdsk
 test.kdsk
 backup.kdsk
+kos.vfs
+demo_kos.vfs
+
+# Demo and test files
+demo_*.py
+test_*.py
+example_*.py
 
 # IDE and editors
 .vscode/
