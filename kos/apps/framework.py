@@ -4,7 +4,7 @@ Application framework for KOS apps
 
 import time
 import json
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any, Optional, Callable, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 from abc import ABC, abstractmethod

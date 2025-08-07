@@ -12,7 +12,7 @@ from typing import Dict, List, Set, Tuple, Optional, Any
 import networkx as nx
 from packaging import version
 
-from .manager import Package, PackageDependency
+from .models import Package, PackageDependency
 
 logger = logging.getLogger('KOS.package.dependency_resolver')
 

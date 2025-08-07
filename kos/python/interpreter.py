@@ -121,7 +121,21 @@ class VFSPipInstaller:
         # Create directories
         for dir_path in [self.packages_dir, self.pip_cache, "/var/lib/pip"]:
             if not self.vfs.exists(dir_path):
-                self.vfs.mkdir(dir_path)
+                if hasattr(self.vfs, 'makedirs'):
+                    self.vfs.makedirs(dir_path, exist_ok=True)
+                else:
+                    # Fallback to creating parent dirs manually
+                    parts = dir_path.strip('/').split('/')
+                    current = ''
+                    for part in parts:
+                        if not part:
+                            continue
+                        current = f"{current}/{part}" if current else f"/{part}"
+                        if not self.vfs.exists(current):
+                            try:
+                                self.vfs.mkdir(current)
+                            except:
+                                pass
         
         # Load installed packages database
         db_file = "/var/lib/pip/installed.json"
@@ -552,14 +566,21 @@ version = {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.mi
     
     def _create_directory_tree(self, path: str):
         """Create directory tree in VFS"""
-        parts = path.split('/')
-        current = ''
-        for part in parts:
-            if not part:
-                continue
-            current = f"{current}/{part}" if current else f"/{part}"
-            if not self.vfs.exists(current):
-                self.vfs.mkdir(current)
+        if hasattr(self.vfs, 'makedirs'):
+            self.vfs.makedirs(path, exist_ok=True)
+        else:
+            # Fallback for older VFS implementations
+            parts = path.split('/')
+            current = ''
+            for part in parts:
+                if not part:
+                    continue
+                current = f"{current}/{part}" if current else f"/{part}"
+                if not self.vfs.exists(current):
+                    try:
+                        self.vfs.mkdir(current)
+                    except:
+                        pass  # Ignore errors, directory might already exist
     
     def create_repl(self) -> code.InteractiveConsole:
         """Create interactive Python REPL"""
